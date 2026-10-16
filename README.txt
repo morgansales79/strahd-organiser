@@ -44,3 +44,5 @@ and lines you start with "- ", "• " or "1. " in the app become real bullets/nu
 
 Maps (v12): pictures placed under a location heading in the Google Doc are pulled out at Sync (the line directly above a picture is its name),
 kept on the device for offline use, and shown from the Maps button in a location's full-screen notes. They are not shown in the notes text.
+
+Updating (v15): Sync -> Settings -> "Get the latest app version" clears the app's cached copy and reloads it from the internet. Data is kept.
