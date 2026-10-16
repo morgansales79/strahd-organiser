@@ -38,3 +38,9 @@ Multi-page PDFs show a page picker (< 1 of 3 >) in the review screen. The PDF re
 Cloud scanning (optional): in Sync -> Settings, paste a Google Cloud Vision API key. When a key is set and the tablet is online,
 Enemies and Party scans use Google's text reader (more accurate than the offline one). Offline or on any error it falls back to the built-in reader.
 The key is stored only on that device. The page image is sent to Google for each scan.
+
+Bullets (v11): bulleted and numbered lists in the Google Doc now come into the app as "• item" / "1. item" lines (indent = sub-level),
+and lines you start with "- ", "• " or "1. " in the app become real bullets/numbers in the doc.
+
+Maps (v12): pictures placed under a location heading in the Google Doc are pulled out at Sync (the line directly above a picture is its name),
+kept on the device for offline use, and shown from the Maps button in a location's full-screen notes. They are not shown in the notes text.
