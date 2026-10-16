@@ -34,3 +34,7 @@ Keeps your data in step between devices (stored in a hidden app folder in your G
 
 PDF scanning (v9): "From photo or PDF" on the Party and Enemies pages also accepts PDF files.
 Multi-page PDFs show a page picker (< 1 of 3 >) in the review screen. The PDF reader lives in the pdf/ folder - keep it with the app.
+
+Cloud scanning (optional): in Sync -> Settings, paste a Google Cloud Vision API key. When a key is set and the tablet is online,
+Enemies and Party scans use Google's text reader (more accurate than the offline one). Offline or on any error it falls back to the built-in reader.
+The key is stored only on that device. The page image is sent to Google for each scan.

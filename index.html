@@ -734,7 +734,7 @@ function gsDraw(){
  if(GC.conf){var p=GC.conf.p;h+='<div class="card gsw"><h3>Two versions to choose from</h3><p>Google holds a version saved'+(p.savedAt?" "+esc(new Date(p.savedAt).toLocaleString()):"")+' from another device, and this device also has newer changes. Pick which one to keep. The other is saved as a backup on this device.</p><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="pri" data-gs="keeplocal">Keep this device\'s version</button><button data-gs="usegoogle">Use the version from Google</button></div></div>'}
  if(GC.dconf&&GC.dconf.length){h+='<div class="card gsw"><h3>Notes changed in both places</h3><p class="mute">For each location below, choose which version to keep, then press Apply.</p>'+GC.dconf.map(function(x,i){var r=GC.res[x.name]||"";return'<div class="gsc"><b>'+esc(x.name)+'</b><div class="gsc2"><div><div class="mute">In the app</div><pre class="sbx">'+esc(x.app||"(empty)")+'</pre><button class="'+(r==="app"?"pri":"")+'" data-gs="res" data-n="'+i+'" data-v="app">Keep app version</button></div><div><div class="mute">In the doc</div><pre class="sbx">'+esc(x.doc||"(empty)")+'</pre><button class="'+(r==="doc"?"pri":"")+'" data-gs="res" data-n="'+i+'" data-v="doc">Keep doc version</button></div></div></div>'}).join("")+'<div><button class="pri" data-gs="apply"'+(GC.busy?" disabled":"")+'>Apply choices</button></div></div>'}
  if(GC.heads&&GC.heads.length){h+='<div class="card gsw"><h3>New headings in the doc</h3><p class="mute">These are not locations in the app yet.</p>'+GC.heads.map(function(x,i){return'<div class="row" style="margin:6px 0"><span style="flex:1">'+esc(x.name)+'</span><button class="pri" data-gs="addhead" data-n="'+i+'">Add as location</button><button data-gs="ignorehead" data-n="'+i+'">Ignore</button></div>'}).join("")+'</div>'}
- h+='<details class="card"><summary>Settings</summary><label class="f">Google client ID<input data-gsf="clientId" value="'+esc(c.clientId)+'"></label><label class="f">Document ID or link<input data-gsf="docId" value="'+esc(c.docId)+'"></label><div style="margin-top:8px"><button data-gs="signout">Forget sign-in on this device</button></div></details></div>';
+ h+='<details class="card"><summary>Settings</summary><label class="f">Google client ID<input data-gsf="clientId" value="'+esc(c.clientId)+'"></label><label class="f">Document ID or link<input data-gsf="docId" value="'+esc(c.docId)+'"></label><label class="f">Cloud scanning key (Google Cloud Vision, kept on this device only)<input type="password" data-vkey="1" autocomplete="off" value="'+esc(scKey())+'" placeholder="Leave empty to use the offline reader"></label><div style="margin-top:8px"><button data-gs="signout">Forget sign-in on this device</button></div></details></div>';
  el.hidden=false;el.innerHTML=h}
 (function(){
  var ov=document.getElementById("gsov");if(!ov)return;
@@ -751,7 +751,7 @@ function gsDraw(){
   else if(a==="addhead"){var hd=GC.heads[n];if(hd&&!LOCS.some(function(q){return gnk(q)===gnk(hd.name)})){LOCS.push(hd.name);S.locations.push({name:hd.name,status:"Not visited",notes:hd.text});(S.gdocBase||(S.gdocBase={}))[hd.name]=hd.text;save();GC.heads.splice(n,1);render();gsDraw()}}
   else if(a==="ignorehead"){var hi=GC.heads[n];if(hi){var ig=gcfg().ignored.slice();ig.push(gnk(hi.name));gset({ignored:ig});GC.heads.splice(n,1);gsDraw()}}
   else if(a==="signout"){GC.tok="";GC.exp=0;try{if(window.google&&google.accounts&&google.accounts.oauth2&&GC.tok)google.accounts.oauth2.revoke(GC.tok)}catch(x4){}GC.err="";gLog("Signed out on this device.")}});
- ov.addEventListener("change",function(e){var el=e.target;if(!el.dataset.gsf)return;var v=el.value.trim();
+ ov.addEventListener("change",function(e){var el=e.target;if(el.dataset.vkey){try{var kv=el.value.trim();if(kv)localStorage.setItem("cos-vision",kv);else localStorage.removeItem("cos-vision")}catch(x5){}return}if(!el.dataset.gsf)return;var v=el.value.trim();
   if(el.dataset.gsf==="docId"){var m=v.match(/\/d\/([A-Za-z0-9_\-]+)/);if(m)v=m[1]}
   var o={};o[el.dataset.gsf]=v;gset(o);GC.tok="";GC.exp=0;gsDraw()});
  gsDraw()
@@ -1043,15 +1043,8 @@ function scProg(p,t){
  if(b)b.style.width=Math.round(p)+"%";if(t&&s)s.textContent=t}
 function scStop(){SC.run++;clearTimeout(SC.timer);if(SC.w){try{SC.w.terminate()}catch(e){}SC.w=null}}
 function scClose(){scStop();ui.scan=null;scDraw()}
-function scRun(file,kind,page){kind=kind||"enemy";SC.file=file;
- scStop();var id=SC.run;
- ui.scan={kind:kind,phase:"read",pct:2,img:"",W:3,H:4,words:[],form:null,raw:"",miss:[],warn:[],conf:0,err:"",target:"",pages:1,page:1};
- scDraw();
- scPrep(file,page).then(function(p){
-  if(id!==SC.run)return;
-  ui.scan.pages=p.pages;ui.scan.page=p.page;
-  ui.scan.img=p.shown;ui.scan.W=p.W;ui.scan.H=p.H;scDraw();scProg(6,"Waking the reader...");
-  return scLoad().then(function(){
+function scOfflineRun(id,kind,p,note){scProg(6,"Waking the reader...");
+ return scLoad().then(function(){
    return Tesseract.createWorker("eng",1,{workerPath:scUrl("worker.min.js"),corePath:scUrl(""),langPath:scUrl(""),gzip:false,cacheMethod:"none",workerBlobURL:false,
     logger:function(m){if(id!==SC.run||!m)return;var st=m.status||"",pr=m.progress||0;
      if(/recogni/i.test(st))scProg(30+pr*68,"Reading the page... "+Math.round(pr*100)+"%");
@@ -1069,12 +1062,58 @@ function scRun(file,kind,page){kind=kind||"enemy";SC.file=file;
      try{w.terminate()}catch(e){}SC.w=null;if(id!==SC.run)return;
      ui.scan.words=ws.map(function(x){return{x:x.bbox.x0,y:x.bbox.y0,w:x.bbox.x1-x.bbox.x0,h:x.bbox.y1-x.bbox.y0,c:x.confidence||0}});
      if(kind==="pc"){var mm=["str","dex","con","int","wis","cha"].filter(function(k){return!pr.form[k]});pr.miss=pr.miss.filter(function(x){return!/^Ability scores/.test(x)});if(mm.length)pr.miss.push("Ability scores ("+mm.join(", ").toUpperCase()+")");ui.scan.target=scMatchMember(pr.form.name)}
-     ui.scan.raw=d.text||"";ui.scan.form=pr.form;ui.scan.miss=pr.miss;ui.scan.warn=pr.warn;ui.scan.conf=ws.length?Math.round(sum/ws.length):0;
+     if(note)pr.warn.unshift(note);ui.scan.raw=d.text||"";ui.scan.form=pr.form;ui.scan.miss=pr.miss;ui.scan.warn=pr.warn;ui.scan.conf=ws.length?Math.round(sum/ws.length):0;
      if(!ws.length){ui.scan.phase="err";ui.scan.err="No text was found in that photo. Try again with the page filling the frame, in good light, held steady.";scDraw();return}
      ui.scan.phase="rev";scDraw();
      SC.timer=setTimeout(function(){if(ui.scan&&ui.scan.phase==="rev"){ui.scan.phase="review";scDraw()}},2600)};
     if(kind==="pc"){scProg(96,"Reading the numbers...");return scAbilities(w,p.gray,p.W,p.H,d.words||[],pr).then(fin,fin)}
-    fin()})})
+    fin()})})}
+function scKey(){try{return localStorage.getItem("cos-vision")||""}catch(e){return""}}
+function scVision(src,key){
+ var b64=typeof src==="string"?src.split(",")[1]:src.toDataURL("image/jpeg",0.9).split(",")[1];
+ return fetch("https://vision.googleapis.com/v1/images:annotate?key="+encodeURIComponent(key),{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({requests:[{image:{content:b64},features:[{type:"DOCUMENT_TEXT_DETECTION"}],imageContext:{languageHints:["en"]}}]})}).then(function(r){
+  return r.json().catch(function(){return{}}).then(function(j){
+   var rs=j&&j.responses&&j.responses[0],er=(j&&j.error)||(rs&&rs.error);
+   if(!r.ok||er)throw new Error((er&&er.message)||("HTTP "+r.status));
+   var fa=rs&&rs.fullTextAnnotation,words=[];
+   if(fa)(fa.pages||[]).forEach(function(pg){(pg.blocks||[]).forEach(function(bl){(bl.paragraphs||[]).forEach(function(pa){(pa.words||[]).forEach(function(w){
+    var t=(w.symbols||[]).map(function(y){return y.text}).join(""),v=(w.boundingBox&&w.boundingBox.vertices)||[];if(!t||!v.length)return;
+    var xs=v.map(function(q){return q.x||0}),ys=v.map(function(q){return q.y||0});
+    words.push({text:t,confidence:Math.round((w.confidence||0)*100),bbox:{x0:Math.min.apply(null,xs),y0:Math.min.apply(null,ys),x1:Math.max.apply(null,xs),y1:Math.max.apply(null,ys)}})})})})});
+   return{text:fa?fa.text:"",words:words}})})}
+function scCloudDone(id,kind,p,d,key){
+ if(id!==SC.run)return;
+ var ws=(d.words||[]).filter(function(x){return x&&x.text&&/\S/.test(x.text)&&x.bbox}).slice(0,1500),sum=0;
+ ws.forEach(function(x){sum+=x.confidence||0});
+ var pr=kind==="pc"?parseSheet(d.text||""):parseStatblock(d.text||"");
+ var fin=function(){
+  if(id!==SC.run)return;
+  ui.scan.words=ws.map(function(x){return{x:x.bbox.x0,y:x.bbox.y0,w:x.bbox.x1-x.bbox.x0,h:x.bbox.y1-x.bbox.y0,c:x.confidence||0}});
+  if(kind==="pc"){var mm=["str","dex","con","int","wis","cha"].filter(function(k){return!pr.form[k]});pr.miss=pr.miss.filter(function(x){return!/^Ability scores/.test(x)});if(mm.length)pr.miss.push("Ability scores ("+mm.join(", ").toUpperCase()+")");ui.scan.target=scMatchMember(pr.form.name)}
+  ui.scan.raw=d.text||"";ui.scan.form=pr.form;ui.scan.miss=pr.miss;ui.scan.warn=pr.warn;ui.scan.conf=ws.length?Math.round(sum/ws.length):0;
+  if(!ws.length){ui.scan.phase="err";ui.scan.err="No text was found in that photo. Try again with the page filling the frame, in good light, held steady.";scDraw();return}
+  ui.scan.phase="rev";scDraw();
+  SC.timer=setTimeout(function(){if(ui.scan&&ui.scan.phase==="rev"){ui.scan.phase="review";scDraw()}},2600)};
+ scProg(70,"Reading the text...");
+ if(kind==="pc"){
+  var calls=0,wk={setParameters:function(){return Promise.resolve()},recognize:function(cv){if(cv.width>1200&&cv.height>1200||++calls>10)return Promise.resolve({data:{words:[],text:""}});return scVision(cv,key).then(function(r){return{data:r}})}};
+  scProg(85,"Reading the numbers...");
+  return scAbilities(wk,p.gray,p.W,p.H,d.words||[],pr).then(fin,fin)}
+ fin()}
+function scRun(file,kind,page){kind=kind||"enemy";SC.file=file;
+ scStop();var id=SC.run;
+ ui.scan={kind:kind,phase:"read",pct:2,img:"",W:3,H:4,words:[],form:null,raw:"",miss:[],warn:[],conf:0,err:"",target:"",pages:1,page:1};
+ scDraw();
+ scPrep(file,page).then(function(p){
+  if(id!==SC.run)return;
+  ui.scan.pages=p.pages;ui.scan.page=p.page;
+  ui.scan.img=p.shown;ui.scan.W=p.W;ui.scan.H=p.H;scDraw();
+  var key=scKey();
+  if(key&&navigator.onLine!==false){scProg(15,"Sending the page to the cloud reader...");
+   return scVision(p.shown,key).then(function(d){return scCloudDone(id,kind,p,d,key)},function(e){
+    if(id!==SC.run)return;
+    return scOfflineRun(id,kind,p,"The cloud reader could not be used ("+String(e&&e.message||e).slice(0,160)+"), so the offline reader was used instead.")})}
+  return scOfflineRun(id,kind,p,"")
  }).catch(function(e){
   if(id!==SC.run)return;
   var eng=e&&/engine|worker|wasm|traineddata|importScripts|load|network|fetch/i.test(String(e.message||e));
