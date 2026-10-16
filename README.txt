@@ -22,3 +22,15 @@ YOUR DATA
 - Clearing Chrome's site data or uninstalling the app erases it.
 - Use "Create backup" regularly: it saves a .json file to the tablet's Downloads.
   "Restore file" loads one back (also how you move data to a new tablet).
+
+NEW: Scan statblock (Enemies page)
+Photograph a printed statblock and it is read on the tablet, fully offline. The scanner files live in the ocr folder and are about 14 MB, so upload that whole folder to GitHub too. Always check the numbers on the review screen before adding the enemy.
+
+NEW: Scan character sheet (Party page)
+Photograph a character sheet to add a new adventurer or update an existing one (it offers the matching name). Ability scores printed in small boxes are the hardest part for the reader, so check them on the review screen. Anything it could not read is listed and left blank.
+
+NEW: Google sync (Sync button, top right)
+Keeps your data in step between devices (stored in a hidden app folder in your Google Drive) and keeps the location notes in step with your Google Doc, using one Heading 1 per location. Sign in with the Google account you added as a test user. Sync from the device holding your real campaign data first. Also new: Add location on the Locations page.
+
+PDF scanning (v9): "From photo or PDF" on the Party and Enemies pages also accepts PDF files.
+Multi-page PDFs show a page picker (< 1 of 3 >) in the review screen. The PDF reader lives in the pdf/ folder - keep it with the app.
