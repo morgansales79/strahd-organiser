@@ -67,3 +67,7 @@ v32: Death House location restored with summarised notes (areas 1-38, endings).
 v33: Attack results shown in a popup; Party race field now full width.
 v34: Import PDF reads the PDF's own text layer (falls back to picture scanning for scanned PDFs); camera buttons no longer force the camera.
 v35: Import PDF reads D&D Beyond fillable-form fields directly (stats, saves and skills proficiency).
+
+v36: Initiative prompt now asks for current HP (auto-filled, tracked fight to fight and on the Party tab). Dashboard Short rest / Long rest buttons (hit dice, Arcane Recovery, Natural Recovery, Warlock pact slots). Druid Wild Shape on encounters, ranger companion on the Party tab and in encounters.
+
+v37: Spell slot blobs now also appear on the Encounter page. New "Prepared encounters" card on the Encounter page: build, save, and load encounters before the session.
