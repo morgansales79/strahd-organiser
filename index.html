@@ -368,7 +368,7 @@ function save(){gsetDirty(true);var sb=document.getElementById("syncbtn");if(sb)
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=18;
+var APPV=19;
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -617,6 +617,19 @@ function mpSyncAll(secs,st){
  return chain.then(function(){mpSave();if(st){st.maps=got;st.mapsFail=fail}if(ui.nz)nzDraw()},function(){})}
 function mpFresh(id){var c=gcfg();if(!c.docId||navigator.onLine===false)return Promise.reject(new Error("offline"));
  return gapi("GET","https://docs.googleapis.com/v1/documents/"+encodeURIComponent(c.docId)).then(function(doc){var ob=doc.inlineObjects&&doc.inlineObjects[id],em=ob&&ob.inlineObjectProperties&&ob.inlineObjectProperties.embeddedObject,u=em&&em.imageProperties&&em.imageProperties.contentUri;if(!u)throw new Error("The picture is no longer in the doc");return u})}
+function mpDiag(){
+ var m0=null,loc="";Object.keys(mpMeta()).forEach(function(k){if(!m0&&mpMeta()[k].length){m0=mpMeta()[k][0];loc=k}});
+ if(!m0){gLog("Map test: no maps found yet. Sync first.");return Promise.resolve()}
+ gLog("Map test: trying \""+m0.name+"\" (saved: "+(m0.ok===true?"yes":m0.ok==="c"?"in offline cache":"no")+")");
+ var say=function(t){gLog("Map test: "+t)};
+ return mpFresh(m0.id).then(function(u){
+  var host="?";try{var uu=new URL(u);host=uu.host+uu.pathname.slice(0,24)}catch(e){}
+  say("link host "+host+" (online "+(navigator.onLine?"yes":"no")+")");
+  return fetch(u).then(function(r){say("plain download: "+(r.ok?"OK "+r.status:"HTTP "+r.status))},function(e){say("plain download blocked: "+(e&&e.message))})
+  .then(function(){return fetch(u,{mode:"no-cors"}).then(function(r){say("no-cors download: "+r.type)},function(e){say("no-cors download failed: "+(e&&e.message))})})
+  .then(function(){return new Promise(function(res){var im=new Image();im.onload=function(){say("picture loads in a page: yes ("+im.naturalWidth+"x"+im.naturalHeight+")");res()};im.onerror=function(){say("picture loads in a page: NO");res()};im.src=u})})
+  .then(function(){return new Promise(function(res){var im=new Image();im.crossOrigin="anonymous";im.onload=function(){say("picture with CORS: yes");res()};im.onerror=function(){say("picture with CORS: no");res()};im.src=u})})
+ },function(e){say("could not get a fresh link: "+(e&&e.message))})}
 function mpFit(){var st=document.getElementById("mpst");if(!st)return;var W=st.clientWidth,H=st.clientHeight;MV.s=Math.min(W/MV.iw,H/MV.ih,4);MV.x=(W-MV.iw*MV.s)/2;MV.y=(H-MV.ih*MV.s)/2;mpApply()}
 function mpApply(){var im=document.getElementById("mpimg");if(im)im.style.transform="translate("+MV.x+"px,"+MV.y+"px) scale("+MV.s+")"}
 function mpZoom(f,cx,cy){var st=document.getElementById("mpst");if(!st)return;if(cx===undefined){cx=st.clientWidth/2;cy=st.clientHeight/2}
@@ -847,7 +860,7 @@ function gsDraw(){
  if(GC.conf){var p=GC.conf.p;h+='<div class="card gsw"><h3>Two versions to choose from</h3><p>Google holds a version saved'+(p.savedAt?" "+esc(new Date(p.savedAt).toLocaleString()):"")+' from another device, and this device also has newer changes. Pick which one to keep. The other is saved as a backup on this device.</p><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="pri" data-gs="keeplocal">Keep this device\'s version</button><button data-gs="usegoogle">Use the version from Google</button></div></div>'}
  if(GC.dconf&&GC.dconf.length){h+='<div class="card gsw"><h3>Notes changed in both places</h3><p class="mute">For each location below, choose which version to keep, then press Apply.</p>'+GC.dconf.map(function(x,i){var r=GC.res[x.name]||"";return'<div class="gsc"><b>'+esc(x.name)+'</b><div class="gsc2"><div><div class="mute">In the app</div><pre class="sbx">'+esc(x.app||"(empty)")+'</pre><button class="'+(r==="app"?"pri":"")+'" data-gs="res" data-n="'+i+'" data-v="app">Keep app version</button></div><div><div class="mute">In the doc</div><pre class="sbx">'+esc(x.doc||"(empty)")+'</pre><button class="'+(r==="doc"?"pri":"")+'" data-gs="res" data-n="'+i+'" data-v="doc">Keep doc version</button></div></div></div>'}).join("")+'<div><button class="pri" data-gs="apply"'+(GC.busy?" disabled":"")+'>Apply choices</button></div></div>'}
  if(GC.heads&&GC.heads.length){h+='<div class="card gsw"><h3>New headings in the doc</h3><p class="mute">These are not locations in the app yet.</p>'+GC.heads.map(function(x,i){return'<div class="row" style="margin:6px 0"><span style="flex:1">'+esc(x.name)+'</span><button class="pri" data-gs="addhead" data-n="'+i+'">Add as location</button><button data-gs="ignorehead" data-n="'+i+'">Ignore</button></div>'}).join("")+'</div>'}
- h+='<details class="card"><summary>Settings</summary><label class="f">Google client ID<input data-gsf="clientId" value="'+esc(c.clientId)+'"></label><label class="f">Document ID or link<input data-gsf="docId" value="'+esc(c.docId)+'"></label><label class="f">Cloud scanning key (Google Cloud Vision, kept on this device only)<input type="password" data-vkey="1" autocomplete="off" value="'+esc(scKey())+'" placeholder="Leave empty to use the offline reader"></label><div style="margin-top:8px"><button data-gs="update">Get the latest app version</button> <span class="mute">Reloads the app from the internet. Your data is kept.</span></div><div style="margin-top:8px"><button data-gs="signout">Forget sign-in on this device</button></div></details></div>';
+ h+='<details class="card"><summary>Settings</summary><label class="f">Google client ID<input data-gsf="clientId" value="'+esc(c.clientId)+'"></label><label class="f">Document ID or link<input data-gsf="docId" value="'+esc(c.docId)+'"></label><label class="f">Cloud scanning key (Google Cloud Vision, kept on this device only)<input type="password" data-vkey="1" autocomplete="off" value="'+esc(scKey())+'" placeholder="Leave empty to use the offline reader"></label><div style="margin-top:8px"><button data-gs="maptest">Test map download</button> <span class="mute">Shows why maps may not be saved.</span></div><div style="margin-top:8px"><button data-gs="update">Get the latest app version</button> <span class="mute">Reloads the app from the internet. Your data is kept.</span></div><div style="margin-top:8px"><button data-gs="signout">Forget sign-in on this device</button></div></details></div>';
  el.hidden=false;el.innerHTML=h}
 (function(){
  var ov=document.getElementById("gsov");if(!ov)return;
@@ -864,6 +877,7 @@ function gsDraw(){
   else if(a==="usegoogle"&&GC.conf&&!GC.busy){var cg=GC.conf;try{localStorage.setItem("cos-conflict-local",JSON.stringify(S))}catch(x3){}GC.conf=null;drvAdopt(cg.p,cg.rev,cg.fileId);gLog("Loaded Google's version.");gRun()}
   else if(a==="addhead"){var hd=GC.heads[n];if(hd&&!LOCS.some(function(q){return gnk(q)===gnk(hd.name)})){LOCS.push(hd.name);S.locations.push({name:hd.name,status:"Not visited",notes:hd.text});(S.gdocBase||(S.gdocBase={}))[hd.name]=hd.text;save();GC.heads.splice(n,1);render();gsDraw()}}
   else if(a==="ignorehead"){var hi=GC.heads[n];if(hi){var ig=gcfg().ignored.slice();ig.push(gnk(hi.name));gset({ignored:ig});GC.heads.splice(n,1);gsDraw()}}
+  else if(a==="maptest"){mpDiag().then(function(){gsDraw()},function(e){gLog("Map test failed: "+(e&&e.message));gsDraw()})}
   else if(a==="update"){var fin2=function(){location.reload()};Promise.resolve().then(function(){return navigator.serviceWorker?navigator.serviceWorker.getRegistrations().then(function(rs){return Promise.all(rs.map(function(r){return r.unregister()}))}):0}).then(function(){return window.caches?caches.keys().then(function(ks){return Promise.all(ks.map(function(k){return caches.delete(k)}))}):0}).then(fin2,fin2)}
   else if(a==="signout"){GC.tok="";GC.exp=0;try{if(window.google&&google.accounts&&google.accounts.oauth2&&GC.tok)google.accounts.oauth2.revoke(GC.tok)}catch(x4){}GC.err="";gLog("Signed out on this device.")}});
  ov.addEventListener("change",function(e){var el=e.target;if(el.dataset.vkey){try{var kv=el.value.trim();if(kv)localStorage.setItem("cos-vision",kv);else localStorage.removeItem("cos-vision")}catch(x5){}return}if(!el.dataset.gsf)return;var v=el.value.trim();
