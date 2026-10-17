@@ -83,3 +83,7 @@ v41: "Take photo" buttons (opens the camera directly) beside the statblock and c
 v42: Encounter header shows a difficulty rating in brackets (standard DMG rules, whole party at full strength vs the enemies).
 
 v43: Difficulty uses the whole party until some are added, then only those in the fight. "Not in this fight" button on each party member in the initiative prompt.
+
+v44: Fixed the "Not synced" pill always showing in the header; it now appears only when there are unsynced changes.
+
+v45: "Sync when the app opens" option in the Sync panel (quiet sync a moment after start; stops and shows a note if Google needs sign-in).

@@ -77,6 +77,7 @@ input[type=checkbox]:focus-visible{outline:2px solid var(--acc2);outline-offset:
 .rulx{flex:1;overflow:auto;border:1px solid var(--line);border-radius:10px;padding:12px;background:var(--field)}
 .slc{border:1px solid var(--line);border-radius:10px;padding:8px}.slc .pcx{margin:4px 0 0;padding:0;border:0}.slc .pcxh{display:none}
 .slbar{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center;margin-top:6px}.slg{display:inline-flex;gap:3px;align-items:center}.pip.sm{width:14px;height:14px;border-width:1.5px;position:relative}.pip.sm:after{content:"";position:absolute;inset:-8px}
+#syncdot[hidden]{display:none!important}
 .pip{width:22px;height:22px;min-height:0;padding:0;border-radius:50%;border:2px solid var(--acc);background:transparent}.pip.on{background:var(--acc)}.sprow2{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:4px 0}
 .wsb{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:6px;padding:6px;border:1px dashed var(--line);border-radius:8px}.wsb.on{border:1px solid var(--acc);background:rgba(192,51,77,.08)}.initr{margin:0}
 #restov{display:none;position:fixed;inset:0;z-index:1060;background:rgba(0,0,0,.55);align-items:center;justify-content:center;padding:12px}.restbox{background:var(--panel);color:var(--text);border:2px solid var(--acc);border-radius:14px;padding:16px;width:min(640px,100%);max-height:92dvh;overflow:auto;display:flex;flex-direction:column;gap:8px}.restbox h3{margin:0}.restrow{border-top:1px solid var(--line);padding-top:8px}.restsp{margin:4px 0}.restrow input[data-hd],.restrow input[data-hp],.restrow input[data-sr]{width:70px}
@@ -417,7 +418,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=43;
+var APPV=45;
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -1136,7 +1137,7 @@ function gToken(){return gLoad().then(function(){return new Promise(function(res
  var tc=google.accounts.oauth2.initTokenClient({client_id:gcfg().clientId,scope:gscope(),
   callback:function(r){if(!r||r.error)return rej(new Error((r&&(r.error_description||r.error))||"Sign-in failed."));GC.tok=r.access_token;GC.exp=Date.now()+(r.expires_in||3600)*1000;res(GC.tok)},
   error_callback:function(e){rej(new Error(e&&e.type==="popup_closed"?"The sign-in window was closed.":e&&e.type==="popup_failed_to_open"?"The browser blocked the sign-in window. Allow pop-ups for this site and try again.":"Sign-in failed."))}});
- tc.requestAccessToken({prompt:""})})})}
+ tc.requestAccessToken({prompt:GC.silent?"none":""})})})}
 function gapi(method,url,body,raw){
  return gToken().then(function(t){var o={method:method,headers:{Authorization:"Bearer "+t}};if(body!==undefined){o.headers["Content-Type"]=raw?raw.type:"application/json";o.body=raw?body:JSON.stringify(body)}return fetch(url,o)}).then(function(r){
   return r.text().then(function(tx){var j=null;try{j=tx?JSON.parse(tx):null}catch(e){}
@@ -1257,9 +1258,10 @@ function syncDoc(res,retry){
    return mpSyncAll(D.secs,st,D.order).then(function(){return{st:st,conf:conf,heads:heads}})},function(e){
    if(!retry&&/revision/i.test(String(e.message))){return syncDoc(res,true)}
    throw e})})}
-function gRun(){
+function gRun(auto){
  if(GC.busy)return;
- GC.busy=true;GC.log=[];GC.err="";GC.conf=null;gsDraw();
+ GC.busy=true;GC.silent=!!auto;GC.log=[];GC.err="";GC.conf=null;GC.autoErr="";gsDraw();
+ var tmo=null,sbx=document.getElementById("syncbtn");if(auto){if(sbx)sbx.textContent="Syncing...";tmo=setTimeout(function(){if(GC.busy){GC.busy=false;GC.silent=false;GC.autoErr="Google did not answer in time.";gsDraw()}},20000)}
  var out=null;
  gToken().then(syncDevice).then(function(st){
   if(st==="conflict")return"stop";
@@ -1268,7 +1270,7 @@ function gRun(){
    var s=r.st,bits=[];if(s.pulled)bits.push(s.pulled+" location"+(s.pulled>1?"s":"")+" updated from the doc");if(s.pushed)bits.push(s.pushed+" sent to the doc");if(s.added)bits.push(s.added+" new heading"+(s.added>1?"s":"")+" added to the doc");if(s.skipped)bits.push(s.skipped+" skipped (the doc section has a table or drawing)");if(s.maps)bits.push(s.maps+" map"+(s.maps>1?"s":"")+" saved for offline use");if(s.mapsFail)bits.push(s.mapsFail+" map"+(s.mapsFail>1?"s":"")+" could not be saved ("+(s.mapsErr||"unknown reason")+")");
    gLog(bits.length?"Doc: "+bits.join(", ")+".":"Doc: nothing to change.");
    return gdirty()?syncDevice():"ok"})
- }).then(function(){GC.busy=false;render();gsDraw()},function(e){GC.busy=false;GC.err=docHint(e);gsDraw()})}
+ }).then(function(){clearTimeout(tmo);GC.busy=false;GC.silent=false;if(auto&&(GC.conf||(GC.dconf&&GC.dconf.length)||(GC.heads&&GC.heads.length)))GC.open=true;render();gsDraw()},function(e){clearTimeout(tmo);GC.busy=false;GC.silent=false;if(auto){GC.autoErr=docHint(e);var sd2=document.getElementById("syncdot");if(sd2)sd2.hidden=false}else GC.err=docHint(e);gsDraw()})}
 function docHint(e){var m=String(e&&e.message||e),s=e&&e.status;
  if(s===403&&/Docs API/i.test(m))return"The Google Docs API is not switched on for your project. Enable it in the Google Cloud console, then try again. ("+m+")";
  if(s===403&&/Drive API/i.test(m))return"The Google Drive API is not switched on for your project. Enable it in the Google Cloud console, then try again.";
@@ -1277,12 +1279,12 @@ function docHint(e){var m=String(e&&e.message||e),s=e&&e.status;
  return m}
 function gsDraw(){
  var el=document.getElementById("gsov");if(!el)return;
- var b=document.getElementById("syncbtn");if(b)b.textContent=gdirty()?"Sync •":"Sync";var sd=document.getElementById("syncdot");if(sd)sd.hidden=!gdirty();
+ var b=document.getElementById("syncbtn");if(b)b.textContent=gdirty()?"Sync •":"Sync";var sd=document.getElementById("syncdot");if(sd)sd.hidden=!gdirty()&&!GC.autoErr;
  if(!GC.open){el.hidden=true;el.innerHTML="";return}
  var c=gcfg(),h='<div class="gsb"><div class="sch"><h3>Google sync <span class="mute" style="font-size:.8rem;font-weight:400">app version '+APPV+'</span></h3><button data-gs="close">Close</button></div>';
  h+='<div class="card"><div class="mute">'+(c.lastAt?"Last synced "+esc(new Date(c.lastAt).toLocaleString())+". ":"Not synced yet. ")+(gdirty()?"This device has changes that are not synced.":"No unsynced changes.")+'</div>';
  h+='<p class="mute" style="margin:6px 0 0">Sync keeps this device and your other devices in step, and updates the Google Doc with your location notes (and the app with the doc\'s). If this is your first time, sync from the device that holds your real campaign data first.</p>';
- h+='<div style="margin-top:10px"><button class="pri" data-gs="sync"'+(GC.busy?" disabled":"")+'>'+(GC.busy?"Syncing...":"Sync now")+'</button></div></div>';
+ h+='<div style="margin-top:10px"><button class="pri" data-gs="sync"'+(GC.busy?" disabled":"")+'>'+(GC.busy?"Syncing...":"Sync now")+'</button></div><label class="chk" style="margin-top:10px"><input type="checkbox" class="yn" data-gsc="auto"'+(c.autoStart?" checked":"")+'><span>Sync when the app opens</span></label><div class="mute">Runs quietly a moment after the app starts. If Google needs you to sign in again, it stops and leaves the Sync button for you.'+(GC.autoErr?' <b>Last automatic sync: '+esc(GC.autoErr)+'</b>':'')+'</div></div>';
  if(GC.err)h+='<div class="card gserr"><b>Problem</b><div>'+esc(GC.err)+'</div></div>';
  if(GC.log.length)h+='<div class="card"><ul class="gslog">'+GC.log.map(function(x){return'<li>'+esc(x)+'</li>'}).join("")+'</ul></div>';
  if(GC.conf){var p=GC.conf.p;h+='<div class="card gsw"><h3>Two versions to choose from</h3><p>Google holds a version saved'+(p.savedAt?" "+esc(new Date(p.savedAt).toLocaleString()):"")+' from another device, and this device also has newer changes. Pick which one to keep. The other is saved as a backup on this device.</p><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="pri" data-gs="keeplocal">Keep this device\'s version</button><button data-gs="usegoogle">Use the version from Google</button></div></div>'}
@@ -1308,7 +1310,7 @@ function gsDraw(){
   else if(a==="maptest"){mpDiag().then(function(){gsDraw()},function(e){gLog("Map test failed: "+(e&&e.message));gsDraw()})}
   else if(a==="update"){var fin2=function(){location.reload()};Promise.resolve().then(function(){return navigator.serviceWorker?navigator.serviceWorker.getRegistrations().then(function(rs){return Promise.all(rs.map(function(r){return r.unregister()}))}):0}).then(function(){return window.caches?caches.keys().then(function(ks){return Promise.all(ks.map(function(k){return caches.delete(k)}))}):0}).then(fin2,fin2)}
   else if(a==="signout"){GC.tok="";GC.exp=0;try{if(window.google&&google.accounts&&google.accounts.oauth2&&GC.tok)google.accounts.oauth2.revoke(GC.tok)}catch(x4){}GC.err="";gLog("Signed out on this device.")}});
- ov.addEventListener("change",function(e){var el=e.target;if(el.dataset.gsc==="maps"){gset({maps:!!el.checked});GC.tok="";GC.exp=0;gsDraw();return}if(el.dataset.vkey){try{var kv=el.value.trim();if(kv)localStorage.setItem("cos-vision",kv);else localStorage.removeItem("cos-vision")}catch(x5){}return}if(!el.dataset.gsf)return;var v=el.value.trim();
+ ov.addEventListener("change",function(e){var el=e.target;if(el.dataset.gsc==="auto"){gset({autoStart:!!el.checked});gsDraw();return}if(el.dataset.gsc==="maps"){gset({maps:!!el.checked});GC.tok="";GC.exp=0;gsDraw();return}if(el.dataset.vkey){try{var kv=el.value.trim();if(kv)localStorage.setItem("cos-vision",kv);else localStorage.removeItem("cos-vision")}catch(x5){}return}if(!el.dataset.gsf)return;var v=el.value.trim();
   if(el.dataset.gsf==="docId"){var m=v.match(/\/d\/([A-Za-z0-9_\-]+)/);if(m)v=m[1]}
   var o={};o[el.dataset.gsf]=v;gset(o);GC.tok="";GC.exp=0;gsDraw()});
  gsDraw()
@@ -1896,6 +1898,7 @@ document.addEventListener("change",function(e){
   var ng=document.querySelector('.rcard[data-rid="'+id+'"] .grip');if(ng)ng.focus()});
 })();
 render();
+try{var gb=gcfg();if(gb.autoStart&&gb.fileId&&navigator.onLine!==false)setTimeout(function(){gRun(true)},1500)}catch(e){}
 </script>
 <script>
 if("serviceWorker"in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})})}
