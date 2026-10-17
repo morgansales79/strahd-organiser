@@ -66,3 +66,4 @@ v31: Locations edit mode: drag cards to reorder, Sort A-Z button; order is remem
 v32: Death House location restored with summarised notes (areas 1-38, endings).
 v33: Attack results shown in a popup; Party race field now full width.
 v34: Import PDF reads the PDF's own text layer (falls back to picture scanning for scanned PDFs); camera buttons no longer force the camera.
+v35: Import PDF reads D&D Beyond fillable-form fields directly (stats, saves and skills proficiency).

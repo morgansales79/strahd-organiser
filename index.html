@@ -411,7 +411,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=34;
+var APPV=35;
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -1396,8 +1396,8 @@ function scReviewPC(s){
 function scSavePC(){
  var f=ui.scan.form,K=["name","className","level","race","background","ac","maxHp","passivePerception","speed","init","str","dex","con","int","wis","cha"],m=null;
  if(ui.scan.target)m=S.party.find(function(x){return x.id===ui.scan.target});
- if(m){K.forEach(function(k){if(String(f[k]||"").trim())m[k]=f[k]});if(String(f.sheet||"").trim())m.sheet=f.sheet;if(!m.notes&&f.notes)m.notes=f.notes}
- else{var n={id:uid(),notes:f.notes||"",sheet:f.sheet||""};K.forEach(function(k){n[k]=f[k]||""});S.party.unshift(n)}
+ if(m){K.forEach(function(k){if(String(f[k]||"").trim())m[k]=f[k]});if(f.sp&&Object.keys(f.sp).length)m.sp=JSON.parse(JSON.stringify(f.sp));if(String(f.sheet||"").trim())m.sheet=f.sheet;if(!m.notes&&f.notes)m.notes=f.notes}
+ else{var n={id:uid(),notes:f.notes||"",sheet:f.sheet||"",sp:f.sp?JSON.parse(JSON.stringify(f.sp)):{}};K.forEach(function(k){n[k]=f[k]||""});S.party.unshift(n)}
  save()}
 /*SCAN-PC-END*/
 
@@ -1439,8 +1439,31 @@ function scPdfText(pp,v,lib,k){
   if(cur)lines.push(cur);
   var text=lines.map(function(l){return l.replace(/[ \t]+/g," ").trim()}).filter(function(l){return l}).join("\n");
   return pp.getAnnotations().then(function(an){
-   var f=[];an.forEach(function(a){var val=a.fieldValue;if(Array.isArray(val))val=val.join(", ");if(a.fieldType&&val&&String(val).trim()&&a.fieldName)f.push(a.fieldName+": "+String(val).trim())});
-   return{text:text+(f.length?"\n"+f.join("\n"):""),words:words,items:its}},function(){return{text:text,words:words,items:its}})},function(){return{text:"",words:[],items:[]}})}
+   var f=[],fm={};an.forEach(function(a){var val=a.fieldValue;if(Array.isArray(val))val=val.join(", ");if(a.fieldType&&val&&String(val).trim()&&a.fieldName){f.push(a.fieldName+": "+String(val).trim());var kk=String(a.fieldName).toLowerCase().replace(/\s+/g," ").trim();if(fm[kk]===undefined)fm[kk]=String(val).trim()}});
+   return{text:text+(f.length?"\n"+f.join("\n"):""),words:words,items:its,fields:fm,formText:f.join("\n")}},function(){return{text:text,words:words,items:its}})},function(){return{text:"",words:[],items:[]}})}
+function scFormPC(F,formText){
+ var g=function(k){var v=F[k];return v===undefined?"":String(v).trim()};
+ if(!(g("charactername")||(g("str")&&g("dex"))))return null;
+ var f={name:g("charactername"),className:"",level:"",race:g("race")||g("species"),background:g("background"),ac:"",maxHp:"",passivePerception:"",speed:"",init:"",str:"",dex:"",con:"",int:"",wis:"",cha:"",notes:"Imported from a PDF.",sheet:formText||"",sp:{}},i;
+ var cl=g("class level")||g("classlevel")||g("class & level"),re=/([A-Za-z][A-Za-z' ()\-]*?)\s+(\d{1,2})(?=\s*(?:[\/,&+]|$))/g,m,names=[],tot=0;
+ while((m=re.exec(cl))){names.push(m[1].trim());tot+=parseInt(m[2],10)}
+ if(names.length){f.className=names.join(" / ");f.level=String(tot)}else{f.className=cl.replace(/\s*\d+\s*$/,"");var ml=cl.match(/(\d{1,2})\s*$/);if(ml)f.level=ml[1]}
+ var n=function(k){var m=g(k).match(/-?\d+/);return m?m[0]:""};
+ f.ac=n("ac");f.maxHp=n("maxhp");f.passivePerception=n("passive1");
+ var sp=g("speed").match(/\d+/);f.speed=sp?sp[0]+" ft.":"";
+ var ini=g("init").match(/[+\-\u2212]?\s*\d+/);if(ini){var iv=parseInt(ini[0].replace(/\s/g,"").replace("\u2212","-"),10);f.init=(iv<0?"-":"+")+Math.abs(iv)}
+ ["str","dex","con","int","wis","cha"].forEach(function(k){var v=n(k);if(v&&+v>=1&&+v<=30)f[k]=v});
+ var pb=parseInt(g("profbonus").replace(/[^\d]/g,""),10)||pcPB(f);
+ var mod=function(k){var v=parseInt(f[k],10);return isNaN(v)?0:Math.floor((v-10)/2)};
+ var lvl=function(b,base){var x=Math.floor((b-base)/pb+0.25);return x<0?0:x>2?2:x};
+ var sv=function(k){var m=g(k).match(/[+\-\u2212]?\s*\d+/);return m?parseInt(m[0].replace(/\s/g,"").replace("\u2212","-"),10):null};
+ var any=0;
+ [["str","st strength"],["dex","st dexterity"],["con","st constitution"],["int","st intelligence"],["wis","st wisdom"],["cha","st charisma"]].forEach(function(a){var b=sv(a[1]);if(b!==null&&f[a[0]]){f.sp["sv_"+a[0]]=lvl(b,mod(a[0]));any++}});
+ var SKF={acr:["acrobatics"],ani:["animal","animal handling","animalhandling"],arc:["arcana"],ath:["athletics"],dec:["deception"],his:["history"],ins:["insight"],itm:["intimidation"],inv:["investigation"],med:["medicine"],nat:["nature"],prc:["perception"],prf:["performance"],prs:["persuasion"],rel:["religion"],sle:["sleightofhand","sleight of hand"],ste:["stealth"],sur:["survival"]};
+ SKL.forEach(function(k){var names=SKF[k[0]]||[],b=null,j;for(j=0;j<names.length&&b===null;j++)b=sv(names[j]);if(b!==null&&f[k[2]]){f.sp[k[0]]=lvl(b,mod(k[2]));any++}});
+ var miss=[];if(!f.name)miss.push("Name");if(!f.className)miss.push("Class");if(!f.level)miss.push("Level");if(!f.ac)miss.push("AC");if(!f.maxHp)miss.push("Max HP");if(!f.speed)miss.push("Speed");if(!f.init)miss.push("Initiative");if(!f.passivePerception)miss.push("Passive Perception");
+ var mab=["str","dex","con","int","wis","cha"].filter(function(k){return!f[k]});if(mab.length)miss.push("Ability scores ("+mab.join(", ").toUpperCase()+")");
+ return{form:f,miss:miss,warn:["Read from the PDF's form fields ("+any+" saves and skills worked out)."]}}
 function scGeoAbil(items){
  var NAMES={str:/^(STR|STRENGTH)$/i,dex:/^(DEX|DEXTERITY)$/i,con:/^(CON|CONSTITUTION)$/i,int:/^(INT|INTELLIGENCE)$/i,wis:/^(WIS|WISDOM)$/i,cha:/^(CHA|CHARISMA)$/i},out={},nums=items.filter(function(i){return/^[+\-\u2212]?\d{1,2}$/.test(i.s)}).map(function(i){var sg=/^[+\-\u2212]/.test(i.s);return{v:parseInt(i.s.replace("\u2212","-"),10),sg:sg,cx:i.x+i.w/2,cy:i.y+i.h/2}});
  Object.keys(NAMES).forEach(function(k){var best=null;
@@ -1450,7 +1473,8 @@ function scGeoAbil(items){
  return out}
 function scTextDone(id,kind,p){
  var raw=p.pdfText||"";if(raw.replace(/[^A-Za-z0-9]/g,"").length<80)return false;
- var pr=kind==="pc"?parseSheet(raw):parseStatblock(raw);
+ var ff=kind==="pc"?scFormPC(p.pdfFields||{},p.pdfFormText):null,pr=ff||(kind==="pc"?parseSheet(raw):parseStatblock(raw));
+ if(ff){pr.warn.unshift("Read straight from the PDF, no picture scanning needed.");ui.scan.target=scMatchMember(pr.form.name);ui.scan.words=(p.pdfWords||[]).slice();ui.scan.raw=raw;ui.scan.form=pr.form;ui.scan.miss=pr.miss;ui.scan.warn=pr.warn;ui.scan.conf=100;ui.scan.phase="rev";scDraw();SC.timer=setTimeout(function(){if(ui.scan&&ui.scan.phase==="rev"){ui.scan.phase="review";scDraw()}},1200);return true}
  if(kind==="pc"){var ga=scGeoAbil(p.pdfItems||[]);Object.keys(ga).forEach(function(k){pr.form[k]=ga[k]});var mm=["str","dex","con","int","wis","cha"].filter(function(k){return!pr.form[k]});if(mm.length>2||!pr.form.name&&!pr.form.className)return false;pr.miss=pr.miss.filter(function(x){return!/^Ability scores/.test(x)});if(mm.length)pr.miss.push("Ability scores ("+mm.join(", ").toUpperCase()+")");pr.form.notes="Imported from a PDF.";ui.scan.target=scMatchMember(pr.form.name)}
  else{if(!pr.form||!pr.form.statblock)return false;if(/photo/i.test(pr.form.notes||""))pr.form.notes="Imported from a PDF."}
  pr.warn.unshift("Read straight from the PDF's own text, no picture scanning needed.");
@@ -1469,7 +1493,7 @@ function scPrep(file,page){
     var lib=window.pdfjsLib,am=(lib.AnnotationMode&&lib.AnnotationMode.ENABLE_STORAGE)||undefined;
     return pp.render({canvasContext:cx,viewport:v,annotationMode:am}).promise.then(function(){
      var r=scFin(c,c.width,c.height);r.pages=n;r.page=pg;
-     return scPdfText(pp,v,lib,r.W/c.width).then(function(t){r.pdfText=t.text;r.pdfWords=t.words;r.pdfItems=t.items;try{doc.destroy()}catch(e){}return r})})})},
+     return scPdfText(pp,v,lib,r.W/c.width).then(function(t){r.pdfText=t.text;r.pdfWords=t.words;r.pdfItems=t.items;r.pdfFields=t.fields||{};r.pdfFormText=t.formText||"";try{doc.destroy()}catch(e){}return r})})})},
    function(e){if(e&&e.message==="pdfengine")throw e;throw new Error("That PDF could not be opened"+(e&&e.name==="PasswordException"?" (it is password protected)":"")+".")})}
  return new Promise(function(res,rej){
   var u=URL.createObjectURL(file),im=new Image();
