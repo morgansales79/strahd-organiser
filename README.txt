@@ -71,3 +71,9 @@ v35: Import PDF reads D&D Beyond fillable-form fields directly (stats, saves and
 v36: Initiative prompt now asks for current HP (auto-filled, tracked fight to fight and on the Party tab). Dashboard Short rest / Long rest buttons (hit dice, Arcane Recovery, Natural Recovery, Warlock pact slots). Druid Wild Shape on encounters, ranger companion on the Party tab and in encounters.
 
 v37: Spell slot blobs now also appear on the Encounter page. New "Prepared encounters" card on the Encounter page: build, save, and load encounters before the session.
+
+v38: Smaller spell slot blobs shown on each caster's own card in the Encounter window (separate slots card removed). Two sample casters (Wizard, Warlock) in a fresh install. Fixed fresh installs missing the encounter plans list.
+
+v39: Favourite Wild Shapes per druid (basic rules beasts or custom), chosen from a dropdown on the Encounter page; beast HP tracked between fights; cleared on a long rest.
+
+v40: Druid favourite Wild Shapes list also offers beasts saved in Enemies; "Only forms this druid can use" toggle (max CR, fly/swim by level) and a Circle of the Moon switch.
