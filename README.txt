@@ -52,3 +52,15 @@ from Google when you open it while online. The Sync log says how many maps could
 
 Maps v20: Google blocks pictures from being downloaded directly, so maps are now read through Google Drive. In Sync > Settings tick
 "Allow map pictures" (one extra Google permission: read-only access to Drive files), then press Sync now. "Test map download" shows what happens.
+v21: Encounter attack buttons (toggle, target AC, advantage/disadvantage, crits double dice).
+v22: all checkboxes restyled as ON/OFF toggle switches.
+v23: Party cards: saving throws, skills, passive Perception/Insight/Investigation, rogue lock picking, wizard Mage Armor toggle.
+v24: Spell save DC and spell attack tile on Party cards for casters.
+v25: Spell DC is now a normal-size tile in the AC/HP row.
+v26: Active Session tab: movable/resizable panes, pane picker, dice, log, rules reference popout.
+v27: Yes/No switches where it reads better (Visited, Met, Hide..., Show detailed statblocks, Allow map pictures).
+v28: Active Session layout, notes and log now stored in the main data (sync and backup).
+v29: Active Session Maps pane + Maps button in Location pane.
+v30: Name dropdowns (locations, Strahd attitude, damage target, scan target) sorted A-Z.
+v31: Locations edit mode: drag cards to reorder, Sort A-Z button; order is remembered.
+v32: Death House location restored with summarised notes (areas 1-38, endings).
