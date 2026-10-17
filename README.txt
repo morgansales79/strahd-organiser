@@ -46,3 +46,6 @@ Maps (v12): pictures placed under a location heading in the Google Doc are pulle
 kept on the device for offline use, and shown from the Maps button in a location's full-screen notes. They are not shown in the notes text.
 
 Updating (v15): Sync -> Settings -> "Get the latest app version" clears the app's cached copy and reloads it from the internet. Data is kept.
+
+Maps fix (v18): if the browser blocks saving a map picture normally, it is kept in a separate offline cache instead; if that also fails the map loads
+from Google when you open it while online. The Sync log says how many maps could not be saved for offline use and why.

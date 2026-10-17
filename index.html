@@ -125,12 +125,7 @@ header{min-height:104px;padding:12px 18px!important;background:linear-gradient(9
 <body>
 <header>
   <div><h1>Curse of Strahd Organiser</h1><p>Campaign notes for the 2016 edition</p></div>
-  <div style="display:flex;gap:8px;flex-wrap:wrap">
-    <button id="syncbtn">Sync</button>
-    <button data-a="backup">Create backup</button>
-    <label class="btn" tabindex="0">Restore file<input type="file" id="rf" accept="application/json,.json" hidden></label>
-    <button data-a="theme" aria-label="Toggle light or dark theme">Theme</button>
-  </div>
+  <button id="syncdot" class="pill" hidden title="Open the Dashboard to sync">Not synced</button>
 </header>
 <div id="bk"></div>
 <div id="nzov" hidden role="dialog" aria-modal="true" aria-label="Location notes"></div>
@@ -369,11 +364,11 @@ function load(){try{var r=localStorage.getItem(KEY)||localStorage.getItem(OLD);i
 var S=load(),ui={tab:"Dashboard",q:"",bk:"",pv:null,msg:"",del:null,rs:null,edit:false,rearr:false,hideDone:false,stat:false,hideDead:false,hideUnmet:false,openUn:{},calc:{open:false,target:"",expr:"",mode:"1"}},timer=null;
 try{var up=JSON.parse(localStorage.getItem("cos-ui")||"{}");if(up.tab&&TABS.indexOf(up.tab)>-1)ui.tab=up.tab;ui.hideDone=!!up.hideDone;ui.stat=!!up.stat;ui.hideDead=!!up.hideDead;ui.hideUnmet=!!up.hideUnmet}catch(e){}
 function saveUi(){try{localStorage.setItem("cos-ui",JSON.stringify({tab:ui.tab,hideDone:ui.hideDone,stat:ui.stat,hideDead:ui.hideDead,hideUnmet:ui.hideUnmet}))}catch(e){}}
-function save(){gsetDirty(true);var sb=document.getElementById("syncbtn");if(sb)sb.textContent="Sync \u2022";clearTimeout(timer);timer=setTimeout(function(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}},250)}
+function save(){gsetDirty(true);var sb=document.getElementById("syncbtn");if(sb)sb.textContent="Sync \u2022";var sd=document.getElementById("syncdot");if(sd)sd.hidden=false;clearTimeout(timer);timer=setTimeout(function(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}},250)}
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=15;
+var APPV=18;
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -383,7 +378,7 @@ function dash(){
  var tkRows=[["Tome of Strahd",tk.tome],["Holy Symbol of Ravenkind",tk.symbol],["Sunsword",tk.sword],["Strahd's location",tk.strahdAt],["Motivation",tk.motivation]];
  var tkCard='<div class="card"><h3>Tarokka reading</h3>'+tkRows.map(function(r){return'<div><span class="mute">'+r[0]+':</span> '+esc(r[1]||"not set")+'</div>'}).join("")+'</div>';
  var lb="";try{lb=localStorage.getItem("cos-lastbackup")||""}catch(e){}
- var bkCard='<div class="card"><h3>Backup</h3><div class="mute">'+(lb?"Last backup: "+esc(new Date(lb).toLocaleDateString()):"No backup made yet. Your data is saved only in this browser.")+'</div><div><button data-a="backup">Create backup</button></div></div>';
+ var bkCard='<div class="card"><h3>Options</h3><div class="mute">'+(gdirty()?"This device has changes that are not synced. ":"")+(lb?"Last backup: "+esc(new Date(lb).toLocaleDateString()):"No backup made yet. Your data is saved only in this browser.")+'</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button id="syncbtn">'+(gdirty()?"Sync \u2022":"Sync")+'</button><button data-a="backup">Create backup</button><label class="btn" tabindex="0">Restore file<input type="file" id="rf" accept="application/json,.json" hidden></label><button data-a="theme" aria-label="Toggle light or dark theme">Theme</button></div></div>';
  return'<h2 class="row">Campaign dashboard</h2><div class="grid">'+box(S.party.length,"party members")+box(met+" / "+S.npcs.length,"NPCs met")+box(act+" active, "+done+" done","of "+S.quests.length+" quests")+box(vis+" / "+S.locations.length,"locations visited")+box(S.sessions.length,"sessions logged")+
  '<div class="card"><h3>Barovian day</h3><div class="row" style="margin:0"><button data-a="day" data-d="-1" aria-label="Previous day">-</button><span class="stat">Day '+S.day+'</span><button data-a="day" data-d="1" aria-label="Next day">+</button></div></div>'+
  '<div class="card"><h3>Strahd</h3><div>Attitude: '+esc(S.strahd.attitude)+'</div><div class="mute">Final confrontation: '+esc(tk.strahdAt||"not set")+'</div></div>'+actCard+tkCard+bkCard+'</div><div class="mute" style="font-size:.75rem;text-align:center;margin:20px 0 6px">App version '+APPV+'</div>'}
@@ -583,7 +578,8 @@ document.addEventListener("click",function(e){
  else if(a==="theme"){var r=document.documentElement,dark=getComputedStyle(r).getPropertyValue("--bg").trim()==="#16121a";r.setAttribute("data-theme",dark?"light":"dark")}});
 document.addEventListener("toggle",function(e){var d=e.target;if(d&&d.classList&&d.classList.contains("unmet")){ui.openUn[d.dataset.loc]=d.open}},true);
 document.addEventListener("keydown",function(e){var t=e.target;if(e.key==="Enter"&&t&&t.dataset&&t.dataset.ui==="amt"){e.preventDefault();var ab=document.querySelector('[data-a="dmg"][data-id="'+t.dataset.id+'"]');if(ab&&ab.click)ab.click();return}if(e.key==="Enter"&&t&&t.dataset&&t.dataset.ui==="calcx"){e.preventDefault();calcApply("calcdmg");return}if(e.key==="Enter"&&t&&t.dataset&&t.dataset.pq){e.preventDefault();var pq=[].slice.call(document.querySelectorAll("[data-pq]")),ix=pq.indexOf(t);if(ix>-1&&ix<pq.length-1)pq[ix+1].focus();else{ui.initq=null;render()}return}if(e.key==="Enter"&&t&&t.dataset&&(t.dataset.f==="init"||t.dataset.f==="hp"||t.dataset.f==="max")&&t.dataset.k==="combatants"){render()}});
-document.getElementById("rf").addEventListener("change",function(e){
+document.addEventListener("change",function(e){
+ if(!e.target||e.target.id!=="rf")return;
  var f=e.target.files&&e.target.files[0];e.target.value="";if(!f)return;
  var r=new FileReader();r.onload=function(){try{var d=norm(JSON.parse(r.result));ui.rs=d;render()}catch(x){alert("That file is not a valid organiser backup.")}};r.readAsText(f)});
 /*MAPS-START*/
@@ -603,6 +599,8 @@ function mpShrink(blob){return new Promise(function(res){
 function mpDownload(uri){
  var take=function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.blob()};
  return fetch(uri).then(take).catch(function(){return gToken().then(function(t){return fetch(uri,{headers:{Authorization:"Bearer "+t}}).then(take)})}).then(mpShrink)}
+function mpOpaque(uri){if(!window.caches)return Promise.reject(new Error("no cache"));
+ return fetch(uri,{mode:"no-cors"}).then(function(r){return caches.open("cos-maps").then(function(c){return c.put(uri,r)})})}
 function mpSyncAll(secs,st){
  var meta=mpMeta(),chain=Promise.resolve(),got=0,fail=0,ch=false;
  secs.forEach(function(sec){var k=gnk(sec.name);if(!k||!S.locations.some(function(L){return gnk(L.name)===k}))return;
@@ -611,20 +609,24 @@ function mpSyncAll(secs,st){
    var ex=cur.filter(function(c){return c.id===w.id})[0];
    if(ex&&ex.ok){ex.name=w.name;next.push(ex);return}
    var ent={id:w.id,name:w.name,ok:false,url:w.uri};next.push(ent);
-   chain=chain.then(function(){return mpDownload(w.uri).then(function(b){return mpTx("readwrite",function(s){return s.put(b,k+"|"+w.id)}).then(function(){ent.ok=true;delete ent.url;got++})}).catch(function(){fail++})})});
-  cur.forEach(function(c){if(!want.some(function(w){return w.id===c.id})){chain=chain.then(function(){return mpTx("readwrite",function(s){return s.delete(k+"|"+c.id)}).catch(function(){})})}});
+   chain=chain.then(function(){return mpDownload(w.uri).then(function(b){return mpTx("readwrite",function(s){return s.put(b,k+"|"+w.id)}).then(function(){ent.ok=true;delete ent.url;got++})}).catch(function(e){
+    return mpOpaque(w.uri).then(function(){ent.ok="c";got++},function(){fail++;if(st)st.mapsErr=String(e&&e.message||e).slice(0,60)})})})});
+  cur.forEach(function(c){if(!want.some(function(w){return w.id===c.id})){chain=chain.then(function(){if(c.ok==="c"&&window.caches&&c.url)return caches.open("cos-maps").then(function(ch){return ch.delete(c.url)}).catch(function(){});return mpTx("readwrite",function(s){return s.delete(k+"|"+c.id)}).catch(function(){})})}});
   chain=chain.then(function(){if(JSON.stringify(cur)!==JSON.stringify(next)||want.length!==cur.length)ch=true;if(next.length)meta[k]=next;else delete meta[k]});
  });
  return chain.then(function(){mpSave();if(st){st.maps=got;st.mapsFail=fail}if(ui.nz)nzDraw()},function(){})}
+function mpFresh(id){var c=gcfg();if(!c.docId||navigator.onLine===false)return Promise.reject(new Error("offline"));
+ return gapi("GET","https://docs.googleapis.com/v1/documents/"+encodeURIComponent(c.docId)).then(function(doc){var ob=doc.inlineObjects&&doc.inlineObjects[id],em=ob&&ob.inlineObjectProperties&&ob.inlineObjectProperties.embeddedObject,u=em&&em.imageProperties&&em.imageProperties.contentUri;if(!u)throw new Error("The picture is no longer in the doc");return u})}
 function mpFit(){var st=document.getElementById("mpst");if(!st)return;var W=st.clientWidth,H=st.clientHeight;MV.s=Math.min(W/MV.iw,H/MV.ih,4);MV.x=(W-MV.iw*MV.s)/2;MV.y=(H-MV.ih*MV.s)/2;mpApply()}
 function mpApply(){var im=document.getElementById("mpimg");if(im)im.style.transform="translate("+MV.x+"px,"+MV.y+"px) scale("+MV.s+")"}
 function mpZoom(f,cx,cy){var st=document.getElementById("mpst");if(!st)return;if(cx===undefined){cx=st.clientWidth/2;cy=st.clientHeight/2}
  var ns=Math.max(0.05,Math.min(12,MV.s*f)),r=ns/MV.s;MV.x=cx-(cx-MV.x)*r;MV.y=cy-(cy-MV.y)*r;MV.s=ns;mpApply()}
-function mpShow(i){
+function mpShow(i){MV.tried=0;
  var L=mpList(MV.loc),m=L[i];if(!m)return;MV.i=i;
  if(MV.url&&MV.url.indexOf("blob:")===0){try{URL.revokeObjectURL(MV.url)}catch(e){}}MV.url="";mpDraw();
- var load=m.ok?mpTx("readonly",function(s){return s.get(gnk(MV.loc)+"|"+m.id)}).then(function(b){return b?URL.createObjectURL(b):m.url||""}).catch(function(){return m.url||""}):Promise.resolve(m.url||"");
- load.then(function(u){if(MV.i!==i||!MV.open)return;MV.url=u;mpDraw()})}
+ var fresh=function(){return mpFresh(m.id).catch(function(e){MV.err=String(e&&e.message||e);return""})};
+ var load=m.ok==="c"?Promise.resolve(m.url):m.ok?mpTx("readonly",function(s){return s.get(gnk(MV.loc)+"|"+m.id)}).then(function(b){return b?URL.createObjectURL(b):fresh()}).catch(fresh):fresh();
+ MV.err="";load.then(function(u){if(MV.i!==i||!MV.open)return;MV.url=u;mpDraw()})}
 function mpOpen(name,i){MV.open=true;MV.loc=name;mpShow(i||0)}
 function mpClose(){MV.open=false;if(MV.url&&MV.url.indexOf("blob:")===0){try{URL.revokeObjectURL(MV.url)}catch(e){}}MV.url="";mpDraw()}
 function mpDraw(){
@@ -633,10 +635,10 @@ function mpDraw(){
  var L=mpList(MV.loc),h='<div class="mpbar"><b>'+esc(MV.loc)+'</b>';
  L.forEach(function(m,i){h+='<button data-mp="tab" data-i="'+i+'" class="'+(i===MV.i?"pri":"")+'">'+esc(m.name)+'</button>'});
  h+='<span style="flex:1"></span><button data-mp="out" aria-label="Zoom out">&minus;</button><button data-mp="in" aria-label="Zoom in">+</button><button data-mp="fit">Fit</button><button class="pri" data-mp="close">Close</button></div>';
- h+='<div class="mpst" id="mpst">'+(MV.url?'<img id="mpimg" alt="'+esc((L[MV.i]||{}).name||"Map")+'" src="'+MV.url+'" draggable="false">':'<div class="mpmsg">Loading map...</div>')+'</div>';
+ h+='<div class="mpst" id="mpst">'+(MV.url?'<img id="mpimg" alt="'+esc((L[MV.i]||{}).name||"Map")+'" src="'+MV.url+'" draggable="false">':'<div class="mpmsg">'+(MV.err?'This map is not saved on this device and could not be loaded: '+esc(MV.err)+'. Connect to the internet and open it again.':'Loading map...')+'</div>')+'</div>';
  el.hidden=false;el.innerHTML=h;
  var im=document.getElementById("mpimg");
- if(im){var go=function(){MV.iw=im.naturalWidth||1;MV.ih=im.naturalHeight||1;mpFit()};im.onload=go;if(im.complete&&im.naturalWidth)go();im.onerror=function(){var st=document.getElementById("mpst");if(st)st.innerHTML='<div class="mpmsg">This map could not be shown. Sync again while online.</div>'}}}
+ if(im){var go=function(){MV.iw=im.naturalWidth||1;MV.ih=im.naturalHeight||1;mpFit()};im.onload=go;if(im.complete&&im.naturalWidth)go();im.onerror=function(){var cm=mpList(MV.loc)[MV.i];if(cm&&cm.ok==="c"&&!MV.tried){MV.tried=1;mpFresh(cm.id).then(function(u){MV.url=u;mpDraw()},function(){});return}var st=document.getElementById("mpst");if(st)st.innerHTML='<div class="mpmsg">This map could not be shown. Check you are online, then close and open it again. If it keeps failing, press Sync now.</div>'}}}
 (function(){var ov=document.getElementById("mapov");if(!ov)return;
  ov.addEventListener("click",function(e){var b=e.target.closest("[data-mp]");if(!b)return;var a=b.dataset.mp;
   if(a==="close")mpClose();else if(a==="tab")mpShow(parseInt(b.dataset.i,10));else if(a==="in")mpZoom(1.4);else if(a==="out")mpZoom(1/1.4);else if(a==="fit")mpFit()});
@@ -822,7 +824,7 @@ function gRun(){
   if(st==="conflict")return"stop";
   return syncDoc(GC.res).then(function(r){
    out=r;GC.dconf=r.conf;GC.heads=r.heads;GC.res={};
-   var s=r.st,bits=[];if(s.pulled)bits.push(s.pulled+" location"+(s.pulled>1?"s":"")+" updated from the doc");if(s.pushed)bits.push(s.pushed+" sent to the doc");if(s.added)bits.push(s.added+" new heading"+(s.added>1?"s":"")+" added to the doc");if(s.skipped)bits.push(s.skipped+" skipped (the doc section has a table or image)");
+   var s=r.st,bits=[];if(s.pulled)bits.push(s.pulled+" location"+(s.pulled>1?"s":"")+" updated from the doc");if(s.pushed)bits.push(s.pushed+" sent to the doc");if(s.added)bits.push(s.added+" new heading"+(s.added>1?"s":"")+" added to the doc");if(s.skipped)bits.push(s.skipped+" skipped (the doc section has a table or drawing)");if(s.maps)bits.push(s.maps+" map"+(s.maps>1?"s":"")+" saved for offline use");if(s.mapsFail)bits.push(s.mapsFail+" map"+(s.mapsFail>1?"s":"")+" could not be saved for offline use ("+(s.mapsErr||"download blocked")+"); they will load from Google when you are online");
    gLog(bits.length?"Doc: "+bits.join(", ")+".":"Doc: nothing to change.");
    return gdirty()?syncDevice():"ok"})
  }).then(function(){GC.busy=false;render();gsDraw()},function(e){GC.busy=false;GC.err=docHint(e);gsDraw()})}
@@ -834,7 +836,7 @@ function docHint(e){var m=String(e&&e.message||e),s=e&&e.status;
  return m}
 function gsDraw(){
  var el=document.getElementById("gsov");if(!el)return;
- var b=document.getElementById("syncbtn");if(b)b.textContent=gdirty()?"Sync •":"Sync";
+ var b=document.getElementById("syncbtn");if(b)b.textContent=gdirty()?"Sync •":"Sync";var sd=document.getElementById("syncdot");if(sd)sd.hidden=!gdirty();
  if(!GC.open){el.hidden=true;el.innerHTML="";return}
  var c=gcfg(),h='<div class="gsb"><div class="sch"><h3>Google sync <span class="mute" style="font-size:.8rem;font-weight:400">app version '+APPV+'</span></h3><button data-gs="close">Close</button></div>';
  h+='<div class="card"><div class="mute">'+(c.lastAt?"Last synced "+esc(new Date(c.lastAt).toLocaleString())+". ":"Not synced yet. ")+(gdirty()?"This device has changes that are not synced.":"No unsynced changes.")+'</div>';
@@ -849,8 +851,9 @@ function gsDraw(){
  el.hidden=false;el.innerHTML=h}
 (function(){
  var ov=document.getElementById("gsov");if(!ov)return;
- var hb=document.getElementById("syncbtn");
- if(hb)hb.addEventListener("click",function(){GC.open=true;GC.err="";gsDraw();gLoad().catch(function(){})});
+ document.addEventListener("click",function(e){var t=e.target&&e.target.closest&&e.target.closest("#syncbtn,#syncdot");if(!t)return;
+  if(t.id==="syncdot"){ui.tab="Dashboard";saveUi();render();return}
+  GC.open=true;GC.err="";gsDraw();gLoad().catch(function(){})});
  ov.addEventListener("click",function(e){
   var b=e.target.closest("[data-gs]");if(!b)return;var a=b.dataset.gs,n=parseInt(b.dataset.n,10);
   if(a==="close"){GC.open=false;gsDraw()}
