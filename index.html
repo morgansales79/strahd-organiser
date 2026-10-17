@@ -77,7 +77,8 @@ input[type=checkbox]:focus-visible{outline:2px solid var(--acc2);outline-offset:
 .rulx{flex:1;overflow:auto;border:1px solid var(--line);border-radius:10px;padding:12px;background:var(--field)}
 .chk{display:flex;gap:8px;align-items:center;font-size:.9rem}.chk input{width:22px;height:22px;flex:none}
 .chk.done span{text-decoration:line-through;color:var(--mute)}
-.pgrid{grid-template-columns:repeat(auto-fill,minmax(340px,1fr))}.pc{border-top:3px solid var(--acc)}.phead{display:flex;flex-direction:column;gap:6px}.pname{font-size:1.3rem;font-weight:700;background:transparent;border-color:transparent;padding:4px 6px}.pname:focus{background:var(--field);border-color:var(--line)}.psub{display:grid;grid-template-columns:1fr 1.4fr 70px;gap:6px}.pbg{font-size:.9rem}.tiles{display:grid;gap:8px}.t5{grid-template-columns:repeat(5,1fr)}.t6{grid-template-columns:repeat(6,1fr)}.tile{display:flex;flex-direction:column;align-items:center;gap:2px;background:var(--field);border:1px solid var(--line);border-radius:10px;padding:6px 4px;min-width:0}.tile .tl{font-size:.62rem;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);text-align:center}.tile input{text-align:center;font-size:1.15rem;font-weight:700;border:none;background:transparent;padding:4px 0;width:100%;min-width:0}.tile .mod{font-size:.8rem;color:var(--acc2);font-weight:700;min-height:1.1em}details summary{cursor:pointer;padding:6px 0}@media(max-width:520px){.t5{grid-template-columns:repeat(3,1fr)}.t6{grid-template-columns:repeat(3,1fr)}}
+.pgrid{grid-template-columns:repeat(auto-fill,minmax(340px,1fr))}.pc{border-top:3px solid var(--acc)}.phead{display:flex;flex-direction:column;gap:6px}.pname{font-size:1.3rem;font-weight:700;background:transparent;border-color:transparent;padding:4px 6px}.pname:focus{background:var(--field);border-color:var(--line)}.psub{display:grid;grid-template-columns:1fr 70px;gap:6px}.psub input:first-child{grid-column:1/-1}.pbg{font-size:.9rem}.tiles{display:grid;gap:8px}.t5{grid-template-columns:repeat(5,1fr)}.t6{grid-template-columns:repeat(6,1fr)}.tile{display:flex;flex-direction:column;align-items:center;gap:2px;background:var(--field);border:1px solid var(--line);border-radius:10px;padding:6px 4px;min-width:0}.tile .tl{font-size:.62rem;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);text-align:center}.tile input{text-align:center;font-size:1.15rem;font-weight:700;border:none;background:transparent;padding:4px 0;width:100%;min-width:0}.tile .mod{font-size:.8rem;color:var(--acc2);font-weight:700;min-height:1.1em}details summary{cursor:pointer;padding:6px 0}@media(max-width:520px){.t5{grid-template-columns:repeat(3,1fr)}.t6{grid-template-columns:repeat(3,1fr)}}
+#atkpop{display:none;position:fixed;inset:0;z-index:1060;background:rgba(0,0,0,.55);align-items:center;justify-content:center;padding:16px}.atkbox{background:var(--panel);color:var(--text);border:2px solid var(--acc);border-radius:14px;padding:18px;width:min(460px,100%);display:flex;flex-direction:column;gap:12px}.atkh{font-size:1.2rem}.atkb{font-size:1.15rem;line-height:1.6}
 .atkrow{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.atkrow button{padding:6px 10px;font-size:13px}.atklog{margin-top:6px;font-size:14px;line-height:1.5}.atklog:empty{display:none}
 .cb{display:grid;grid-template-columns:76px 1fr;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px;margin-bottom:10px}.cb.cur{border-color:var(--acc);box-shadow:0 0 0 2px var(--acc)}.cb.down{opacity:.6}.cinit{display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--field);border:1px solid var(--line);border-radius:10px;padding:4px}.cinit input{text-align:center;font-size:1.6rem;font-weight:800;border:none;background:transparent;padding:2px;width:100%}.tl{font-size:.62rem;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}.cbody{display:flex;flex-direction:column;gap:8px;min-width:0}.cname{font-weight:700;font-size:1.05rem;flex:1;min-width:140px}.hpline{display:flex;gap:8px;align-items:flex-end}.hpf{display:flex;flex-direction:column;width:84px}.hpf input{text-align:center;font-weight:700}.bar{height:10px;background:var(--field);border:1px solid var(--line);border-radius:6px;overflow:hidden}.bar div{height:100%;transition:width .2s}.hpctl{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.hpctl input{width:80px;text-align:center}.pill.now{background:var(--acc);color:#fff;border-color:var(--acc)}.pill.dn{border-color:#c0334d;color:#c0334d}.pill.big{font-size:1rem;padding:6px 14px;color:var(--text)}.addrow{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.addrow select{flex:1;min-width:200px}.addrow input[type=number]{width:80px}.sbx{white-space:pre-wrap;font:13px/1.45 inherit;margin:6px 0 0;background:var(--field);border:1px solid var(--line);border-radius:8px;padding:10px;max-height:420px;overflow:auto}@media(max-width:520px){.cb{grid-template-columns:1fr}}
 .clist{display:grid;grid-template-columns:repeat(auto-fill,minmax(400px,1fr));gap:8px;align-items:start}.clist>.mute{grid-column:1/-1}.clist .cb{margin:0;padding:6px 8px;gap:8px;grid-template-columns:56px 1fr}.cinit input{font-size:1.3rem}.cl1{display:flex;align-items:center;gap:6px;flex-wrap:nowrap}.cl1 .cname{min-width:0;padding:6px 8px}.cl1 .del{min-height:32px;padding:2px 8px;font-size:.8rem}.cl2{display:flex;align-items:flex-end;gap:6px;flex-wrap:wrap}.cl2 button{min-height:36px;padding:4px 10px}.cl2 .amt{width:104px;padding:6px 6px}.cl2 .plus{min-width:36px;padding:4px 8px}.atot{font-weight:700;color:var(--acc2);min-width:34px}.hpf{width:56px}.hpf input{padding:6px 2px}.cbody{gap:5px}.bar{height:6px}.addp{padding:8px 12px;gap:6px;margin-bottom:10px!important}.addp details{margin:0}.addp summary{padding:2px 0;font-size:.85rem}@media(max-width:520px){.clist{grid-template-columns:1fr}.clist .cb{grid-template-columns:56px 1fr}}
@@ -410,7 +411,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=32;
+var APPV=34;
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -461,7 +462,7 @@ function pcRead(m){var L=String(m.sheet||"").replace(/\u2212/g,"-").split(/\r?\n
 function abm(v){var n=parseInt(v,10);if(isNaN(n))return"";var m=Math.floor((n-10)/2);return(m>=0?"+":"")+m}
 function tile(k,id,f,label,val){return'<label class="tile"><span class="tl">'+label+'</span><input data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val||"")+'" aria-label="'+label+'"></label>'}
 function party(){
- return'<div class="row"><h2>Party</h2><div style="display:flex;gap:8px;flex-wrap:wrap"><label class="btn" tabindex="0">Scan character sheet<input type="file" id="scpc" accept="image/*" capture="environment" hidden></label><label class="btn" tabindex="0">From photo or PDF<input type="file" id="scpp" accept="image/*,application/pdf,.pdf" hidden></label><button class="pri" data-a="add" data-k="party">Add member</button></div></div>'+importUI()+(S.party.length?'<div class="grid pgrid">'+S.party.map(function(m){
+ return'<div class="row"><h2>Party</h2><div style="display:flex;gap:8px;flex-wrap:wrap"><label class="btn" tabindex="0">Scan character sheet<input type="file" id="scpc" accept="image/*" hidden></label><label class="btn" tabindex="0">Import PDF<input type="file" id="scpp" accept="application/pdf,.pdf" hidden></label><button class="pri" data-a="add" data-k="party">Add member</button></div></div>'+importUI()+(S.party.length?'<div class="grid pgrid">'+S.party.map(function(m){
   var k="party",id=m.id;
   return'<div class="card pc"><div class="phead"><input class="pname" data-k="party" data-id="'+id+'" data-f="name" value="'+esc(m.name)+'" placeholder="Character name" aria-label="Character name"><div class="psub"><input data-k="party" data-id="'+id+'" data-f="race" value="'+esc(m.race)+'" placeholder="Race" aria-label="Race"><input data-k="party" data-id="'+id+'" data-f="className" value="'+esc(m.className)+'" placeholder="Class / subclass" aria-label="Class and subclass"><input class="lvl" data-k="party" data-id="'+id+'" data-f="level" value="'+esc(m.level)+'" placeholder="Lvl" aria-label="Level"></div><input class="pbg" data-k="party" data-id="'+id+'" data-f="background" value="'+esc(m.background)+'" placeholder="Background" aria-label="Background"></div>'+
   '<div class="tiles" style="grid-template-columns:repeat('+(4+pcCast(m).length)+',1fr)">'+tile(k,id,"ac","AC",m.ac)+tile(k,id,"maxHp","Max HP",m.maxHp)+tile(k,id,"speed","Speed",m.speed)+tile(k,id,"init","Initiative",m.init)+pcCast(m).map(function(c,i,all){return'<div class="tile"><span class="tl">Spell DC'+(all.length>1?' ('+c.ab+')':'')+'</span><b class="pv sdc">'+c.dc+'</b><span class="mute" style="font-size:11px">Atk '+sgn(c.at)+'</span></div>'}).join("")+'</div>'+
@@ -503,7 +504,7 @@ function entities(k,title,noun){
   return'<div class="card">'+fld("Name",k,x.id,"name",x.name)+(k==="npcs"?fld("Quick stats",k,x.id,"stats",x.stats||""):"")+'<label class="f">Location<select data-k="'+k+'" data-id="'+x.id+'" data-f="location">'+opts(abc(LOCS),x.location)+'</select></label>'+ctl+'<label class="f">Notes<textarea style="min-height:'+(k==="quests"?"180px":k==="npcs"?"150px":"64px")+'" data-k="'+k+'" data-id="'+x.id+'" data-f="notes">'+esc(x.notes)+'</textarea></label><div>'+delBtn(k,x.id,x.name)+'</div></div>'}).join("")+'</div>':'<div class="empty">'+(k==="quests"&&ui.hideDone&&S.quests.length?"No quests to show. Untick Hide completed to see finished quests.":"Nothing here yet.")+'</div>')}
 function enemies(){
  var q=ui.q.toLowerCase(),items=S.enemies.filter(function(x){return x.name.toLowerCase().indexOf(q)>-1}).sort(function(a,b){var na=/^New /.test(a.name),nb=/^New /.test(b.name);return na!==nb?(na?-1:1):a.name.localeCompare(b.name)});
- return'<div class="row"><h2>Enemies</h2><div style="display:flex;gap:8px;flex:1;justify-content:flex-end;flex-wrap:wrap"><div style="flex:1;max-width:260px"><input data-ui="q" value="'+esc(ui.q)+'" placeholder="Search Enemies" aria-label="Search Enemies"></div><label class="chk"><input type="checkbox" class="yn" data-a="stat"'+(ui.stat?" checked":"")+'><span>Show detailed statblocks</span></label><label class="btn" tabindex="0">Scan statblock<input type="file" id="scfc" accept="image/*" capture="environment" hidden></label><label class="btn" tabindex="0">From photo or PDF<input type="file" id="scfp" accept="image/*,application/pdf,.pdf" hidden></label><button class="pri" data-a="add" data-k="enemies">Add enemy</button></div></div>'+(items.length?'<div class="grid">'+items.map(function(x){
+ return'<div class="row"><h2>Enemies</h2><div style="display:flex;gap:8px;flex:1;justify-content:flex-end;flex-wrap:wrap"><div style="flex:1;max-width:260px"><input data-ui="q" value="'+esc(ui.q)+'" placeholder="Search Enemies" aria-label="Search Enemies"></div><label class="chk"><input type="checkbox" class="yn" data-a="stat"'+(ui.stat?" checked":"")+'><span>Show detailed statblocks</span></label><label class="btn" tabindex="0">Scan statblock<input type="file" id="scfc" accept="image/*" hidden></label><label class="btn" tabindex="0">Import PDF<input type="file" id="scfp" accept="application/pdf,.pdf" hidden></label><button class="pri" data-a="add" data-k="enemies">Add enemy</button></div></div>'+(items.length?'<div class="grid">'+items.map(function(x){
   return'<div class="card">'+fld("Name","enemies",x.id,"name",x.name)+fld("Quick stats","enemies",x.id,"quick",x.quick)+'<label class="f">Found at<select data-k="enemies" data-id="'+x.id+'" data-f="location">'+opts(abc(LOCS),x.location)+'</select></label>'+(ui.stat?'<label class="f">Detailed statblock<textarea style="min-height:360px;font-size:15px" data-k="enemies" data-id="'+x.id+'" data-f="statblock" placeholder="Paste or type the full statblock: abilities, actions, traits">'+esc(x.statblock)+'</textarea></label>':'')+'<label class="f">Notes<textarea style="min-height:90px" data-k="enemies" data-id="'+x.id+'" data-f="notes">'+esc(x.notes)+'</textarea></label><div>'+delBtn("enemies",x.id,x.name)+'</div></div>'}).join("")+'</div>':'<div class="empty">Nothing here yet.</div>')}
 function parseExpr(s){
  s=String(s||"").trim();if(!s||!/^[\d\s+\-,.]+$/.test(s))return NaN;
@@ -555,6 +556,9 @@ function atkRoll(c,idx){var en=S.enemies.find(function(e){return e.id===c.ref}),
    if(t<0)t=0;sum+=t;bits.push(t+(p.t?" "+p.t:"")+' <span class="mute">('+(n?n+"d"+p.d+" ["+rs.join(",")+"]":"")+(p.k?(n?(p.k>0?"+":"\u2212"):"")+Math.abs(p.k):"")+')</span>')});
   if(bits.length)h+='<br>Damage'+(isNaN(ac)&&!crit?' if it hits':'')+(crit?' (dice doubled)':'')+': <b>'+sum+'</b> = '+bits.join(" + ");}
  return h}
+function atkPop(c,h){var el=document.getElementById("atkpop");if(!el){el=document.createElement("div");el.id="atkpop";document.body.appendChild(el);el.addEventListener("click",function(e){if(e.target===el||e.target.closest("[data-ap]"))el.style.display="none"})}
+ el.innerHTML='<div class="atkbox" role="dialog" aria-label="Attack result"><div class="atkh"><b>'+esc(c.name)+'</b></div><div class="atkb">'+h+'</div><button class="pri" data-ap="1">Close</button></div>';el.style.display="flex"}
+document.addEventListener("keydown",function(e){if(e.key==="Escape"){var el=document.getElementById("atkpop");if(el)el.style.display="none"}});
 /*ATK-END*/
 
 function encOrder(){
@@ -823,7 +827,7 @@ document.addEventListener("click",function(e){
  else if(a==="calcheal"){var t0=parseExpr(ui.calc.expr);if(isNaN(t0)||t0<1)return;if(ui.calc.cfm){ui.calc.cfm=false;calcApply("calcheal")}else{ui.calc.cfm=true;healSync()}}
  else if(a==="hideunmet"){ui.hideUnmet=!ui.hideUnmet;saveUi();render()}
  else if(a==="atktog"){ui.atk=!ui.atk;saveUi();render()}
- else if(a==="atk"){var ac=S.combatants.find(function(x){return x.id===b.dataset.id});if(ac){var hh=atkRoll(ac,+b.dataset.i);ui.atkLog[ac.id]=hh;var le=document.getElementById("atk-"+ac.id);if(le)le.innerHTML=hh}}
+ else if(a==="atk"){var ac=S.combatants.find(function(x){return x.id===b.dataset.id});if(ac){var hh=atkRoll(ac,+b.dataset.i);ui.atkLog[ac.id]=hh;var le=document.getElementById("atk-"+ac.id);if(le)le.innerHTML=hh;atkPop(ac,hh)}}
  else if(a==="prof"){var pm=S.party.find(function(x){return x.id===b.dataset.id});if(pm){pm.sp=pm.sp||{};pm.sp[b.dataset.s]=((pm.sp[b.dataset.s]||0)+1)%3;save();render()}}
  else if(a==="toolcyc"){var tm=S.party.find(function(x){return x.id===b.dataset.id});if(tm){tm.tl=(pcTools(tm)+1)%3;save();render()}}
  else if(a==="profread"){var rm=S.party.find(function(x){return x.id===b.dataset.id});if(rm){var rn=pcRead(rm);save();render();ui.msg=rn?"Set "+rn+" proficiencies from the sheet text. Tap any to adjust.":"Could not find skill or save bonuses in the sheet text.";render()}}
@@ -1420,6 +1424,40 @@ function scPdfLib(){return new Promise(function(res,rej){
  var s=document.createElement("script");s.src="pdf/pdf.min.js";
  s.onload=function(){if(!window.pdfjsLib)return rej(new Error("pdfengine"));pdfjsLib.GlobalWorkerOptions.workerSrc=new URL("pdf/pdf.worker.min.js",location.href).href;res(pdfjsLib)};
  s.onerror=function(){rej(new Error("pdfengine"))};document.head.appendChild(s)})}
+function scPdfText(pp,v,lib,k){
+ return pp.getTextContent().then(function(tc){
+  var lines=[],cur="",lastY=null,lastEnd=null,words=[],its=[],fhLast=10;
+  tc.items.forEach(function(it){if(typeof it.str!=="string")return;
+   var t=lib.Util.transform(v.transform,it.transform),x=t[4],y=t[5],fh=Math.hypot(t[2],t[3])||fhLast,str=it.str;
+   if(str.length){fhLast=fh;
+    if(lastY!==null&&Math.abs(y-lastY)>fh*0.5){lines.push(cur);cur=""}
+    else if(cur&&lastEnd!==null&&x-lastEnd>fh*0.15&&!/^\s/.test(str)&&!/\s$/.test(cur))cur+=" ";
+    cur+=str;lastY=y;lastEnd=x+it.width*v.scale;
+    if(/\S/.test(str))its.push({s:str.trim(),x:x*k,y:(y-fh)*k,w:it.width*v.scale*k,h:fh*k});
+    if(/\S/.test(str)&&words.length<1500)words.push({x:x*k,y:(y-fh)*k,w:Math.max(2,it.width*v.scale*k),h:fh*1.2*k,c:100})}
+   if(it.hasEOL){lines.push(cur);cur="";lastY=null;lastEnd=null}});
+  if(cur)lines.push(cur);
+  var text=lines.map(function(l){return l.replace(/[ \t]+/g," ").trim()}).filter(function(l){return l}).join("\n");
+  return pp.getAnnotations().then(function(an){
+   var f=[];an.forEach(function(a){var val=a.fieldValue;if(Array.isArray(val))val=val.join(", ");if(a.fieldType&&val&&String(val).trim()&&a.fieldName)f.push(a.fieldName+": "+String(val).trim())});
+   return{text:text+(f.length?"\n"+f.join("\n"):""),words:words,items:its}},function(){return{text:text,words:words,items:its}})},function(){return{text:"",words:[],items:[]}})}
+function scGeoAbil(items){
+ var NAMES={str:/^(STR|STRENGTH)$/i,dex:/^(DEX|DEXTERITY)$/i,con:/^(CON|CONSTITUTION)$/i,int:/^(INT|INTELLIGENCE)$/i,wis:/^(WIS|WISDOM)$/i,cha:/^(CHA|CHARISMA)$/i},out={},nums=items.filter(function(i){return/^[+\-\u2212]?\d{1,2}$/.test(i.s)}).map(function(i){var sg=/^[+\-\u2212]/.test(i.s);return{v:parseInt(i.s.replace("\u2212","-"),10),sg:sg,cx:i.x+i.w/2,cy:i.y+i.h/2}});
+ Object.keys(NAMES).forEach(function(k){var best=null;
+  items.forEach(function(l){if(!NAMES[k].test(l.s.replace(/[^A-Za-z]/g,"")))return;var lx=l.x+l.w/2,ly=l.y+l.h/2,lim=Math.max(l.h*9,l.w*2.2),near=nums.map(function(n){return{n:n,d:Math.hypot(n.cx-lx,n.cy-ly)}}).filter(function(o){return o.d<lim}).sort(function(a,b){return a.d-b.d}).slice(0,6);
+   near.forEach(function(a){if(a.n.sg||a.n.v<1||a.n.v>30)return;near.forEach(function(b){if(b===a)return;if(Math.floor((a.n.v-10)/2)===b.n.v&&(!best||a.d+b.d<best.d))best={v:a.n.v,d:a.d+b.d}})})});
+  if(best)out[k]=String(best.v)});
+ return out}
+function scTextDone(id,kind,p){
+ var raw=p.pdfText||"";if(raw.replace(/[^A-Za-z0-9]/g,"").length<80)return false;
+ var pr=kind==="pc"?parseSheet(raw):parseStatblock(raw);
+ if(kind==="pc"){var ga=scGeoAbil(p.pdfItems||[]);Object.keys(ga).forEach(function(k){pr.form[k]=ga[k]});var mm=["str","dex","con","int","wis","cha"].filter(function(k){return!pr.form[k]});if(mm.length>2||!pr.form.name&&!pr.form.className)return false;pr.miss=pr.miss.filter(function(x){return!/^Ability scores/.test(x)});if(mm.length)pr.miss.push("Ability scores ("+mm.join(", ").toUpperCase()+")");pr.form.notes="Imported from a PDF.";ui.scan.target=scMatchMember(pr.form.name)}
+ else{if(!pr.form||!pr.form.statblock)return false;if(/photo/i.test(pr.form.notes||""))pr.form.notes="Imported from a PDF."}
+ pr.warn.unshift("Read straight from the PDF's own text, no picture scanning needed.");
+ ui.scan.words=(p.pdfWords||[]).slice();ui.scan.raw=raw;ui.scan.form=pr.form;ui.scan.miss=pr.miss;ui.scan.warn=pr.warn;ui.scan.conf=100;
+ ui.scan.phase="rev";scDraw();
+ SC.timer=setTimeout(function(){if(ui.scan&&ui.scan.phase==="rev"){ui.scan.phase="review";scDraw()}},1200);
+ return true}
 function scPrep(file,page){
  if(scIsPdf(file)){
   return scPdfLib().then(function(lib){return file.arrayBuffer().then(function(buf){return lib.getDocument({data:buf}).promise})}).then(function(doc){
@@ -1430,7 +1468,8 @@ function scPrep(file,page){
     var cx=c.getContext("2d");cx.fillStyle="#fff";cx.fillRect(0,0,c.width,c.height);
     var lib=window.pdfjsLib,am=(lib.AnnotationMode&&lib.AnnotationMode.ENABLE_STORAGE)||undefined;
     return pp.render({canvasContext:cx,viewport:v,annotationMode:am}).promise.then(function(){
-     var r=scFin(c,c.width,c.height);r.pages=n;r.page=pg;try{doc.destroy()}catch(e){}return r})})},
+     var r=scFin(c,c.width,c.height);r.pages=n;r.page=pg;
+     return scPdfText(pp,v,lib,r.W/c.width).then(function(t){r.pdfText=t.text;r.pdfWords=t.words;r.pdfItems=t.items;try{doc.destroy()}catch(e){}return r})})})},
    function(e){if(e&&e.message==="pdfengine")throw e;throw new Error("That PDF could not be opened"+(e&&e.name==="PasswordException"?" (it is password protected)":"")+".")})}
  return new Promise(function(res,rej){
   var u=URL.createObjectURL(file),im=new Image();
@@ -1513,6 +1552,7 @@ function scRun(file,kind,page){kind=kind||"enemy";SC.file=file;
   if(id!==SC.run)return;
   ui.scan.pages=p.pages;ui.scan.page=p.page;
   ui.scan.img=p.shown;ui.scan.W=p.W;ui.scan.H=p.H;scDraw();
+  if(p.pdfText&&scTextDone(id,kind,p))return;
   var key=scKey();
   if(key&&navigator.onLine!==false){scProg(15,"Sending the page to the cloud reader...");
    return scVision(p.shown,key).then(function(d){return scCloudDone(id,kind,p,d,key)},function(e){

@@ -64,3 +64,5 @@ v29: Active Session Maps pane + Maps button in Location pane.
 v30: Name dropdowns (locations, Strahd attitude, damage target, scan target) sorted A-Z.
 v31: Locations edit mode: drag cards to reorder, Sort A-Z button; order is remembered.
 v32: Death House location restored with summarised notes (areas 1-38, endings).
+v33: Attack results shown in a popup; Party race field now full width.
+v34: Import PDF reads the PDF's own text layer (falls back to picture scanning for scanned PDFs); camera buttons no longer force the camera.
