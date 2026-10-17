@@ -81,3 +81,5 @@ v40: Druid favourite Wild Shapes list also offers beasts saved in Enemies; "Only
 v41: "Take photo" buttons (opens the camera directly) beside the statblock and character sheet scan buttons.
 
 v42: Encounter header shows a difficulty rating in brackets (standard DMG rules, whole party at full strength vs the enemies).
+
+v43: Difficulty uses the whole party until some are added, then only those in the fight. "Not in this fight" button on each party member in the initiative prompt.
