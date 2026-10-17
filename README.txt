@@ -99,3 +99,5 @@ v49: App version 1.0 shown in the Options card (and Sync options).
 v50: Scanning an enemy now pops up a question for each missing stat (name, AC, HP, CR, ability scores) and fills it into the statblock.
 
 v1.10 (build 51): Version label system. Major updates change the first decimal (1.10 to 1.20), minor updates the second (1.10 to 1.11).
+
+v1.11 (build 52): Double-tapping anywhere on a location card (Locations tab or Active Session location pane) opens the notes full screen again, with the Maps button.

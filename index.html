@@ -421,7 +421,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=51;var APPLABEL="1.10";
+var APPV=52;var APPLABEL="1.11";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -1121,9 +1121,12 @@ function nzDraw(){
  '<aside class="nzp"><h3>Quests <span class="mute">('+act+' active)</span></h3>'+(qs.length?qs.map(function(q){return'<div class="nzr'+(q.status==="Active"?" act":"")+'"><select data-k="quests" data-id="'+q.id+'" data-f="status" aria-label="Status of '+esc(q.name)+'">'+opts(QST,q.status)+'</select><span>'+esc(q.name)+'</span></div>'}).join(""):'<div class="mute">No quests here.</div>')+
  '<h3 style="margin-top:16px">NPCs <span class="mute">('+met+' of '+ns.length+' met)</span></h3>'+(ns.length?ns.map(function(n){return'<label class="nzr'+(n.met?" act":"")+'"><input type="checkbox" class="yn" data-k="npcs" data-id="'+n.id+'" data-f="met"'+(n.met?" checked":"")+'><span>'+esc(n.name)+'</span><em>'+(n.met?"met":"not met")+'</em></label>'}).join(""):'<div class="mute">No NPCs here.</div>')+'</aside></div>'}
 document.addEventListener("pointerup",function(e){
- var t=e.target;if(!(t&&t.matches&&t.matches('textarea[data-loc][data-f="notes"]'))||t.closest("#nzov"))return;
+ var t=e.target;if(!t||!t.closest||t.closest("#nzov"))return;
+ var pn=t.closest('.card[data-ln], section.sp[data-pid="loc"]');if(!pn)return;
+ if(t.closest("button,select,input,label,a,summary,.spg,[data-lg],.spsz"))return;
+ var nm=pn.dataset.ln||(pn.dataset.pid==="loc"?spLocName():"");if(!nm)return;
  var n=Date.now();
- if(n-nzLast.t<420&&Math.abs(e.clientX-nzLast.x)<32&&Math.abs(e.clientY-nzLast.y)<32){nzLast.t=0;nzOpen(t.dataset.loc)}else nzLast={t:n,x:e.clientX,y:e.clientY}});
+ if(n-nzLast.t<420&&Math.abs(e.clientX-nzLast.x)<32&&Math.abs(e.clientY-nzLast.y)<32){nzLast.t=0;nzOpen(nm)}else nzLast={t:n,x:e.clientX,y:e.clientY}});
 (function(){var ov=document.getElementById("nzov");if(!ov)return;
  ov.addEventListener("click",function(e){var b=e.target.closest("[data-nz]");if(!b)return;if(b.dataset.nz==="close")nzClose();else if(b.dataset.nz==="edit"||b.dataset.nz==="done"){ui.ned=ui.ned||{};ui.ned[b.dataset.n]=b.dataset.nz==="edit";nzDraw();if(b.dataset.nz==="edit"){var tn=document.querySelector("#nzov textarea");if(tn){tn.focus()}}}else if(b.dataset.nz==="maps"&&ui.nz)mpOpen(ui.nz,0)});
  ov.addEventListener("change",function(e){var el=e.target;if(el.dataset.k==="npcs"||el.dataset.k==="quests"||el.dataset.f==="visited")setTimeout(nzDraw,0)});
