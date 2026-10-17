@@ -87,3 +87,11 @@ v43: Difficulty uses the whole party until some are added, then only those in th
 v44: Fixed the "Not synced" pill always showing in the header; it now appears only when there are unsynced changes.
 
 v45: "Sync when the app opens" option in the Sync panel (quiet sync a moment after start; stops and shows a note if Google needs sign-in).
+
+v46: Scanned statblocks get paragraph breaks between sections and entries. Location notes show bullets with a hanging indent (wrapped lines line up with the first line); tap Edit notes to change the text.
+
+v47: App version shown in the Options card. Separate "Sync" (runs straight away) and "Sync options" (opens the panel) buttons.
+
+v48: Dashboard footer version removed; version 1.0 shown in Sync options. Tapping the "Not synced" pill now syncs.
+
+v49: App version 1.0 shown in the Options card (and Sync options).

@@ -78,6 +78,8 @@ input[type=checkbox]:focus-visible{outline:2px solid var(--acc2);outline-offset:
 .slc{border:1px solid var(--line);border-radius:10px;padding:8px}.slc .pcx{margin:4px 0 0;padding:0;border:0}.slc .pcxh{display:none}
 .slbar{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center;margin-top:6px}.slg{display:inline-flex;gap:3px;align-items:center}.pip.sm{width:14px;height:14px;border-width:1.5px;position:relative}.pip.sm:after{content:"";position:absolute;inset:-8px}
 #syncdot[hidden]{display:none!important}
+.nview{border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--field);min-height:220px;max-height:60vh;overflow:auto;line-height:1.5}.nview.spta{min-height:120px;max-height:none;flex:1}.nview.nzt{height:100%;max-height:none;min-height:0;font-size:18px;line-height:1.55}
+.bl{display:flex;gap:8px;margin:2px 0}.bm{flex:none;min-width:1.1em;text-align:right}.bt{flex:1;min-width:0;overflow-wrap:anywhere}.bp{margin:2px 0;overflow-wrap:anywhere}.bg{height:.7em}.nvb{margin-top:6px}.nzw{display:flex;flex-direction:column;min-height:0}.nzw textarea{flex:1;height:auto}.nzw .nview{flex:1}
 .pip{width:22px;height:22px;min-height:0;padding:0;border-radius:50%;border:2px solid var(--acc);background:transparent}.pip.on{background:var(--acc)}.sprow2{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:4px 0}
 .wsb{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:6px;padding:6px;border:1px dashed var(--line);border-radius:8px}.wsb.on{border:1px solid var(--acc);background:rgba(192,51,77,.08)}.initr{margin:0}
 #restov{display:none;position:fixed;inset:0;z-index:1060;background:rgba(0,0,0,.55);align-items:center;justify-content:center;padding:12px}.restbox{background:var(--panel);color:var(--text);border:2px solid var(--acc);border-radius:14px;padding:16px;width:min(640px,100%);max-height:92dvh;overflow:auto;display:flex;flex-direction:column;gap:8px}.restbox h3{margin:0}.restrow{border-top:1px solid var(--line);padding-top:8px}.restsp{margin:4px 0}.restrow input[data-hd],.restrow input[data-hp],.restrow input[data-sr]{width:70px}
@@ -169,7 +171,7 @@ header{min-height:104px;padding:12px 18px!important;background:linear-gradient(9
 <body>
 <header>
   <div><h1>Curse of Strahd Organiser</h1><p>Campaign notes for the 2016 edition</p></div>
-  <button id="syncdot" class="pill" hidden title="Open the Dashboard to sync">Not synced</button>
+  <button id="syncdot" class="pill" hidden title="Tap to sync">Not synced</button>
 </header>
 <div id="bk"></div>
 <div id="nzov" hidden role="dialog" aria-modal="true" aria-label="Location notes"></div>
@@ -418,7 +420,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=45;
+var APPV=49;
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -428,10 +430,10 @@ function dash(){
  var tkRows=[["Tome of Strahd",tk.tome],["Holy Symbol of Ravenkind",tk.symbol],["Sunsword",tk.sword],["Strahd's location",tk.strahdAt],["Motivation",tk.motivation]];
  var tkCard='<div class="card"><h3>Tarokka reading</h3>'+tkRows.map(function(r){return'<div><span class="mute">'+r[0]+':</span> '+esc(r[1]||"not set")+'</div>'}).join("")+'</div>';
  var lb="";try{lb=localStorage.getItem("cos-lastbackup")||""}catch(e){}
- var bkCard='<div class="card"><h3>Options</h3><div class="mute">'+(gdirty()?"This device has changes that are not synced. ":"")+(lb?"Last backup: "+esc(new Date(lb).toLocaleDateString()):"No backup made yet. Your data is saved only in this browser.")+'</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button id="syncbtn">'+(gdirty()?"Sync \u2022":"Sync")+'</button><button data-a="backup">Create backup</button><label class="btn" tabindex="0">Restore file<input type="file" id="rf" accept="application/json,.json" hidden></label><button data-a="theme" aria-label="Toggle light or dark theme">Theme</button></div></div>';
+ var bkCard='<div class="card"><h3>Options</h3><div class="mute">'+(gdirty()?"This device has changes that are not synced. ":"")+(lb?"Last backup: "+esc(new Date(lb).toLocaleDateString()):"No backup made yet. Your data is saved only in this browser.")+' <span style="white-space:nowrap">App version 1.0</span></div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button id="syncbtn">'+(gdirty()?"Sync \u2022":"Sync")+'</button><button id="syncopt">Sync options</button><button data-a="backup">Create backup</button><label class="btn" tabindex="0">Restore file<input type="file" id="rf" accept="application/json,.json" hidden></label><button data-a="theme" aria-label="Toggle light or dark theme">Theme</button></div></div>';
  return'<h2 class="row">Campaign dashboard</h2><div class="grid">'+box(S.party.length,"party members")+box(met+" / "+S.npcs.length,"NPCs met")+box(act+" active, "+done+" done","of "+S.quests.length+" quests")+box(vis+" / "+S.locations.length,"locations visited")+box(S.sessions.length,"sessions logged")+
  '<div class="card"><h3>Barovian day</h3><div class="row" style="margin:0"><button data-a="day" data-d="-1" aria-label="Previous day">-</button><span class="stat">Day '+S.day+'</span><button data-a="day" data-d="1" aria-label="Next day">+</button></div></div>'+
- '<div class="card"><h3>Strahd</h3><div>Attitude: '+esc(S.strahd.attitude)+'</div><div class="mute">Final confrontation: '+esc(tk.strahdAt||"not set")+'</div></div>'+restCard()+actCard+tkCard+bkCard+'</div><div class="mute" style="font-size:.75rem;text-align:center;margin:20px 0 6px">App version '+APPV+'</div>'}
+ '<div class="card"><h3>Strahd</h3><div>Attitude: '+esc(S.strahd.attitude)+'</div><div class="mute">Final confrontation: '+esc(tk.strahdAt||"not set")+'</div></div>'+restCard()+actCard+tkCard+bkCard+'</div>'}
 var ABIL=[["str","STR"],["dex","DEX"],["con","CON"],["int","INT"],["wis","WIS"],["cha","CHA"]];
 /*PCX-START*/
 var SKL=[["acr","Acrobatics","dex"],["ani","Animal Handling","wis"],["arc","Arcana","int"],["ath","Athletics","str"],["dec","Deception","cha"],["his","History","int"],["ins","Insight","wis"],["itm","Intimidation","cha"],["inv","Investigation","int"],["med","Medicine","wis"],["nat","Nature","int"],["prc","Perception","wis"],["prf","Performance","cha"],["prs","Persuasion","cha"],["rel","Religion","int"],["sle","Sleight of Hand","dex"],["ste","Stealth","dex"],["sur","Survival","wis"]];
@@ -493,6 +495,15 @@ function npcBlock(l,ns){
   addCtl("npcs",l.name)+'</div>'}
 function questBlock(l,qs){
  return'<div><div class="mute">Quests</div>'+(qs.length?'<div class="scl">'+qs.map(function(x){return'<div class="chk'+(x.status==="Done"?" done":"")+'"><select style="width:auto" data-k="quests" data-id="'+x.id+'" data-f="status" aria-label="Status of '+esc(x.name)+'">'+opts(QST,x.status)+'</select><span style="flex:1">'+esc(x.name)+'</span>'+(ui.edit?'<button class="del" data-a="unassign" data-k="quests" data-id="'+x.id+'" aria-label="Remove '+esc(x.name)+' from '+esc(l.name)+'">Remove</button>':'')+'</div>'}).join("")+'</div>':'<div class="mute">None listed</div>')+addCtl("quests",l.name)+'</div>'}
+function notesHtml(t){var L=String(t||"").replace(/\r/g,"").split("\n"),h="",bu=/^([ \t]*)([\u2022\u25CF\u25CB\u25AA\u25E6\-\*\u2013]|\d+[.)])[ \t]+(.*)$/;
+ L.forEach(function(l){var m=l.match(bu);
+  if(m){var w=m[1].replace(/\t/g,"    ").length,lv=Math.min(4,Math.floor(w/2)),mk=/^\d/.test(m[2])?m[2]:(lv>0?"\u25E6":"\u2022");h+='<div class="bl" style="margin-left:'+(lv*20)+'px"><span class="bm">'+esc(mk)+'</span><span class="bt">'+esc(m[3])+'</span></div>'}
+  else if(!l.trim())h+='<div class="bg"></div>';
+  else h+='<div class="bp">'+esc(l)+'</div>'});
+ return h}
+function noteBox(name,cls,ctx){var t=(S.locations.find(function(l){return l.name===name})||{}).notes||"",ed=ui.ned&&ui.ned[name]||!t.trim();
+ if(ed)return'<textarea class="'+cls+'" data-loc="'+esc(name)+'" data-f="notes" placeholder="Notes" aria-label="Notes for '+esc(name)+'">'+esc(t)+'</textarea>'+(t.trim()?'<div class="nvb"><button '+(ctx==="z"?'data-nz="done"':'data-a="ndone"')+' data-n="'+esc(name)+'">Done editing</button></div>':'');
+ return'<div class="nview '+cls+'" aria-label="Notes for '+esc(name)+'">'+notesHtml(t)+'</div><div class="nvb"><button '+(ctx==="z"?'data-nz="edit"':'data-a="nedit"')+' data-n="'+esc(name)+'">Edit notes</button></div>'}
 function locations(){
  var q=ui.q.toLowerCase();
  var list=S.locations.filter(function(l){return l.name.toLowerCase().indexOf(q)>-1});
@@ -500,7 +511,7 @@ function locations(){
   var ns=S.npcs.filter(function(n){return n.location===l.name}),qs=S.quests.filter(function(x){return x.location===l.name});
   return'<div class="card" data-ln="'+esc(l.name)+'"><div class="row" style="margin:0">'+(ui.edit&&!ui.q?'<span class="spg" data-lg="1" role="button" aria-label="Move '+esc(l.name)+'" title="Drag to move">\u2630</span>':'')+'<div><h3>'+esc(l.name)+'</h3></div><label class="chk"><input type="checkbox" class="yn" data-loc="'+esc(l.name)+'" data-f="visited"'+(l.status!=="Not visited"?" checked":"")+'><span>Visited</span></label><button data-a="locfull" data-loc="'+esc(l.name)+'" aria-label="Open notes of '+esc(l.name)+' full screen">Expand</button></div>'+
   npcBlock(l,ns)+questBlock(l,qs)+
-  '<textarea style="min-height:220px" data-loc="'+esc(l.name)+'" data-f="notes" placeholder="Notes" aria-label="Notes for '+esc(l.name)+'">'+esc(l.notes)+'</textarea></div>'}).join("")+'</div>':'<div class="empty">No locations match that search.</div>')}
+  noteBox(l.name,"nnc","c")+'</div>'}).join("")+'</div>':'<div class="empty">No locations match that search.</div>')}
 function rearrangeView(){
  return'<div class="row"><h2>Quests</h2><button class="pri" data-a="rearr" aria-pressed="true">Finish rearranging</button></div><p class="mute" style="margin:0 0 12px">Drag the handle on a card to move it. With a keyboard, focus a handle and use the up and down arrow keys.</p><div id="rl">'+S.quests.map(function(x){return'<div class="rcard" data-rid="'+x.id+'"><span class="grip" role="button" tabindex="0" aria-label="Move '+esc(x.name)+'"></span><span class="rname">'+esc(x.name)+'</span><span class="pill">'+esc(x.status)+'</span></div>'}).join("")+'</div>'}
 function entities(k,title,noun){
@@ -659,7 +670,7 @@ var spDice={hist:[],n:1,mod:0,mode:"n"};
 function spBody(id){
  var ln=spLocName(),l=S.locations.filter(function(x){return x.name===ln})[0]||{},h="";
  if(id==="loc"){
-  return'<div class="spcol"><div class="sprow"><select data-sp-loc="1" aria-label="Current location">'+abcBy(S.locations,function(x){return x.name}).map(function(x){return'<option'+(x.name===ln?" selected":"")+'>'+esc(x.name)+'</option>'}).join("")+'</select><label class="chk"><input type="checkbox" class="yn" data-loc="'+esc(ln)+'" data-f="visited"'+(l.status&&l.status!=="Not visited"?" checked":"")+'><span>Visited</span></label>'+(mpList(ln).length?'<button data-sp="mapopen" data-i="0">Maps ('+mpList(ln).length+')</button>':'')+'</div><textarea class="spta" data-loc="'+esc(ln)+'" data-f="notes" placeholder="Notes" aria-label="Notes for '+esc(ln)+'">'+esc(l.notes||"")+'</textarea></div>'}
+  return'<div class="spcol"><div class="sprow"><select data-sp-loc="1" aria-label="Current location">'+abcBy(S.locations,function(x){return x.name}).map(function(x){return'<option'+(x.name===ln?" selected":"")+'>'+esc(x.name)+'</option>'}).join("")+'</select><label class="chk"><input type="checkbox" class="yn" data-loc="'+esc(ln)+'" data-f="visited"'+(l.status&&l.status!=="Not visited"?" checked":"")+'><span>Visited</span></label>'+(mpList(ln).length?'<button data-sp="mapopen" data-i="0">Maps ('+mpList(ln).length+')</button>':'')+'</div>'+noteBox(ln,"spta","s")+'</div>'}
  if(id==="npcs"){var ns=S.npcs.filter(function(n){return n.location===ln});
   return ns.length?ns.map(function(n){var t=[n.stats,n.notes].filter(function(x){return x&&String(x).trim()}).join("\n\n");return'<div class="spit"><label class="chk"><input type="checkbox" class="yn" data-k="npcs" data-id="'+n.id+'" data-f="met"'+(n.met?" checked":"")+'><span>'+esc(n.name)+'</span></label>'+(t?'<details><summary class="mute">Details</summary><div class="spt">'+esc(t)+'</div></details>':'')+'</div>'}).join(""):'<div class="mute">No NPCs listed for '+esc(ln)+'.</div>'}
  if(id==="quests"){var qs=S.quests.filter(function(x){return x.location===ln});
@@ -921,6 +932,7 @@ document.addEventListener("click",function(e){
  else if(a==="add"){
   var blank={party:{id:uid(),name:"New adventurer",className:"",level:"1",ac:"",maxHp:"",passivePerception:"",notes:"",race:"",background:"",speed:"",init:"",str:"",dex:"",con:"",int:"",wis:"",cha:"",sheet:""},npcs:{id:uid(),name:"New NPC",location:"Roaming / Other",met:false,notes:""},quests:{id:uid(),name:"New quest",location:"Roaming / Other",status:"Not started",notes:""},enemies:{id:uid(),name:"New enemy",location:"Roaming / Other",quick:"",statblock:"",notes:""},sessions:{id:uid(),name:"Session "+(S.sessions.length+1),date:"",day:String(S.day),notes:""}}[k];
   S[k].unshift(blank);save();render()}
+ else if(a==="nedit"||a==="ndone"){ui.ned=ui.ned||{};ui.ned[b.dataset.n]=a==="nedit";render();if(a==="nedit"){var tn2=document.querySelector('textarea[data-loc="'+b.dataset.n.replace(/"/g,'\\"')+'"]');if(tn2)tn2.focus()}}
  else if(a==="locfull"){nzOpen(b.dataset.loc)}
  else if(a==="addloc"){var ni=document.getElementById("newloc"),nl=ni?ni.value.trim():"";if(nl&&LOCS.indexOf(nl)<0){LOCS.push(nl);S.locations.push({name:nl,status:"Not visited",notes:""});save();ui.q="";render()}}
  else if(a==="del"){var it=S[k].find(function(x){return x.id===b.dataset.id});if(!it)return;if(ui.del&&ui.del.k===k&&ui.del.id===it.id){ui.del=null;S[k]=S[k].filter(function(x){return x.id!==it.id});save();render()}else{ui.del={k:k,id:it.id};render()}}
@@ -1104,7 +1116,7 @@ function nzDraw(){
  var qs=S.quests.filter(function(q){return q.location===l.name}),ns=S.npcs.filter(function(n){return n.location===l.name}),act=qs.filter(function(q){return q.status==="Active"}).length,met=ns.filter(function(n){return n.met}).length;
  el.hidden=false;
  el.innerHTML='<div class="nzh"><h2>'+esc(l.name)+'</h2><label class="chk"><input type="checkbox" class="yn" data-loc="'+esc(l.name)+'" data-f="visited"'+(l.status!=="Not visited"?" checked":"")+'><span>Visited</span></label>'+(mpList(l.name).length?'<button data-nz="maps">Maps ('+mpList(l.name).length+')</button>':'')+'<button class="pri" data-nz="close">Close</button></div>'+
- '<div class="nzg"><textarea class="nzt" data-loc="'+esc(l.name)+'" data-f="notes" placeholder="Notes" aria-label="Notes for '+esc(l.name)+'">'+esc(l.notes)+'</textarea>'+
+ '<div class="nzg"><div class="nzw">'+noteBox(l.name,"nzt","z")+'</div>'+
  '<aside class="nzp"><h3>Quests <span class="mute">('+act+' active)</span></h3>'+(qs.length?qs.map(function(q){return'<div class="nzr'+(q.status==="Active"?" act":"")+'"><select data-k="quests" data-id="'+q.id+'" data-f="status" aria-label="Status of '+esc(q.name)+'">'+opts(QST,q.status)+'</select><span>'+esc(q.name)+'</span></div>'}).join(""):'<div class="mute">No quests here.</div>')+
  '<h3 style="margin-top:16px">NPCs <span class="mute">('+met+' of '+ns.length+' met)</span></h3>'+(ns.length?ns.map(function(n){return'<label class="nzr'+(n.met?" act":"")+'"><input type="checkbox" class="yn" data-k="npcs" data-id="'+n.id+'" data-f="met"'+(n.met?" checked":"")+'><span>'+esc(n.name)+'</span><em>'+(n.met?"met":"not met")+'</em></label>'}).join(""):'<div class="mute">No NPCs here.</div>')+'</aside></div>'}
 document.addEventListener("pointerup",function(e){
@@ -1112,7 +1124,7 @@ document.addEventListener("pointerup",function(e){
  var n=Date.now();
  if(n-nzLast.t<420&&Math.abs(e.clientX-nzLast.x)<32&&Math.abs(e.clientY-nzLast.y)<32){nzLast.t=0;nzOpen(t.dataset.loc)}else nzLast={t:n,x:e.clientX,y:e.clientY}});
 (function(){var ov=document.getElementById("nzov");if(!ov)return;
- ov.addEventListener("click",function(e){var b=e.target.closest("[data-nz]");if(!b)return;if(b.dataset.nz==="close")nzClose();else if(b.dataset.nz==="maps"&&ui.nz)mpOpen(ui.nz,0)});
+ ov.addEventListener("click",function(e){var b=e.target.closest("[data-nz]");if(!b)return;if(b.dataset.nz==="close")nzClose();else if(b.dataset.nz==="edit"||b.dataset.nz==="done"){ui.ned=ui.ned||{};ui.ned[b.dataset.n]=b.dataset.nz==="edit";nzDraw();if(b.dataset.nz==="edit"){var tn=document.querySelector("#nzov textarea");if(tn){tn.focus()}}}else if(b.dataset.nz==="maps"&&ui.nz)mpOpen(ui.nz,0)});
  ov.addEventListener("change",function(e){var el=e.target;if(el.dataset.k==="npcs"||el.dataset.k==="quests"||el.dataset.f==="visited")setTimeout(nzDraw,0)});
  document.addEventListener("keydown",function(e){if(e.key==="Escape"&&ui.nz&&!MV.open)nzClose()})})();
 /*NZ-END*/
@@ -1258,10 +1270,10 @@ function syncDoc(res,retry){
    return mpSyncAll(D.secs,st,D.order).then(function(){return{st:st,conf:conf,heads:heads}})},function(e){
    if(!retry&&/revision/i.test(String(e.message))){return syncDoc(res,true)}
    throw e})})}
-function gRun(auto){
+function gRun(auto,quick){
  if(GC.busy)return;
- GC.busy=true;GC.silent=!!auto;GC.log=[];GC.err="";GC.conf=null;GC.autoErr="";gsDraw();
- var tmo=null,sbx=document.getElementById("syncbtn");if(auto){if(sbx)sbx.textContent="Syncing...";tmo=setTimeout(function(){if(GC.busy){GC.busy=false;GC.silent=false;GC.autoErr="Google did not answer in time.";gsDraw()}},20000)}
+ GC.busy=true;GC.silent=!!auto;GC.quick=!!quick;GC.log=[];GC.err="";GC.conf=null;GC.autoErr="";gsDraw();
+ var tmo=null,sbx=document.getElementById("syncbtn");if(auto||quick){if(sbx)sbx.textContent="Syncing...";if(auto)tmo=setTimeout(function(){if(GC.busy){GC.busy=false;GC.silent=false;GC.autoErr="Google did not answer in time.";gsDraw()}},20000)}
  var out=null;
  gToken().then(syncDevice).then(function(st){
   if(st==="conflict")return"stop";
@@ -1270,7 +1282,7 @@ function gRun(auto){
    var s=r.st,bits=[];if(s.pulled)bits.push(s.pulled+" location"+(s.pulled>1?"s":"")+" updated from the doc");if(s.pushed)bits.push(s.pushed+" sent to the doc");if(s.added)bits.push(s.added+" new heading"+(s.added>1?"s":"")+" added to the doc");if(s.skipped)bits.push(s.skipped+" skipped (the doc section has a table or drawing)");if(s.maps)bits.push(s.maps+" map"+(s.maps>1?"s":"")+" saved for offline use");if(s.mapsFail)bits.push(s.mapsFail+" map"+(s.mapsFail>1?"s":"")+" could not be saved ("+(s.mapsErr||"unknown reason")+")");
    gLog(bits.length?"Doc: "+bits.join(", ")+".":"Doc: nothing to change.");
    return gdirty()?syncDevice():"ok"})
- }).then(function(){clearTimeout(tmo);GC.busy=false;GC.silent=false;if(auto&&(GC.conf||(GC.dconf&&GC.dconf.length)||(GC.heads&&GC.heads.length)))GC.open=true;render();gsDraw()},function(e){clearTimeout(tmo);GC.busy=false;GC.silent=false;if(auto){GC.autoErr=docHint(e);var sd2=document.getElementById("syncdot");if(sd2)sd2.hidden=false}else GC.err=docHint(e);gsDraw()})}
+ }).then(function(){clearTimeout(tmo);GC.busy=false;GC.silent=false;if((auto||quick)&&(GC.conf||(GC.dconf&&GC.dconf.length)||(GC.heads&&GC.heads.length)))GC.open=true;GC.quick=false;render();gsDraw();if(quick&&!GC.open){var sb3=document.getElementById("syncbtn");if(sb3){sb3.textContent="Synced \u2713";setTimeout(function(){var s4=document.getElementById("syncbtn");if(s4)s4.textContent=gdirty()?"Sync \u2022":"Sync"},2500)}}},function(e){clearTimeout(tmo);GC.busy=false;GC.silent=false;if(auto){GC.autoErr=docHint(e);var sd2=document.getElementById("syncdot");if(sd2)sd2.hidden=false}else{GC.err=docHint(e);if(quick)GC.open=true}GC.quick=false;gsDraw()})}
 function docHint(e){var m=String(e&&e.message||e),s=e&&e.status;
  if(s===403&&/Docs API/i.test(m))return"The Google Docs API is not switched on for your project. Enable it in the Google Cloud console, then try again. ("+m+")";
  if(s===403&&/Drive API/i.test(m))return"The Google Drive API is not switched on for your project. Enable it in the Google Cloud console, then try again.";
@@ -1281,7 +1293,7 @@ function gsDraw(){
  var el=document.getElementById("gsov");if(!el)return;
  var b=document.getElementById("syncbtn");if(b)b.textContent=gdirty()?"Sync •":"Sync";var sd=document.getElementById("syncdot");if(sd)sd.hidden=!gdirty()&&!GC.autoErr;
  if(!GC.open){el.hidden=true;el.innerHTML="";return}
- var c=gcfg(),h='<div class="gsb"><div class="sch"><h3>Google sync <span class="mute" style="font-size:.8rem;font-weight:400">app version '+APPV+'</span></h3><button data-gs="close">Close</button></div>';
+ var c=gcfg(),h='<div class="gsb"><div class="sch"><h3>Sync options <span class="mute" style="font-size:.8rem;font-weight:400">App version 1.0</span></h3><button data-gs="close">Close</button></div>';
  h+='<div class="card"><div class="mute">'+(c.lastAt?"Last synced "+esc(new Date(c.lastAt).toLocaleString())+". ":"Not synced yet. ")+(gdirty()?"This device has changes that are not synced.":"No unsynced changes.")+'</div>';
  h+='<p class="mute" style="margin:6px 0 0">Sync keeps this device and your other devices in step, and updates the Google Doc with your location notes (and the app with the doc\'s). If this is your first time, sync from the device that holds your real campaign data first.</p>';
  h+='<div style="margin-top:10px"><button class="pri" data-gs="sync"'+(GC.busy?" disabled":"")+'>'+(GC.busy?"Syncing...":"Sync now")+'</button></div><label class="chk" style="margin-top:10px"><input type="checkbox" class="yn" data-gsc="auto"'+(c.autoStart?" checked":"")+'><span>Sync when the app opens</span></label><div class="mute">Runs quietly a moment after the app starts. If Google needs you to sign in again, it stops and leaves the Sync button for you.'+(GC.autoErr?' <b>Last automatic sync: '+esc(GC.autoErr)+'</b>':'')+'</div></div>';
@@ -1294,8 +1306,9 @@ function gsDraw(){
  el.hidden=false;el.innerHTML=h}
 (function(){
  var ov=document.getElementById("gsov");if(!ov)return;
- document.addEventListener("click",function(e){var t=e.target&&e.target.closest&&e.target.closest("#syncbtn,#syncdot");if(!t)return;
-  if(t.id==="syncdot"){ui.tab="Dashboard";saveUi();render();return}
+ document.addEventListener("click",function(e){var t=e.target&&e.target.closest&&e.target.closest("#syncbtn,#syncopt,#syncdot");if(!t)return;
+  if(t.id==="syncdot"){gRun(false,true);return}
+  if(t.id==="syncbtn"){gRun(false,true);return}
   GC.open=true;GC.err="";gsDraw();gLoad().catch(function(){})});
  ov.addEventListener("click",function(e){
   var b=e.target.closest("[data-gs]");if(!b)return;var a=b.dataset.gs,n=parseInt(b.dataset.n,10);
@@ -1398,8 +1411,9 @@ function parseStatblock(raw){
  var l2=[];if(ac)l2.push("AC "+ac+(acn?" "+acn:""));if(hp)l2.push("HP "+hp+(hpd?" ("+hpd.replace(/\s*([+\-])\s*/g," $1 ").replace(/\s+/g," ").trim()+")":""));if(speed)l2.push("Speed "+speed.trim());
  if(l2.length)out.push(l2.join(" | "));
  if(ab){var NM=["STR","DEX","CON","INT","WIS","CHA"];out.push(NM.map(function(n,k){return n+" "+ab[k]+" ("+scMod(ab[k])+")"}).join(" "))}
+ out.push("");
  props.forEach(function(p){if(/^proficiency bonus$/i.test(p.k))return;var v=p.v.trim();if(/^challenge$/i.test(p.k)){v=v.replace(/\s*Proficiency Bonus.*$/i,"")}if(v)out.push(p.k+" "+v)});
- secs.forEach(function(s){out.push("");out.push(s.h);s.e.forEach(function(e){out.push(e.t)})});
+ secs.forEach(function(s){out.push("");out.push(s.h);s.e.forEach(function(e,ix){if(ix)out.push("");out.push(e.t)})});
  var txt=out.join("\n"),dre=/(\d+) \((\d+)d(\d+)(?: ([+\-]) (\d+))?\)/g,dd;
  while((dd=dre.exec(txt))){var av=Math.floor(parseInt(dd[2],10)*(parseInt(dd[3],10)+1)/2+(dd[4]?(dd[4]==="-"?-1:1)*parseInt(dd[5],10):0));if(Math.abs(av-parseInt(dd[1],10))>1&&warn.indexOf(dd[0])<0&&dd[0].indexOf("(")>-1)warn.push("Check \""+dd[0]+"\": the average doesn't match the dice.")}
  var hre=/Hit: (\d+) \(([^)]*)\)/g,hh;
