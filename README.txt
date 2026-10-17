@@ -49,3 +49,6 @@ Updating (v15): Sync -> Settings -> "Get the latest app version" clears the app'
 
 Maps fix (v18): if the browser blocks saving a map picture normally, it is kept in a separate offline cache instead; if that also fails the map loads
 from Google when you open it while online. The Sync log says how many maps could not be saved for offline use and why.
+
+Maps v20: Google blocks pictures from being downloaded directly, so maps are now read through Google Drive. In Sync > Settings tick
+"Allow map pictures" (one extra Google permission: read-only access to Drive files), then press Sync now. "Test map download" shows what happens.
