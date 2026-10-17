@@ -77,3 +77,5 @@ v38: Smaller spell slot blobs shown on each caster's own card in the Encounter w
 v39: Favourite Wild Shapes per druid (basic rules beasts or custom), chosen from a dropdown on the Encounter page; beast HP tracked between fights; cleared on a long rest.
 
 v40: Druid favourite Wild Shapes list also offers beasts saved in Enemies; "Only forms this druid can use" toggle (max CR, fly/swim by level) and a Circle of the Moon switch.
+
+v41: "Take photo" buttons (opens the camera directly) beside the statblock and character sheet scan buttons.
