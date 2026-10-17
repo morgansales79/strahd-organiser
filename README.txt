@@ -95,3 +95,7 @@ v47: App version shown in the Options card. Separate "Sync" (runs straight away)
 v48: Dashboard footer version removed; version 1.0 shown in Sync options. Tapping the "Not synced" pill now syncs.
 
 v49: App version 1.0 shown in the Options card (and Sync options).
+
+v50: Scanning an enemy now pops up a question for each missing stat (name, AC, HP, CR, ability scores) and fills it into the statblock.
+
+v1.10 (build 51): Version label system. Major updates change the first decimal (1.10 to 1.20), minor updates the second (1.10 to 1.11).

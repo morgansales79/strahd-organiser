@@ -80,6 +80,7 @@ input[type=checkbox]:focus-visible{outline:2px solid var(--acc2);outline-offset:
 #syncdot[hidden]{display:none!important}
 .nview{border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--field);min-height:220px;max-height:60vh;overflow:auto;line-height:1.5}.nview.spta{min-height:120px;max-height:none;flex:1}.nview.nzt{height:100%;max-height:none;min-height:0;font-size:18px;line-height:1.55}
 .bl{display:flex;gap:8px;margin:2px 0}.bm{flex:none;min-width:1.1em;text-align:right}.bt{flex:1;min-width:0;overflow-wrap:anywhere}.bp{margin:2px 0;overflow-wrap:anywhere}.bg{height:.7em}.nvb{margin-top:6px}.nzw{display:flex;flex-direction:column;min-height:0}.nzw textarea{flex:1;height:auto}.nzw .nview{flex:1}
+.scask{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:14px}.scaskb{width:min(420px,100%)}
 .pip{width:22px;height:22px;min-height:0;padding:0;border-radius:50%;border:2px solid var(--acc);background:transparent}.pip.on{background:var(--acc)}.sprow2{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:4px 0}
 .wsb{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:6px;padding:6px;border:1px dashed var(--line);border-radius:8px}.wsb.on{border:1px solid var(--acc);background:rgba(192,51,77,.08)}.initr{margin:0}
 #restov{display:none;position:fixed;inset:0;z-index:1060;background:rgba(0,0,0,.55);align-items:center;justify-content:center;padding:12px}.restbox{background:var(--panel);color:var(--text);border:2px solid var(--acc);border-radius:14px;padding:16px;width:min(640px,100%);max-height:92dvh;overflow:auto;display:flex;flex-direction:column;gap:8px}.restbox h3{margin:0}.restrow{border-top:1px solid var(--line);padding-top:8px}.restsp{margin:4px 0}.restrow input[data-hd],.restrow input[data-hp],.restrow input[data-sr]{width:70px}
@@ -420,7 +421,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=49;
+var APPV=51;var APPLABEL="1.10";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -430,7 +431,7 @@ function dash(){
  var tkRows=[["Tome of Strahd",tk.tome],["Holy Symbol of Ravenkind",tk.symbol],["Sunsword",tk.sword],["Strahd's location",tk.strahdAt],["Motivation",tk.motivation]];
  var tkCard='<div class="card"><h3>Tarokka reading</h3>'+tkRows.map(function(r){return'<div><span class="mute">'+r[0]+':</span> '+esc(r[1]||"not set")+'</div>'}).join("")+'</div>';
  var lb="";try{lb=localStorage.getItem("cos-lastbackup")||""}catch(e){}
- var bkCard='<div class="card"><h3>Options</h3><div class="mute">'+(gdirty()?"This device has changes that are not synced. ":"")+(lb?"Last backup: "+esc(new Date(lb).toLocaleDateString()):"No backup made yet. Your data is saved only in this browser.")+' <span style="white-space:nowrap">App version 1.0</span></div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button id="syncbtn">'+(gdirty()?"Sync \u2022":"Sync")+'</button><button id="syncopt">Sync options</button><button data-a="backup">Create backup</button><label class="btn" tabindex="0">Restore file<input type="file" id="rf" accept="application/json,.json" hidden></label><button data-a="theme" aria-label="Toggle light or dark theme">Theme</button></div></div>';
+ var bkCard='<div class="card"><h3>Options</h3><div class="mute">'+(gdirty()?"This device has changes that are not synced. ":"")+(lb?"Last backup: "+esc(new Date(lb).toLocaleDateString()):"No backup made yet. Your data is saved only in this browser.")+' <span style="white-space:nowrap">App version v'+APPLABEL+'</span></div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button id="syncbtn">'+(gdirty()?"Sync \u2022":"Sync")+'</button><button id="syncopt">Sync options</button><button data-a="backup">Create backup</button><label class="btn" tabindex="0">Restore file<input type="file" id="rf" accept="application/json,.json" hidden></label><button data-a="theme" aria-label="Toggle light or dark theme">Theme</button></div></div>';
  return'<h2 class="row">Campaign dashboard</h2><div class="grid">'+box(S.party.length,"party members")+box(met+" / "+S.npcs.length,"NPCs met")+box(act+" active, "+done+" done","of "+S.quests.length+" quests")+box(vis+" / "+S.locations.length,"locations visited")+box(S.sessions.length,"sessions logged")+
  '<div class="card"><h3>Barovian day</h3><div class="row" style="margin:0"><button data-a="day" data-d="-1" aria-label="Previous day">-</button><span class="stat">Day '+S.day+'</span><button data-a="day" data-d="1" aria-label="Next day">+</button></div></div>'+
  '<div class="card"><h3>Strahd</h3><div>Attitude: '+esc(S.strahd.attitude)+'</div><div class="mute">Final confrontation: '+esc(tk.strahdAt||"not set")+'</div></div>'+restCard()+actCard+tkCard+bkCard+'</div>'}
@@ -1293,7 +1294,7 @@ function gsDraw(){
  var el=document.getElementById("gsov");if(!el)return;
  var b=document.getElementById("syncbtn");if(b)b.textContent=gdirty()?"Sync •":"Sync";var sd=document.getElementById("syncdot");if(sd)sd.hidden=!gdirty()&&!GC.autoErr;
  if(!GC.open){el.hidden=true;el.innerHTML="";return}
- var c=gcfg(),h='<div class="gsb"><div class="sch"><h3>Sync options <span class="mute" style="font-size:.8rem;font-weight:400">App version 1.0</span></h3><button data-gs="close">Close</button></div>';
+ var c=gcfg(),h='<div class="gsb"><div class="sch"><h3>Sync options <span class="mute" style="font-size:.8rem;font-weight:400">App version v'+APPLABEL+'</span></h3><button data-gs="close">Close</button></div>';
  h+='<div class="card"><div class="mute">'+(c.lastAt?"Last synced "+esc(new Date(c.lastAt).toLocaleString())+". ":"Not synced yet. ")+(gdirty()?"This device has changes that are not synced.":"No unsynced changes.")+'</div>';
  h+='<p class="mute" style="margin:6px 0 0">Sync keeps this device and your other devices in step, and updates the Google Doc with your location notes (and the app with the doc\'s). If this is your first time, sync from the device that holds your real campaign data first.</p>';
  h+='<div style="margin-top:10px"><button class="pri" data-gs="sync"'+(GC.busy?" disabled":"")+'>'+(GC.busy?"Syncing...":"Sync now")+'</button></div><label class="chk" style="margin-top:10px"><input type="checkbox" class="yn" data-gsc="auto"'+(c.autoStart?" checked":"")+'><span>Sync when the app opens</span></label><div class="mute">Runs quietly a moment after the app starts. If Google needs you to sign in again, it stops and leaves the Sync button for you.'+(GC.autoErr?' <b>Last automatic sync: '+esc(GC.autoErr)+'</b>':'')+'</div></div>';
@@ -1760,6 +1761,39 @@ function scStage(s,mode){
    var dl=(w.y/s.H*2.2).toFixed(2);
    return'<b class="'+(w.c<65?"lo":"")+'" style="left:'+(w.x/s.W*100).toFixed(2)+'%;top:'+(w.y/s.H*100).toFixed(2)+'%;width:'+(w.w/s.W*100).toFixed(2)+'%;height:'+(w.h/s.H*100).toFixed(2)+'%;animation-delay:'+dl+'s"></b>'}).join("")}
  return'<div class="scst '+mode+'" style="aspect-ratio:'+s.W+'/'+s.H+';width:min(100%,calc('+(mode==="done"?"54":"60")+'vh*'+ratio.toFixed(4)+'))">'+(s.img?'<img src="'+s.img+'" alt="Photo of the statblock">':'')+'<div class="scgrid"></div><div class="scw">'+ws+'</div><div class="scbeam"></div><i class="scc c1"></i><i class="scc c2"></i><i class="scc c3"></i><i class="scc c4"></i></div>'}
+var ASKMAP={"Armor Class":["ac","Armor Class (AC)","num"],"Hit Points":["hp","Hit Points (HP)","num"],"Challenge":["cr","Challenge Rating (CR)","cr"],"Name":["name","Name of the creature","text"]};
+var ABN=[["STR","Strength"],["DEX","Dexterity"],["CON","Constitution"],["INT","Intelligence"],["WIS","Wisdom"],["CHA","Charisma"]];
+function scAskInit(s){var q=[];(s.miss||[]).forEach(function(m){if(m==="Ability scores")ABN.forEach(function(a){q.push({k:"ab"+a[0],l:a[1]+" ("+a[0]+")",t:"ab",m:"Ability scores"})});else if(ASKMAP[m])q.push({k:ASKMAP[m][0],l:ASKMAP[m][1],t:ASKMAP[m][2],m:m})});
+ s.ask=q;s.askVals={};s.askErr=""}
+function scStatIdx(L){var i;for(i=0;i<L.length&&L[i].trim()!=="";i++)if(/^(AC \d|HP \d|Speed )/.test(L[i]))return i;return -1}
+function scFill(f,key,val){
+ var L=String(f.statblock||"").split("\n"),i;
+ if(key==="name"){f.name=val;return}
+ if(key==="ac"||key==="hp"){
+  var lab=key==="ac"?"AC":"HP",idx=scStatIdx(L),parts=idx>-1?L[idx].split(" | "):[];
+  parts=parts.filter(function(x){return x.indexOf(lab+" ")!==0});parts.push(lab+" "+val);
+  var rk=function(x){return x.indexOf("AC ")===0?0:x.indexOf("HP ")===0?1:x.indexOf("Speed ")===0?2:3};parts.sort(function(a,b){return rk(a)-rk(b)});
+  if(idx>-1)L[idx]=parts.join(" | ");else L.splice(/^(Tiny|Small|Medium|Large|Huge|Gargantuan)\b/.test(L[0]||"")?1:0,0,parts.join(" | "));
+  f.statblock=L.join("\n");
+  var qm={},qs=String(f.quick||"").split(/,\s*/);qs.forEach(function(x){var m=x.match(/^(AC|HP|CR)\s+(.+)$/);if(m)qm[m[1]]=m[2]});qm[lab]=val;
+  f.quick=["AC","HP","CR"].filter(function(k){return qm[k]}).map(function(k){return k+" "+qm[k]}).join(", ");return}
+ if(key==="cr"){
+  var ai=-1;for(i=0;i<L.length;i++)if(/^STR \d/.test(L[i])){ai=i;break}
+  var at=ai>-1?ai:scStatIdx(L);if(at<0)at=L[0]&&/^(Tiny|Small|Medium|Large|Huge|Gargantuan)\b/.test(L[0])?0:-1;
+  var st0=(L[at+1]==="")?at+2:at+1,last=st0-1;for(i=st0;i<L.length&&/^(Saving Throws|Skills|Damage|Condition|Senses|Languages|Challenge)/.test(L[i]);i++)last=i;
+  L.splice(last+1,0,"Challenge "+val);f.statblock=L.join("\n");
+  var qm2={},qs2=String(f.quick||"").split(/,\s*/);qs2.forEach(function(x){var m=x.match(/^(AC|HP|CR)\s+(.+)$/);if(m)qm2[m[1]]=m[2]});qm2.CR=val;
+  f.quick=["AC","HP","CR"].filter(function(k){return qm2[k]}).map(function(k){return k+" "+qm2[k]}).join(", ");return}
+ if(key==="abs"){
+  var line=ABN.map(function(a){var v=parseInt(val[a[0]],10);return a[0]+" "+v+" ("+scMod(v)+")"}).join(" "),idx2=scStatIdx(L);
+  L.splice(idx2>-1?idx2+1:(/^(Tiny|Small|Medium|Large|Huge|Gargantuan)\b/.test(L[0]||"")?1:0),0,line);f.statblock=L.join("\n")}}
+function scAskDone(s){var vals=s.askVals||{},ab={},nab=0;
+ ABN.forEach(function(a){if(vals["ab"+a[0]]!==undefined){ab[a[0]]=vals["ab"+a[0]];nab++}});
+ if(nab===6){scFill(s.form,"abs",ab);s.miss=s.miss.filter(function(x){return x!=="Ability scores"})}
+ else if(nab>0){ABN.forEach(function(a){if(ab[a[0]]===undefined)ab[a[0]]="10"});scFill(s.form,"abs",ab);s.miss=s.miss.filter(function(x){return x!=="Ability scores"});s.warn.push("Some ability scores were skipped and set to 10. Check them.")}
+ ["ac","hp","cr","name"].forEach(function(k){if(vals[k]!==undefined){scFill(s.form,k,vals[k]);var lab=Object.keys(ASKMAP).filter(function(m){return ASKMAP[m][0]===k})[0];s.miss=s.miss.filter(function(x){return x!==lab})}})}
+function scAskBox(s){var q=s.ask[0];if(!q)return"";var n=s.ask.length,num=q.t!=="text";
+ return'<div class="scask"><div class="card scaskb"><div class="mute">Not found in the scan ('+n+' left)</div><h3 style="margin:4px 0 8px">'+(num?'What is the '+esc(q.l)+'?':'What is the '+esc(q.l)+'?')+'</h3><input id="askv" data-ask="1" '+(num?'inputmode="'+(q.t==="cr"?"text":"numeric")+'" placeholder="'+(q.t==="cr"?"A number, like 1/4, 1/2 or 3":"A number")+'"':'placeholder="Name"')+' autocomplete="off">'+(s.askErr?'<div class="gserr" style="margin-top:6px">'+esc(s.askErr)+'</div>':'')+'<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><button class="pri" data-sa="askok">OK</button><button data-sa="askskip">Skip this one</button><button data-sa="askall">Skip all</button></div></div></div>'}
 function scDraw(){
  var el=document.getElementById("scanov"),s=ui.scan;if(!el)return;
  if(!s){el.hidden=true;el.innerHTML="";return}
@@ -1770,6 +1804,7 @@ function scDraw(){
   h='<div class="sch"><h3>Could not scan</h3><button class="pri" data-sa="close">Close</button></div><div class="card" style="max-width:640px"><p style="margin:0">'+esc(s.err)+'</p></div>'}
  else if(s.phase==="review"&&s.kind==="pc"){h=scReviewPC(s)}
  else if(s.phase==="review"){
+  if(!s.ask)scAskInit(s);
   var f=s.form,notes=[];
   if(s.miss.length)notes.push("Not found in the photo: "+s.miss.join(", ")+". Fill these in below.");
   s.warn.forEach(function(x){notes.push(x)});
@@ -1781,14 +1816,24 @@ function scDraw(){
   '<label class="f">Found at<select data-sf="location">'+opts(abc(LOCS),f.location)+'</select></label>'+
   '<label class="f">Statblock<textarea data-sf="statblock" style="min-height:340px;font-size:15px">'+esc(f.statblock)+'</textarea></label>'+
   '<label class="f">Notes<textarea data-sf="notes" style="min-height:70px">'+esc(f.notes)+'</textarea></label>'+
-  '<details class="mute"><summary>Show the raw text the reader saw</summary><pre class="sbx">'+esc(s.raw)+'</pre></details></div></div>'}
+  '<details class="mute"><summary>Show the raw text the reader saw</summary><pre class="sbx">'+esc(s.raw)+'</pre></details></div></div>'+(s.ask&&s.ask.length?scAskBox(s):'')}
  if(s.pages>1&&(s.phase==="review"||s.phase==="err")){h='<div class="scpg"><b>PDF page</b> <button data-sa="pgprev"'+(s.page<=1?" disabled":"")+'>&lt;</button> <span>'+s.page+' of '+s.pages+'</span> <button data-sa="pgnext"'+(s.page>=s.pages?" disabled":"")+'>&gt;</button> <span class="mute">Pick the page with the '+(s.kind==="pc"?"character stats":"statblock")+', then it re-scans.</span></div>'+h}
- el.innerHTML=h}
+ el.innerHTML=h;if(s.ask&&s.ask.length&&s.phase==="review")setTimeout(function(){var a=document.getElementById("askv");if(a)a.focus()},30)}
 (function(){
  var ov=document.getElementById("scanov");if(!ov)return;
  ov.addEventListener("click",function(e){
   var b=e.target.closest("[data-sa]");if(!b)return;var a=b.dataset.sa;
   if(a==="close")scClose();
+  else if(a==="askok"||a==="askskip"||a==="askall"){var s2=ui.scan;if(!s2||!s2.ask||!s2.ask.length)return;var q=s2.ask[0],inp=document.getElementById("askv");
+   if(a==="askall"){s2.ask=[];scAskDone(s2);scDraw();return}
+   if(a==="askok"){var v=(inp?inp.value:"").trim(),ok=true;
+    if(q.t==="text"){ok=v.length>0}
+    else if(q.t==="cr"){ok=/^(\d+\/\d+|\d+(\.\d+)?)$/.test(v)}
+    else if(q.t==="ab"){ok=/^\d{1,2}$/.test(v)&&+v>=1&&+v<=30}
+    else ok=/^\d{1,4}$/.test(v)&&+v>0;
+    if(!ok){s2.askErr=q.t==="text"?"Type a name.":q.t==="cr"?"Enter a number such as 1/4, 1/2 or 3.":q.t==="ab"?"Enter a whole number from 1 to 30.":"Enter a whole number.";scDraw();return}
+    s2.askVals[q.k]=v}
+   s2.askErr="";s2.ask.shift();if(!s2.ask.length)scAskDone(s2);scDraw()}
   else if((a==="pgprev"||a==="pgnext")&&ui.scan&&SC.file){scRun(SC.file,ui.scan.kind,ui.scan.page+(a==="pgnext"?1:-1))}
   else if(a==="skip"){clearTimeout(SC.timer);if(ui.scan){ui.scan.phase="review";scDraw()}}
   else if(a==="again"){var pcm=ui.scan&&ui.scan.kind==="pc";scClose();var i=document.getElementById(pcm?"scpk":"scfk");if(i)i.click()}
@@ -1796,7 +1841,8 @@ function scDraw(){
   else if(a==="add"&&ui.scan&&ui.scan.form){var f=ui.scan.form;
    S.enemies.unshift({id:uid(),name:f.name||"Scanned enemy",location:f.location||"Roaming / Other",quick:f.quick,statblock:f.statblock,notes:f.notes});
    save();scClose();ui.tab="Enemies";ui.q="";saveUi();render();var mn=document.getElementById("main");if(mn)mn.scrollTop=0}});
- ov.addEventListener("input",function(e){var el=e.target;if(el.dataset.sf&&ui.scan&&ui.scan.form&&el.dataset.sf!=="__target")ui.scan.form[el.dataset.sf]=el.value});
+ ov.addEventListener("keydown",function(e){if(e.key==="Enter"&&e.target&&e.target.id==="askv"){e.preventDefault();var ok=ov.querySelector('[data-sa="askok"]');if(ok)ok.click()}});
+ ov.addEventListener("input",function(e){var el=e.target;if(el.dataset.ask)return;if(el.dataset.sf&&ui.scan&&ui.scan.form&&el.dataset.sf!=="__target")ui.scan.form[el.dataset.sf]=el.value});
  ov.addEventListener("change",function(e){var el=e.target;if(!el.dataset.sf||!ui.scan||!ui.scan.form)return;if(el.dataset.sf==="__target"){ui.scan.target=el.value;scDraw();return}ui.scan.form[el.dataset.sf]=el.value});
  document.addEventListener("change",function(e){var el=e.target;
   if(el.id!=="scfc"&&el.id!=="scfp"&&el.id!=="scpc"&&el.id!=="scpp"&&el.id!=="scfk"&&el.id!=="scpk")return;
