@@ -432,7 +432,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=67;var APPLABEL="1.80";
+var APPV=68;var APPLABEL="1.81";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -496,7 +496,7 @@ function addCtl(k,loc){
  if(!ui.edit)return"";
  var noun=k==="npcs"?"NPC":"quest";
  var pool=S[k].filter(function(x){return x.location!==loc}).sort(function(a,b){return a.name.localeCompare(b.name)});
- return'<div style="margin-top:8px"><select data-addk="'+k+'" data-addloc="'+esc(loc)+'" aria-label="Add '+noun+' to '+esc(loc)+'"><option value="">Add '+noun+'...</option>'+pool.map(function(x){return'<option value="'+x.id+'">'+esc(x.name)+(x.location&&x.location!=="Roaming / Other"?" ("+esc(x.location)+")":"")+'</option>'}).join("")+'</select></div>'}
+ return'<div style="margin-top:8px"><select data-addk="'+k+'" data-addloc="'+esc(loc)+'" aria-label="Add '+noun+' to '+esc(loc)+'"><option value="">Add '+noun+'...</option>'+pool.map(function(x){return'<option value="'+x.id+'">'+esc(x.name)+(x.location&&x.location!=="Roaming / Other"?" ("+esc(x.location)+")":"")+'</option>'}).join("")+'</select><div class="mnm"><input type="text" class="custn" placeholder="New custom '+noun+' name" aria-label="Name of a new custom '+noun+' for '+esc(loc)+'" maxlength="80"><button data-a="custadd" data-k="'+k+'" data-cl="'+esc(loc)+'">Add custom '+noun+'</button></div></div>'}
 function npcRow(n,l){return'<div class="nrow"><label class="chk"><input type="checkbox" class="yn" data-k="npcs" data-id="'+n.id+'" data-f="met"'+(n.met?" checked":"")+'><span>'+esc(n.name)+'</span></label>'+(ui.edit?'<button class="del" data-a="unassign" data-k="npcs" data-id="'+n.id+'" aria-label="Remove '+esc(n.name)+' from '+esc(l.name)+'">Remove</button>':'')+'</div>'}
 function npcBlock(l,ns){
  var met=ns.filter(function(n){return n.met}),un=ns.filter(function(n){return!n.met});
@@ -514,7 +514,7 @@ function noteBox(name,cls,ctx){var t=(S.locations.find(function(l){return l.name
 function locations(){
  var q=ui.q.toLowerCase();
  var list=S.locations.filter(function(l){return l.name.toLowerCase().indexOf(q)>-1});
- return'<div class="row"><h2>Locations</h2><label class="chk"><input type="checkbox" class="yn" data-a="hideunmet"'+(ui.hideUnmet?" checked":"")+'><span>Hide unmet NPCs</span></label><button class="'+(ui.edit?"pri":"")+'" data-a="edit" aria-pressed="'+(ui.edit?"true":"false")+'">'+(ui.edit?"Finish editing":"Edit layout")+'</button>'+(ui.edit?'<button data-a="locsort">Sort A\u2013Z</button>':'')+'<div style="display:flex;gap:6px"><input id="newloc" placeholder="New location name" aria-label="New location name" style="width:190px"><button data-a="addloc">Add location</button></div><div style="flex:1;max-width:320px"><input data-ui="q" value="'+esc(ui.q)+'" placeholder="Search locations" aria-label="Search locations"></div></div>'+(list.length?'<div class="grid">'+list.map(function(l){
+ return'<div class="row"><h2>Locations</h2><label class="chk"><input type="checkbox" class="yn" data-a="hideunmet"'+(ui.hideUnmet?" checked":"")+'><span>Hide unmet NPCs</span></label><button class="'+(ui.edit?"pri":"")+'" data-a="edit" aria-pressed="'+(ui.edit?"true":"false")+'">'+(ui.edit?"Finish editing":"Edit locations/layout")+'</button>'+(ui.edit?'<button data-a="locsort">Sort A\u2013Z</button>':'')+'<div style="display:flex;gap:6px"><input id="newloc" placeholder="New location name" aria-label="New location name" style="width:190px"><button data-a="addloc">Add location</button></div><div style="flex:1;max-width:320px"><input data-ui="q" value="'+esc(ui.q)+'" placeholder="Search locations" aria-label="Search locations"></div></div>'+(list.length?'<div class="grid">'+list.map(function(l){
   var ns=S.npcs.filter(function(n){return n.location===l.name}),qs=S.quests.filter(function(x){return x.location===l.name});
   return'<div class="card" data-ln="'+esc(l.name)+'"><div class="row" style="margin:0">'+(ui.edit&&!ui.q?'<span class="spg" data-lg="1" role="button" aria-label="Move '+esc(l.name)+'" title="Drag to move">\u2630</span>':'')+'<div style="flex:1;min-width:0"><h3>'+esc(l.name)+'</h3><label class="chk" style="margin-top:4px"><input type="checkbox" class="yn" data-loc="'+esc(l.name)+'" data-f="visited"'+(l.status!=="Not visited"?" checked":"")+'><span>Visited</span></label></div><button data-a="locfull" data-loc="'+esc(l.name)+'" aria-label="Open notes of '+esc(l.name)+' full screen">Notes</button></div>'+
   npcBlock(l,ns)+questBlock(l,qs)+enemyBlock(l)+'</div>'}).join("")+'</div>':'<div class="empty">No locations match that search.</div>')}
@@ -1348,6 +1348,7 @@ document.addEventListener("click",function(e){
  else if(a==="hidedead"){ui.hideDead=!ui.hideDead;saveUi();render()}
  else if(a==="stat"){ui.stat=!ui.stat;saveUi();render()}
  else if(a==="hidedone"){ui.hideDone=!ui.hideDone;saveUi();render()}
+ else if(a==="custadd"){var ci=b.parentNode.querySelector("input.custn"),cn=ci?ci.value.trim().slice(0,80):"";if(cn){var cl=b.dataset.cl;S[k].unshift(k==="npcs"?{id:uid(),name:cn,location:cl,met:false,notes:""}:{id:uid(),name:cn,location:cl,status:"Not started",notes:""});save();render()}}
  else if(a==="unassign"){var un=S[k].find(function(x){return x.id===b.dataset.id});if(un){un.location="Roaming / Other";save();render()}}
  else if(a==="rsok"){if(ui.rs){S=ui.rs;spInit();save()}ui.rs=null;render()}
  else if(a==="rscancel"){ui.rs=null;render()}
@@ -1473,7 +1474,7 @@ function nzDraw(){
  el.innerHTML='<div class="nzh"><h2>'+esc(l.name)+'</h2><label class="chk"><input type="checkbox" class="yn" data-loc="'+esc(l.name)+'" data-f="visited"'+(l.status!=="Not visited"?" checked":"")+'><span>Visited</span></label><label class="chk"><input type="checkbox" class="yn" data-nzedit="1"'+(ui.ned&&ui.ned[l.name]?" checked":"")+'><span>Edit mode</span></label>'+(mpList(l.name).length?'<button data-nz="maps">Maps ('+mpList(l.name).length+')</button>':'')+'<button class="pri" data-nz="close">Close</button></div>'+
  '<div class="nzg"><div class="nzw">'+noteBox(l.name,"nzt","z")+'</div>'+
  '<aside class="nzp">'+(function(){var hs=notesHeads(l.notes);return hs.length?'<h3>Sections</h3><div class="nzj">'+hs.map(function(h){return'<button data-nzj="'+h.i+'">'+esc(h.t)+'</button>'}).join("")+'</div>':""})()+'<h3'+(notesHeads(l.notes).length?' style="margin-top:16px"':'')+'>Quests <span class="mute">('+act+' active)</span></h3>'+(qs.length?qs.map(function(q){return'<div class="nzr'+(q.status==="Active"?" act":"")+'"><select data-k="quests" data-id="'+q.id+'" data-f="status" aria-label="Status of '+esc(q.name)+'">'+opts(QST,q.status)+'</select><span>'+esc(q.name)+'</span></div>'}).join(""):'<div class="mute">No quests here.</div>')+
- '<h3 style="margin-top:16px">NPCs <span class="mute">('+met+' of '+ns.length+' met)</span></h3>'+(ns.length?ns.map(function(n){return'<label class="nzr'+(n.met?" act":"")+'"><input type="checkbox" class="yn" data-k="npcs" data-id="'+n.id+'" data-f="met"'+(n.met?" checked":"")+'><span>'+esc(n.name)+'</span><em>'+(n.met?"met":"not met")+'</em></label>'}).join(""):'<div class="mute">No NPCs here.</div>')+'<div id="mnbox">'+mnInner(l)+'</div></aside></div>'}
+ '<h3 style="margin-top:16px">NPCs <span class="mute">('+met+' of '+ns.length+' met)</span></h3>'+(ns.length?ns.map(function(n){return'<label class="nzr'+(n.met?" act":"")+'"><input type="checkbox" class="yn" data-k="npcs" data-id="'+n.id+'" data-f="met"'+(n.met?" checked":"")+'><span>'+esc(n.name)+'</span><em>'+(n.met?"met":"not met")+'</em></label>'}).join(""):'<div class="mute">No NPCs here.</div>')+'<div class="mnbox" data-mnl="'+esc(l.name)+'" data-mnc="z">'+mnInner(l,"z")+'</div></aside></div>'}
 document.addEventListener("pointerup",function(e){
  var t=e.target;if(!t||!t.closest||t.closest("#nzov"))return;
  var pn=t.closest('.card[data-ln], section.sp[data-pid="loc"]');if(!pn)return;
@@ -1486,7 +1487,7 @@ document.addEventListener("pointerup",function(e){
  ov.addEventListener("change",function(e){var el=e.target;if(el.dataset.nzedit&&ui.nz){ui.ned=ui.ned||{};ui.ned[ui.nz]=!!el.checked;nzDraw();var rt=document.querySelector("#nzov .rte");if(rt)rt.focus();return}if(el.dataset.k==="npcs"||el.dataset.k==="quests"||el.dataset.f==="visited")setTimeout(nzDraw,0)});
  document.addEventListener("keydown",function(e){if(e.key==="Escape"&&ui.nz&&!MV.open)nzClose()})})();
 /*MN-START*/
-var MN={sug:null};
+var MN={sug:null,open:""};
 function mnNorm(a){var out=[],seen={};arr(a).forEach(function(m){if(!m)return;var n=str(m.n).slice(0,60).trim(),k=cmKey(n),c=Math.max(1,Math.min(99,parseInt(m.c,10)||1));if(!k)return;if(seen[k]!==undefined){out[seen[k]].c=Math.min(99,out[seen[k]].c+c);return}seen[k]=out.length;out.push({n:n,c:c})});return out}
 function mnList(l){return l.mons||(l.mons=[])}
 function mnAllNames(){var seen={},out=[];S.enemies.forEach(function(e){var k=cmKey(e.name);if(k&&!seen[k]){seen[k]=1;out.push(e.name)}});Object.keys(MONS).forEach(function(k){if(!seen[k]){seen[k]=1;out.push(MONS[k].n)}});return out.sort(function(a,b){return a.localeCompare(b)})}
@@ -1507,33 +1508,34 @@ function mnScan(l){
    low=low.slice(0,st)+new Array(en-st+1).join(" ")+low.slice(en);re.lastIndex=en}
   if(hits)found.push({n:nm,c:num||1,on:!!(anyB||num||saved[key]),hits:hits})});
  return found.sort(function(a,b){return a.n.localeCompare(b.n)})}
-function mnInner(l){
- var ed=ui.ned&&ui.ned[l.name],ls=mnList(l),tot=ls.reduce(function(a,m){return a+m.c},0),
-  h='<h3 style="margin-top:16px">Enemies <span class="mute">('+tot+')</span></h3>';
- h+=ls.length?ls.map(function(m,i){var q=mnQuick(m.n);return'<div class="nzr"><span><b>'+esc(m.n)+'</b>'+(q?'<div class="mute">'+esc(q)+'</div>':'')+'</span>'+(ed?'<button data-mn="dec" data-i="'+i+'" aria-label="One fewer '+esc(m.n)+'">\u2212</button><b>'+m.c+'</b><button data-mn="inc" data-i="'+i+'" aria-label="One more '+esc(m.n)+'">+</button><button class="del" data-mn="del" data-i="'+i+'" aria-label="Remove '+esc(m.n)+'">Remove</button>':'<em>\u00d7'+m.c+'</em>')+'</div>'}).join(""):'<div class="mute">No enemies listed.</div>';
+function mnInner(l,ctx){
+ var ed=ctx==="c"&&ui.edit,ls=mnList(l),tot=ls.reduce(function(a,m){return a+m.c},0),
+  h=ctx==="z"?'<h3 style="margin-top:16px">Enemies <span class="mute">('+tot+')</span></h3>':'<div class="mute">Enemies ('+tot+')</div>';
+ h+=ls.length?ls.map(function(m,i){var q=mnQuick(m.n);return'<div class="nzr"><span><b>'+esc(m.n)+'</b>'+(q?'<div class="mute">'+esc(q)+'</div>':'')+'</span>'+(ed?'<button data-mn="dec" data-i="'+i+'" aria-label="One fewer '+esc(m.n)+'">−</button><b>'+m.c+'</b><button data-mn="inc" data-i="'+i+'" aria-label="One more '+esc(m.n)+'">+</button><button class="del" data-mn="del" data-i="'+i+'" aria-label="Remove '+esc(m.n)+'">Remove</button>':'<em>×'+m.c+'</em>')+'</div>'}).join(""):'<div class="mute">None listed</div>';
  if(!ed)return h;
  var sg=MN.sug&&MN.sug.loc===l.name?MN.sug:null;
  if(sg){h+='<div class="mnsug"><div class="mute" style="margin:8px 0 2px">'+(sg.list.length?"Found in the notes. Tick the ones to add:":"No enemy names found in these notes.")+'</div>'+sg.list.map(function(x,i){return'<label><input type="checkbox" class="yn" data-mnon="'+i+'"'+(x.on?" checked":"")+'><span style="flex:1">'+esc(x.n)+(x.hits>1?' <span class="mute">('+x.hits+' mentions)</span>':'')+'</span><input type="number" min="1" max="99" value="'+x.c+'" data-mnc="'+i+'" aria-label="Number of '+esc(x.n)+'"></label>'}).join("")+'<div class="mnm">'+(sg.list.length?'<button class="pri" data-mn="addsel">Add selected</button>':'')+'<button data-mn="sugx">'+(sg.list.length?"Cancel":"Close")+'</button></div></div>'}
- else h+='<div class="mnm"><button data-mn="sug">Suggest from notes</button></div>';
- h+='<div class="mnm"><select id="mnsel" aria-label="Choose an enemy to add"><option value="">Choose an enemy\u2026</option>'+mnAllNames().map(function(n){return'<option value="'+esc(n)+'">'+esc(n)+'</option>'}).join("")+'</select><input type="number" id="mnqty" min="1" max="99" value="1" aria-label="How many"><button class="pri" data-mn="add">Add</button></div>';
+ else h+='<div class="mnm"><button data-mn="sug">Suggest from notes</button>'+(MN.open===l.name?'':'<button data-mn="pick">Add enemy…</button>')+'</div>';
+ if(MN.open===l.name)h+='<div class="mnm"><select class="mnsel" aria-label="Choose an enemy to add"><option value="">Choose an enemy…</option>'+mnAllNames().map(function(n){return'<option value="'+esc(n)+'">'+esc(n)+'</option>'}).join("")+'</select><input type="number" class="mnqty" min="1" max="99" value="1" aria-label="How many"><button class="pri" data-mn="add">Add</button><button data-mn="pickx">Done</button></div>';
  return h}
-function mnRedraw(){var l=S.locations.filter(function(x){return x.name===ui.nz})[0],b=document.getElementById("mnbox");if(l&&b)b.innerHTML=mnInner(l)}
-function enemyBlock(l){var ls=l.mons||[];return ls.length?'<div><div class="mute">Enemies</div><div class="scl">'+ls.map(function(m){return'<div class="chk"><span style="flex:1">'+esc(m.n)+'</span><span class="mute">\u00d7'+m.c+'</span></div>'}).join("")+'</div></div>':''}
-(function(){var ov=document.getElementById("nzov");if(!ov)return;
- ov.addEventListener("click",function(e){var b=e.target.closest("[data-mn]");if(!b||!ui.nz)return;
-  var rt=ov.querySelector(".rte");if(rt)rtSave(rt);
-  var l=S.locations.filter(function(x){return x.name===ui.nz})[0];if(!l)return;var a=b.dataset.mn,ls=mnList(l),i=parseInt(b.dataset.i,10);
-  if(a==="inc"&&ls[i])ls[i].c=Math.min(99,ls[i].c+1);
-  else if(a==="dec"&&ls[i])ls[i].c=Math.max(1,ls[i].c-1);
-  else if(a==="del"&&ls[i])ls.splice(i,1);
-  else if(a==="sug"){MN.sug={loc:l.name,list:mnScan(l)}}
-  else if(a==="sugx"){MN.sug=null}
-  else if(a==="addsel"&&MN.sug){MN.sug.list.forEach(function(x){if(x.on)mnAdd(l,x.n,x.c)});MN.sug=null}
-  else if(a==="add"){var sel=document.getElementById("mnsel"),q=document.getElementById("mnqty");if(!sel||!sel.value)return;mnAdd(l,sel.value,q?q.value:1)}
-  save();mnRedraw()});
- ov.addEventListener("change",function(e){var el=e.target;if(!MN.sug)return;
-  if(el.dataset.mnon!==undefined&&MN.sug.list[el.dataset.mnon])MN.sug.list[el.dataset.mnon].on=!!el.checked;
-  else if(el.dataset.mnc!==undefined&&MN.sug.list[el.dataset.mnc]){var v=Math.max(1,Math.min(99,parseInt(el.value,10)||1));MN.sug.list[el.dataset.mnc].c=v;MN.sug.list[el.dataset.mnc].on=true;var cb=ov.querySelector('[data-mnon="'+el.dataset.mnc+'"]');if(cb)cb.checked=true}})})();
+function mnBoxDraw(box){var l=S.locations.filter(function(x){return x.name===box.dataset.mnl})[0];if(l)box.innerHTML=mnInner(l,box.dataset.mnc)}
+function enemyBlock(l){var ls=l.mons||[];if(!ui.edit&&!ls.length)return"";return'<div class="mnbox" data-mnl="'+esc(l.name)+'" data-mnc="c">'+mnInner(l,"c")+'</div>'}
+document.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest("[data-mn]");if(!b)return;var box=b.closest("[data-mnl]");if(!box)return;
+ var rt=document.querySelector("#nzov:not([hidden]) .rte");if(rt)rtSave(rt);
+ var l=S.locations.filter(function(x){return x.name===box.dataset.mnl})[0];if(!l)return;var a=b.dataset.mn,ls=mnList(l),i=parseInt(b.dataset.i,10);
+ if(a==="inc"&&ls[i])ls[i].c=Math.min(99,ls[i].c+1);
+ else if(a==="dec"&&ls[i])ls[i].c=Math.max(1,ls[i].c-1);
+ else if(a==="del"&&ls[i])ls.splice(i,1);
+ else if(a==="sug"){MN.sug={loc:l.name,list:mnScan(l)}}
+ else if(a==="sugx"){MN.sug=null}
+ else if(a==="pick"){MN.open=l.name}
+ else if(a==="pickx"){MN.open=""}
+ else if(a==="addsel"&&MN.sug){MN.sug.list.forEach(function(x){if(x.on)mnAdd(l,x.n,x.c)});MN.sug=null}
+ else if(a==="add"){var sel=box.querySelector(".mnsel"),q=box.querySelector(".mnqty");if(!sel||!sel.value)return;mnAdd(l,sel.value,q?q.value:1)}
+ save();mnBoxDraw(box)});
+document.addEventListener("change",function(e){var el=e.target;if(!MN.sug||!el.dataset)return;
+ if(el.dataset.mnon!==undefined&&MN.sug.list[el.dataset.mnon])MN.sug.list[el.dataset.mnon].on=!!el.checked;
+ else if(el.dataset.mnc!==undefined&&MN.sug.list[el.dataset.mnc]&&el.type==="number"){var v=Math.max(1,Math.min(99,parseInt(el.value,10)||1));MN.sug.list[el.dataset.mnc].c=v;MN.sug.list[el.dataset.mnc].on=true;var bx=el.closest("[data-mnl]"),cb=bx&&bx.querySelector('[data-mnon="'+el.dataset.mnc+'"]');if(cb)cb.checked=true}});
 /*MN-END*/
 /*NZ-END*/
 /*GSYNC-START*/

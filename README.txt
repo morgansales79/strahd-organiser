@@ -126,3 +126,4 @@ build 64 (v1.73): fixed maps whose label is in the same Google Docs paragraph as
 build 65 (v1.74): map pictures are matched to the doc using the export's own page (image order as it appears), and maps are re-downloaded once so earlier mismatches are replaced
 build 66 (v1.75): removed the mini notes window from location cards; Expand button renamed Notes
 build 67 (v1.80): per-location Enemies list (pane view + notes popout); in Edit mode: Suggest from notes + manual alphabetised picker with counts
+build 68 (v1.81): custom NPC/quest add and enemy controls moved to location cards in edit mode; button renamed Edit locations/layout; notes popout shows enemies read-only
