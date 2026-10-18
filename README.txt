@@ -101,3 +101,15 @@ v50: Scanning an enemy now pops up a question for each missing stat (name, AC, H
 v1.10 (build 51): Version label system. Major updates change the first decimal (1.10 to 1.20), minor updates the second (1.10 to 1.11).
 
 v1.11 (build 52): Double-tapping anywhere on a location card (Locations tab or Active Session location pane) opens the notes full screen again, with the Maps button.
+
+v1.20 (build 53): Wild Shape beast damage/heal button; "Damage several" popup (multi-target, full or half per creature, calculator keypad); damage popup always opens on Normal damage; Calculator button in the left menu with a popup calculator.
+
+v1.30 (build 54): Damage several popup shows a count of values added; AoE spell calculator (roll damage by slot level, roll saves, full/half/none per creature, custom spells); new Spells tab with all 319 SRD 5.1 spells plus custom spells.
+
+v1.40 (build 55): spell search and A-Z list in Damage several; Calculator nav spacing; statblock tidy + Gargoyle/Ghast fixes; Enemies > Check against 5e (SRD).
+
+v1.50 (build 56): 5e monster library (all 334 SRD monsters) on the Enemies page and in the Encounter dropdown.
+
+v1.60 (build 57): rich text location notes (bold, italic, underline, bullets, size, colour) that sync to and from the Google Doc.
+
+v1.61 (build 58): formatting tools only in the location popout, behind an Edit mode toggle; Visited toggle under the name on every location card.
