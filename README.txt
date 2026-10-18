@@ -124,3 +124,4 @@ build 62: rolled back to the v1.71 code (the v1.80 map changes were removed).
 build 63 (v1.72): Sections now follow Google Docs Heading 3 (pulled as size-13 headings, pushed back as Heading 3); 'Edit locations' button renamed 'Edit layout'
 build 64 (v1.73): fixed maps whose label is in the same Google Docs paragraph as the picture (Shift+Enter); stray line-break characters no longer show as boxes
 build 65 (v1.74): map pictures are matched to the doc using the export's own page (image order as it appears), and maps are re-downloaded once so earlier mismatches are replaced
+build 66 (v1.75): removed the mini notes window from location cards; Expand button renamed Notes
