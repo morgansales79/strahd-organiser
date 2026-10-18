@@ -117,3 +117,8 @@ v1.61 (build 58): formatting tools only in the location popout, behind an Edit m
 v1.70 (build 59): Sections list (size 13 subheadings) in the location popout; coloured tables pulled from the Google Doc and shown in notes.
 
 v1.71 (build 60): pictures inside doc tables are counted so map download lines up; clearer map count error.
+
+v1.80 (build 61): map download falls back to per-picture download when the doc is too big for Google to export; add map pictures from the device in the location popout (Edit mode).
+
+build 62: rolled back to the v1.71 code (the v1.80 map changes were removed).
+build 63 (v1.72): Sections now follow Google Docs Heading 3 (pulled as size-13 headings, pushed back as Heading 3); 'Edit locations' button renamed 'Edit layout'

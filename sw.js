@@ -1,4 +1,4 @@
-const CACHE="strahd-organiser-v61";
+const CACHE="strahd-organiser-v63";
 const FILES=["./","index.html","manifest.webmanifest","icon-192.png","icon-512.png","icon-maskable-512.png"];
 const OCR=["ocr/tesseract.min.js","ocr/worker.min.js","ocr/tesseract-core-simd-lstm.wasm.js","ocr/tesseract-core-lstm.wasm.js","ocr/eng.traineddata","pdf/pdf.min.js","pdf/pdf.worker.min.js"];
 self.addEventListener("install",e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES).then(()=>Promise.all(OCR.map(u=>c.add(u).catch(()=>{}))))).then(()=>self.skipWaiting()))});
