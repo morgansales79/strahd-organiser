@@ -431,7 +431,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=64;var APPLABEL="1.73";
+var APPV=65;var APPLABEL="1.74";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -1398,20 +1398,24 @@ function mpExport(docId,order){
   var es=mpZip(buf).filter(function(e){return/^images\//i.test(e.name)&&e.name.slice(-1)!=="/"});
   es.sort(function(a,b){return(parseInt((a.name.match(/(\d+)\.\w+$/)||[0,0])[1],10))-(parseInt((b.name.match(/(\d+)\.\w+$/)||[0,0])[1],10))});
   if(es.length!==order.length)throw new Error("picture count differs ("+es.length+" exported, "+order.length+" found in the doc body, tables included; pictures in headers or footers are not counted)");
-  var m={},ch=Promise.resolve();
-  es.forEach(function(e,i){ch=ch.then(function(){return mpUnzip(buf,e).then(function(b){m[order[i]]=b})})});
-  return ch.then(function(){return m})})}
+  var all=mpZip(buf),he=all.filter(function(e){return/\.html?$/i.test(e.name)&&!/^images\//i.test(e.name)})[0],pick=he?mpUnzip(buf,he).then(function(b){return b.text()}).then(function(h){
+    var seq=[],re=/<img\b[^>]*?\bsrc\s*=\s*["']([^"']+)["']/gi,mt;
+    while((mt=re.exec(h))){var nm=mt[1],q;try{nm=decodeURIComponent(nm)}catch(x){}nm=nm.replace(/^\.\//,"");q=es.filter(function(e){return e.name===nm})[0];if(q)seq.push(q)}
+    return seq.length===order.length?seq:es},function(){return es}):Promise.resolve(es);
+  return pick.then(function(list){var m={},ch=Promise.resolve();
+  list.forEach(function(e,i){ch=ch.then(function(){return mpUnzip(buf,e).then(function(b){m[order[i]]=b})})});
+  return ch.then(function(){return m})})})}
 function mpSyncAll(secs,st,order){
- var meta=mpMeta(),got=0,fail=0,plan=[],rm=[],c=gcfg();
+ var meta=mpMeta(),got=0,fail=0,plan=[],rm=[],c=gcfg(),redo=false;try{redo=!localStorage.getItem("cos-mapfix174")}catch(e){}
  secs.forEach(function(sec){var k=gnk(sec.name);if(!k||!S.locations.some(function(L){return gnk(L.name)===k}))return;
   var want=sec.maps||[],cur=meta[k]||[],next=[];
   want.forEach(function(w){var ex=cur.filter(function(q){return q.id===w.id})[0];
-   if(ex&&ex.ok){ex.name=w.name;next.push(ex);return}
+   if(ex&&ex.ok&&!redo){ex.name=w.name;next.push(ex);return}if(ex)ex.ok=false;
    var ent={id:w.id,name:w.name,ok:false};next.push(ent);plan.push({ent:ent,w:w,k:k})});
   cur.forEach(function(q){if(!want.some(function(w){return w.id===q.id}))rm.push({k:k,q:q})});
   if(next.length)meta[k]=next;else delete meta[k]});
  var expP=!plan.length?Promise.resolve(null):c.maps?mpExport(c.docId,order||[]).catch(function(e){if(st)st.mapsErr=String(e&&e.message||e).slice(0,90);return null}):(st&&(st.mapsErr='turn on "Allow map pictures" in Sync > Settings'),Promise.resolve(null));
- return expP.then(function(m){var ch=Promise.resolve();
+ return expP.then(function(m){var ch=Promise.resolve();if(m&&redo){try{localStorage.setItem("cos-mapfix174","1")}catch(e){}}
   plan.forEach(function(it){ch=ch.then(function(){var b=m&&m[it.w.id];if(!b){fail++;return}
    return mpShrink(b).then(function(sb){return mpTx("readwrite",function(s){return s.put(sb,it.k+"|"+it.w.id)})}).then(function(){it.ent.ok=true;got++},function(e){fail++;if(st)st.mapsErr=String(e&&e.message||e).slice(0,90)})})});
   rm.forEach(function(r){ch=ch.then(function(){return mpTx("readwrite",function(s){return s.delete(r.k+"|"+r.q.id)}).catch(function(){})})});
