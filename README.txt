@@ -113,3 +113,5 @@ v1.50 (build 56): 5e monster library (all 334 SRD monsters) on the Enemies page 
 v1.60 (build 57): rich text location notes (bold, italic, underline, bullets, size, colour) that sync to and from the Google Doc.
 
 v1.61 (build 58): formatting tools only in the location popout, behind an Edit mode toggle; Visited toggle under the name on every location card.
+
+v1.70 (build 59): Sections list (size 13 subheadings) in the location popout; coloured tables pulled from the Google Doc and shown in notes.
