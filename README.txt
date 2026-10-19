@@ -128,3 +128,4 @@ build 66 (v1.75): removed the mini notes window from location cards; Expand butt
 build 67 (v1.80): per-location Enemies list (pane view + notes popout); in Edit mode: Suggest from notes + manual alphabetised picker with counts
 build 68 (v1.81): custom NPC/quest add and enemy controls moved to location cards in edit mode; button renamed Edit locations/layout; notes popout shows enemies read-only
 build 69 (v1.82): compact enemies list, stats removed
+build 70 (v1.90): Custom NPC / Custom quest popup on location cards in edit mode; Edit buttons for NPCs and quests (name, status, stats, notes)

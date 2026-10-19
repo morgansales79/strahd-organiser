@@ -162,7 +162,8 @@ header{min-height:104px;padding:12px 18px!important;background:linear-gradient(9
 .nzr input[type=checkbox]{width:22px;height:22px;flex:none}
 .nzr span{flex:1}
 .nzr em{font-size:.8rem;color:var(--mute);font-style:normal}
-.mnsug label{display:flex;gap:8px;align-items:center;padding:5px 0}.mnsug input[type=checkbox]{width:22px;height:22px;flex:none}.mnsug input[type=number],#mnqty{width:70px;flex:none}.mnr{padding:1px 4px;margin:1px 0}.mnr button{padding:2px 9px;min-height:30px}.mnr b{min-width:1.4em;text-align:center}.mnchips{display:flex;flex-wrap:wrap;gap:4px;margin:3px 0}.mnchip{border:1px solid var(--line);border-radius:999px;padding:1px 9px;font-size:.9rem}.mnm{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;align-items:center}#mnsel{flex:1;min-width:140px;width:auto}
+.mnsug label{display:flex;gap:8px;align-items:center;padding:5px 0}.mnsug input[type=checkbox]{width:22px;height:22px;flex:none}.mnsug input[type=number],#mnqty{width:70px;flex:none}#cqov{position:fixed;inset:0;z-index:1070;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:14px}#cqov[hidden]{display:none}.cqd{background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:12px;padding:16px;width:min(520px,100%);max-height:92vh;overflow:auto}
+.mnr{padding:1px 4px;margin:1px 0}.mnr button{padding:2px 9px;min-height:30px}.mnr b{min-width:1.4em;text-align:center}.mnchips{display:flex;flex-wrap:wrap;gap:4px;margin:3px 0}.mnchip{border:1px solid var(--line);border-radius:999px;padding:1px 9px;font-size:.9rem}.mnm{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;align-items:center}#mnsel{flex:1;min-width:140px;width:auto}
 @media (max-width:760px){.nzg{grid-template-columns:1fr;grid-template-rows:55% 1fr}}
 .empty{color:var(--mute);padding:24px;border:1px dashed var(--line);border-radius:10px;text-align:center}
 .pill{font-size:.75rem;border:1px solid var(--line);border-radius:99px;padding:1px 9px;color:var(--mute)}
@@ -432,7 +433,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=69;var APPLABEL="1.82";
+var APPV=70;var APPLABEL="1.90";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -496,8 +497,8 @@ function addCtl(k,loc){
  if(!ui.edit)return"";
  var noun=k==="npcs"?"NPC":"quest";
  var pool=S[k].filter(function(x){return x.location!==loc}).sort(function(a,b){return a.name.localeCompare(b.name)});
- return'<div style="margin-top:8px"><select data-addk="'+k+'" data-addloc="'+esc(loc)+'" aria-label="Add '+noun+' to '+esc(loc)+'"><option value="">Add '+noun+'...</option>'+pool.map(function(x){return'<option value="'+x.id+'">'+esc(x.name)+(x.location&&x.location!=="Roaming / Other"?" ("+esc(x.location)+")":"")+'</option>'}).join("")+'</select><div class="mnm"><input type="text" class="custn" placeholder="New custom '+noun+' name" aria-label="Name of a new custom '+noun+' for '+esc(loc)+'" maxlength="80"><button data-a="custadd" data-k="'+k+'" data-cl="'+esc(loc)+'">Add custom '+noun+'</button></div></div>'}
-function npcRow(n,l){return'<div class="nrow"><label class="chk"><input type="checkbox" class="yn" data-k="npcs" data-id="'+n.id+'" data-f="met"'+(n.met?" checked":"")+'><span>'+esc(n.name)+'</span></label>'+(ui.edit?'<button class="del" data-a="unassign" data-k="npcs" data-id="'+n.id+'" aria-label="Remove '+esc(n.name)+' from '+esc(l.name)+'">Remove</button>':'')+'</div>'}
+ return'<div style="margin-top:8px"><select data-addk="'+k+'" data-addloc="'+esc(loc)+'" aria-label="Add '+noun+' to '+esc(loc)+'"><option value="">Add '+noun+'...</option>'+pool.map(function(x){return'<option value="'+x.id+'">'+esc(x.name)+(x.location&&x.location!=="Roaming / Other"?" ("+esc(x.location)+")":"")+'</option>'}).join("")+'</select><div class="mnm"><button data-cq="new" data-k="'+k+'" data-loc="'+esc(loc)+'">Custom '+noun+'…</button></div></div>'}
+function npcRow(n,l){return'<div class="nrow"><label class="chk"><input type="checkbox" class="yn" data-k="npcs" data-id="'+n.id+'" data-f="met"'+(n.met?" checked":"")+'><span>'+esc(n.name)+'</span></label>'+(ui.edit?'<button data-cq="edit" data-k="npcs" data-id="'+n.id+'" aria-label="Edit '+esc(n.name)+'">Edit</button><button class="del" data-a="unassign" data-k="npcs" data-id="'+n.id+'" aria-label="Remove '+esc(n.name)+' from '+esc(l.name)+'">Remove</button>':'')+'</div>'}
 function npcBlock(l,ns){
  var met=ns.filter(function(n){return n.met}),un=ns.filter(function(n){return!n.met});
  var showUn=!ui.hideUnmet||ui.edit;
@@ -506,7 +507,7 @@ function npcBlock(l,ns){
   (un.length&&showUn?'<details class="unmet" data-loc="'+esc(l.name)+'"'+((ui.openUn&&ui.openUn[l.name])?" open":"")+'><summary>Not yet met ('+un.length+')</summary><div class="scl">'+un.map(function(n){return npcRow(n,l)}).join("")+'</div></details>':'')+
   addCtl("npcs",l.name)+'</div>'}
 function questBlock(l,qs){
- return'<div><div class="mute">Quests</div>'+(qs.length?'<div class="scl">'+qs.map(function(x){return'<div class="chk'+(x.status==="Done"?" done":"")+'"><select style="width:auto" data-k="quests" data-id="'+x.id+'" data-f="status" aria-label="Status of '+esc(x.name)+'">'+opts(QST,x.status)+'</select><span style="flex:1">'+esc(x.name)+'</span>'+(ui.edit?'<button class="del" data-a="unassign" data-k="quests" data-id="'+x.id+'" aria-label="Remove '+esc(x.name)+' from '+esc(l.name)+'">Remove</button>':'')+'</div>'}).join("")+'</div>':'<div class="mute">None listed</div>')+addCtl("quests",l.name)+'</div>'}
+ return'<div><div class="mute">Quests</div>'+(qs.length?'<div class="scl">'+qs.map(function(x){return'<div class="chk'+(x.status==="Done"?" done":"")+'"><select style="width:auto" data-k="quests" data-id="'+x.id+'" data-f="status" aria-label="Status of '+esc(x.name)+'">'+opts(QST,x.status)+'</select><span style="flex:1">'+esc(x.name)+'</span>'+(ui.edit?'<button data-cq="edit" data-k="quests" data-id="'+x.id+'" aria-label="Edit '+esc(x.name)+'">Edit</button><button class="del" data-a="unassign" data-k="quests" data-id="'+x.id+'" aria-label="Remove '+esc(x.name)+' from '+esc(l.name)+'">Remove</button>':'')+'</div>'}).join("")+'</div>':'<div class="mute">None listed</div>')+addCtl("quests",l.name)+'</div>'}
 function noteBox(name,cls,ctx){var t=(S.locations.find(function(l){return l.name===name})||{}).notes||"";
  if(ctx==="z"){if(ui.ned&&ui.ned[name])return rtToolbar()+'<div class="rte '+cls+'" contenteditable="true" role="textbox" aria-multiline="true" data-rt-loc="'+esc(name)+'" aria-label="Notes for '+esc(name)+'">'+rtEdHtml(t)+'</div>';
   return'<div class="nview '+cls+'" aria-label="Notes for '+esc(name)+'">'+(t.trim()?notesHtml(t):'<div class="mute">No notes yet. Turn on Edit mode to add some.</div>')+'</div>'}
@@ -1537,6 +1538,32 @@ document.addEventListener("change",function(e){var el=e.target;if(!MN.sug||!el.d
  if(el.dataset.mnon!==undefined&&MN.sug.list[el.dataset.mnon])MN.sug.list[el.dataset.mnon].on=!!el.checked;
  else if(el.dataset.mnc!==undefined&&MN.sug.list[el.dataset.mnc]&&el.type==="number"){var v=Math.max(1,Math.min(99,parseInt(el.value,10)||1));MN.sug.list[el.dataset.mnc].c=v;MN.sug.list[el.dataset.mnc].on=true;var bx=el.closest("[data-mnl]"),cb=bx&&bx.querySelector('[data-mnon="'+el.dataset.mnc+'"]');if(cb)cb.checked=true}});
 /*MN-END*/
+/*CQ-START*/
+var CQ=null;
+function cqEl(){var el=document.getElementById("cqov");if(!el){el=document.createElement("div");el.id="cqov";document.body.appendChild(el)}return el}
+function cqDraw(){var el=cqEl();if(!CQ){el.hidden=true;el.innerHTML="";return}
+ var q=CQ.k==="quests",noun=q?"quest":"NPC";
+ el.hidden=false;
+ el.innerHTML='<div class="cqd" role="dialog" aria-modal="true" aria-label="'+(CQ.id?"Edit ":"New ")+noun+'"><h2 style="margin:0 0 10px">'+(CQ.id?"Edit ":"New ")+noun+(CQ.loc?' <span class="mute" style="font-size:.9rem">\u00b7 '+esc(CQ.loc)+'</span>':'')+'</h2>'+
+  '<label class="f">Name<input type="text" class="cqn" value="'+esc(CQ.name)+'" maxlength="80" autocomplete="off"></label>'+
+  (q?'<label class="f" style="margin-top:8px">Status<select class="cqs">'+opts(QST,CQ.status)+'</select></label>':'<label class="f" style="margin-top:8px">Stats<textarea class="cqt" rows="2">'+esc(CQ.stats)+'</textarea></label>')+
+  '<label class="f" style="margin-top:8px">Notes<textarea class="cqo" rows="5">'+esc(CQ.notes)+'</textarea></label>'+
+  (CQ.id&&!q?'<label class="chk" style="margin-top:8px"><input type="checkbox" class="yn cqm"'+(CQ.met?" checked":"")+'><span>Met</span></label>':'')+
+  '<div class="mnm" style="justify-content:flex-end;margin-top:14px"><button data-cq="cancel">Cancel</button><button class="pri" data-cq="save">'+(CQ.id?"Save":"Add "+noun)+'</button></div></div>';
+ var n=el.querySelector(".cqn");if(n&&!CQ.id)n.focus()}
+function cqOpen(k,id,loc){var rec=id?S[k].filter(function(x){return x.id===id})[0]:null;if(id&&!rec)return;
+ CQ={k:k,id:id||"",loc:rec?rec.location:loc,name:rec?rec.name:"",status:rec&&rec.status||"Not started",notes:rec?String(rec.notes||""):"",stats:rec?String(rec.stats||""):"",met:!!(rec&&rec.met)};cqDraw()}
+function cqSave(){if(!CQ)return;var el=cqEl(),g=function(c){var x=el.querySelector(c);return x?x.value:""},name=g(".cqn").trim().slice(0,80);
+ if(!name){var n=el.querySelector(".cqn");if(n){n.focus();n.style.borderColor="var(--acc)"}return}
+ var q=CQ.k==="quests",rec=CQ.id?S[CQ.k].filter(function(x){return x.id===CQ.id})[0]:null;
+ if(!rec){rec=q?{id:uid(),name:name,location:CQ.loc,status:"Not started",notes:""}:{id:uid(),name:name,location:CQ.loc,met:false,notes:""};S[CQ.k].unshift(rec)}
+ rec.name=name;rec.notes=g(".cqo");
+ if(q)rec.status=QST.indexOf(g(".cqs"))>-1?g(".cqs"):"Not started";else{rec.stats=g(".cqt");var m=el.querySelector(".cqm");if(m)rec.met=!!m.checked}
+ CQ=null;cqDraw();save();render();if(ui.nz)nzDraw()}
+document.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest("[data-cq]");if(!b)return;var a=b.dataset.cq;
+ if(a==="new")cqOpen(b.dataset.k,"",b.dataset.loc);else if(a==="edit")cqOpen(b.dataset.k,b.dataset.id);else if(a==="cancel"){CQ=null;cqDraw()}else if(a==="save")cqSave()});
+document.addEventListener("keydown",function(e){if(CQ&&e.key==="Escape"){e.stopPropagation();CQ=null;cqDraw()}},true);
+/*CQ-END*/
 /*NZ-END*/
 /*GSYNC-START*/
 var GC={tok:"",exp:0,busy:false,open:false,log:[],err:"",conf:null,dconf:[],heads:[],res:{},gis:null};
