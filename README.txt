@@ -129,3 +129,4 @@ build 67 (v1.80): per-location Enemies list (pane view + notes popout); in Edit 
 build 68 (v1.81): custom NPC/quest add and enemy controls moved to location cards in edit mode; button renamed Edit locations/layout; notes popout shows enemies read-only
 build 69 (v1.82): compact enemies list, stats removed
 build 70 (v1.90): Custom NPC / Custom quest popup on location cards in edit mode; Edit buttons for NPCs and quests (name, status, stats, notes)
+build 71 (v1.91): dark is now the default (no longer follows the device light setting); notes popout has its own Light/Dark toggle that only affects that page

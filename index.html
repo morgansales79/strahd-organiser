@@ -12,7 +12,6 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <style>
 :root{--bg:#16121a;--panel:#201a26;--line:#3a2f43;--text:#e8e2d6;--mute:#9a91a6;--acc:#c0334d;--acc2:#7e8db0;--field:#120f16;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#ecebf1;--panel:#fafafc;--line:#cfcbd9;--text:#1d1822;--mute:#5f5869;--acc:#a3203a;--acc2:#4b5b82;--field:#fff}}
 :root[data-theme="light"]{--bg:#ecebf1;--panel:#fafafc;--line:#cfcbd9;--text:#1d1822;--mute:#5f5869;--acc:#a3203a;--acc2:#4b5b82;--field:#fff}
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 Roboto,"Noto Sans","Droid Sans",system-ui,-apple-system,"Segoe UI",Arial,sans-serif}
@@ -148,6 +147,7 @@ header{min-height:104px;padding:12px 18px!important;background:linear-gradient(9
 .gsc{margin:10px 0;padding-top:8px;border-top:1px solid var(--line)}
 .gsc2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px}
 @media (max-width:700px){.gsc2{grid-template-columns:1fr}}
+#nzov[data-nt="light"]{--bg:#ecebf1;--panel:#fafafc;--line:#cfcbd9;--text:#1d1822;--mute:#5f5869;--acc:#a3203a;--acc2:#4b5b82;--field:#fff}#nzov[data-nt="dark"]{--bg:#16121a;--panel:#201a26;--line:#3a2f43;--text:#e8e2d6;--mute:#9a91a6;--acc:#c0334d;--acc2:#7e8db0;--field:#120f16}
 #nzov{position:fixed;inset:0;z-index:900;background:var(--bg);color:var(--text);display:flex;flex-direction:column;padding:14px 18px;gap:12px}
 #nzov[hidden]{display:none}
 #mapov{position:fixed;inset:0;z-index:1100;background:#000;color:#eee;display:flex;flex-direction:column}#mapov[hidden]{display:none}.mpbar{display:flex;gap:8px;align-items:center;padding:8px 12px;background:#14101a;flex:none;overflow-x:auto;white-space:nowrap}.mpbar b{margin-right:6px}.mpst{flex:1;position:relative;overflow:hidden;touch-action:none;cursor:grab}.mpst img{position:absolute;left:0;top:0;transform-origin:0 0;max-width:none;user-select:none;-webkit-user-drag:none}.mpmsg{padding:30px;color:#aaa}
@@ -433,7 +433,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=70;var APPLABEL="1.90";
+var APPV=71;var APPLABEL="1.91";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -1471,8 +1471,8 @@ function nzDraw(){
  if(!ui.nz){el.hidden=true;el.innerHTML="";return}
  var l=S.locations.find(function(x){return x.name===ui.nz});if(!l){ui.nz=null;el.hidden=true;return}
  var qs=S.quests.filter(function(q){return q.location===l.name}),ns=S.npcs.filter(function(n){return n.location===l.name}),act=qs.filter(function(q){return q.status==="Active"}).length,met=ns.filter(function(n){return n.met}).length;
- el.hidden=false;
- el.innerHTML='<div class="nzh"><h2>'+esc(l.name)+'</h2><label class="chk"><input type="checkbox" class="yn" data-loc="'+esc(l.name)+'" data-f="visited"'+(l.status!=="Not visited"?" checked":"")+'><span>Visited</span></label><label class="chk"><input type="checkbox" class="yn" data-nzedit="1"'+(ui.ned&&ui.ned[l.name]?" checked":"")+'><span>Edit mode</span></label>'+(mpList(l.name).length?'<button data-nz="maps">Maps ('+mpList(l.name).length+')</button>':'')+'<button class="pri" data-nz="close">Close</button></div>'+
+ el.hidden=false;var nt=nzThemeGet();if(nt)el.setAttribute("data-nt",nt);else el.removeAttribute("data-nt");var ntEff=nt||(getComputedStyle(document.documentElement).getPropertyValue("--bg").trim()==="#16121a"?"dark":"light");
+ el.innerHTML='<div class="nzh"><h2>'+esc(l.name)+'</h2><label class="chk"><input type="checkbox" class="yn" data-loc="'+esc(l.name)+'" data-f="visited"'+(l.status!=="Not visited"?" checked":"")+'><span>Visited</span></label><label class="chk"><input type="checkbox" class="yn" data-nzedit="1"'+(ui.ned&&ui.ned[l.name]?" checked":"")+'><span>Edit mode</span></label>'+(mpList(l.name).length?'<button data-nz="maps">Maps ('+mpList(l.name).length+')</button>':'')+'<button data-nz="theme" aria-label="Switch this notes page between light and dark">'+(ntEff==="dark"?"Light mode":"Dark mode")+'</button><button class="pri" data-nz="close">Close</button></div>'+
  '<div class="nzg"><div class="nzw">'+noteBox(l.name,"nzt","z")+'</div>'+
  '<aside class="nzp">'+(function(){var hs=notesHeads(l.notes);return hs.length?'<h3>Sections</h3><div class="nzj">'+hs.map(function(h){return'<button data-nzj="'+h.i+'">'+esc(h.t)+'</button>'}).join("")+'</div>':""})()+'<h3'+(notesHeads(l.notes).length?' style="margin-top:16px"':'')+'>Quests <span class="mute">('+act+' active)</span></h3>'+(qs.length?qs.map(function(q){return'<div class="nzr'+(q.status==="Active"?" act":"")+'"><select data-k="quests" data-id="'+q.id+'" data-f="status" aria-label="Status of '+esc(q.name)+'">'+opts(QST,q.status)+'</select><span>'+esc(q.name)+'</span></div>'}).join(""):'<div class="mute">No quests here.</div>')+
  '<h3 style="margin-top:16px">NPCs <span class="mute">('+met+' of '+ns.length+' met)</span></h3>'+(ns.length?ns.map(function(n){return'<label class="nzr'+(n.met?" act":"")+'"><input type="checkbox" class="yn" data-k="npcs" data-id="'+n.id+'" data-f="met"'+(n.met?" checked":"")+'><span>'+esc(n.name)+'</span><em>'+(n.met?"met":"not met")+'</em></label>'}).join(""):'<div class="mute">No NPCs here.</div>')+'<div class="mnbox" data-mnl="'+esc(l.name)+'" data-mnc="z">'+mnInner(l,"z")+'</div></aside></div>'}
@@ -1538,6 +1538,8 @@ document.addEventListener("change",function(e){var el=e.target;if(!MN.sug||!el.d
  if(el.dataset.mnon!==undefined&&MN.sug.list[el.dataset.mnon])MN.sug.list[el.dataset.mnon].on=!!el.checked;
  else if(el.dataset.mnc!==undefined&&MN.sug.list[el.dataset.mnc]&&el.type==="number"){var v=Math.max(1,Math.min(99,parseInt(el.value,10)||1));MN.sug.list[el.dataset.mnc].c=v;MN.sug.list[el.dataset.mnc].on=true;var bx=el.closest("[data-mnl]"),cb=bx&&bx.querySelector('[data-mnon="'+el.dataset.mnc+'"]');if(cb)cb.checked=true}});
 /*MN-END*/
+function nzThemeGet(){try{var v=localStorage.getItem("cos-nzt");return v==="light"||v==="dark"?v:""}catch(e){return""}}
+document.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest('[data-nz="theme"]');if(!b)return;var el=document.getElementById("nzov"),cur=nzThemeGet()||(getComputedStyle(document.documentElement).getPropertyValue("--bg").trim()==="#16121a"?"dark":"light");var nx=cur==="dark"?"light":"dark";try{localStorage.setItem("cos-nzt",nx)}catch(x){}if(el)el.setAttribute("data-nt",nx);b.textContent=nx==="dark"?"Light mode":"Dark mode"});
 /*CQ-START*/
 var CQ=null;
 function cqEl(){var el=document.getElementById("cqov");if(!el){el=document.createElement("div");el.id="cqov";document.body.appendChild(el)}return el}
