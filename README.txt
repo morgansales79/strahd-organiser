@@ -135,3 +135,5 @@ build 72 (v1.100): 'Not in this fight' needs a second tap to confirm; prepared-e
 v1.110 (build 73): New "Random Encounters & Travel" tab (encounter tables with Yes/No toggles, start/destination travel with roads and long-rest options, rolls encounters and sends them to the Encounter page). Encounter page: Party level and Players boxes for the difficulty rating.
 
 v1.111 (build 74): Trinket encounters now roll on the Gothic Trinkets d100 table and show the trinket found.
+
+v1.112 (build 75): Adds the Curse of Strahd monster list to the Enemies tab once (library statblocks where available, empty entries where a statblock is needed).

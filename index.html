@@ -396,7 +396,7 @@ function norm(raw){
  s.party=arr(b.party).map(function(m){return{id:str(m.id)||uid(),name:str(m.name),className:str(m.className),level:str(m.level),ac:str(m.ac),maxHp:str(m.maxHp),passivePerception:str(m.passivePerception),notes:str(m.notes),race:str(m.race),background:str(m.background),speed:str(m.speed),init:str(m.init),str:str(m.str),dex:str(m.dex),con:str(m.con),int:str(m.int),wis:str(m.wis),cha:str(m.cha),sheet:str(m.sheet),sp:(m.sp&&typeof m.sp==="object")?m.sp:{},curHp:str(m.curHp),hdUsed:Math.max(0,parseInt(m.hdUsed,10)||0),su:(m.su&&typeof m.su==="object")?m.su:{},arcUsed:!!m.arcUsed,wsFav:arr(m.wsFav).map(function(f){return{id:str(f.id)||uid(),name:str(f.name),hp:str(f.hp),ac:str(f.ac),cr:str(f.cr),note:str(f.note)}}),wsCur:str(m.wsCur),moon:!!m.moon,wsOn:!!m.wsOn,wsName:str(m.wsName),wsHp:str(m.wsHp),wsAc:str(m.wsAc),petName:str(m.petName),petType:str(m.petType),petHp:str(m.petHp),petCur:str(m.petCur),petAc:str(m.petAc),petSpeed:str(m.petSpeed),petNotes:str(m.petNotes),ma:!!m.ma,acBase:str(m.acBase),tl:(m.tl===0||m.tl===1||m.tl===2)?m.tl:null}});
  s.round=Math.max(1,parseInt(b.round,10)||1);s.turnId=str(b.turnId);
  s.combatants=arr(b.combatants).map(function(c){return{id:str(c.id)||uid(),kind:c.kind==="pc"?"pc":"mon",ref:str(c.ref),name:str(c.name),init:str(c.init),dex:str(c.dex),hp:str(c.hp),max:str(c.max),ac:str(c.ac),wsName:str(c.wsName),wsHp:str(c.wsHp),wsMax:str(c.wsMax),wsAc:str(c.wsAc),wsOn:!!c.wsOn,pet:!!c.pet}});
- s.sess=(b.sess&&typeof b.sess==="object")?b.sess:null;s.trv=tvNorm(b.trv);
+ s.sess=(b.sess&&typeof b.sess==="object")?b.sess:null;s.trv=tvNorm(b.trv);s.enSeedV=parseInt(b.enSeedV,10)||0;
  s.encSets=arr(b.encSets).map(function(x){return{id:str(x.id)||uid(),name:str(x.name),notes:str(x.notes),items:arr(x.items).map(function(i){return{id:str(i.id)||uid(),ref:str(i.ref),qty:Math.max(1,Math.min(20,parseInt(i.qty,10)||1))}})}});
  s.spells=arr(b.spells).map(function(x){return{id:str(x.id)||uid(),name:str(x.name),level:Math.max(0,Math.min(9,parseInt(x.level,10)||0)),dice:str(x.dice),up:str(x.up),type:str(x.type),save:str(x.save),succ:x.succ==="none"?"none":"half",time:str(x.time),range:str(x.range),dur:str(x.dur),conc:!!x.conc,desc:str(x.desc),school:str(x.school)||"Custom"}});
  s.sessions=arr(b.sessions).map(function(m){return{id:str(m.id)||uid(),name:str(m.name),date:str(m.date),day:str(m.day),notes:str(m.notes)}});
@@ -435,7 +435,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=74;var APPLABEL="1.111";
+var APPV=75;var APPLABEL="1.112";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -1636,6 +1636,16 @@ document.addEventListener("change",function(e){var el=e.target,d=el&&el.dataset,
  if(c==="start"){T.start=el.value;if(T.dest===el.value)T.dest=""}else if(c==="dest")T.dest=el.value;else if(c==="rest")T.rest=!!el.checked;else if(c==="roads")T.roads=!!el.checked;else if(c==="restchk")T.restChk=!!el.checked;else if(c==="hour")T.hour=parseInt(el.value,10)||0;
  save();render()});
 /*TV-END*/
+/*ES-START*/
+var ENSEED_LIB=["Acolyte","Archmage","Assassin","Cult Fanatic","Gladiator","Guard","Knight","Mage","Noble","Priest","Spy","Thug","Veteran","Animated Armor","Flying Sword","Rug of Smothering","Bat","Cat","Baboon","Draft Horse","Giant Goat","Giant Poisonous Snake","Giant Spider","Giant Wolf Spider","Goat","Mastiff","Mule","Raven","Riding Horse","Saber-Toothed Tiger","Swarm of Centipedes","Swarm of Insects","Swarm of Poisonous Snakes","Swarm of Rats","Swarm of Spiders","Swarm of Wasps","Black Pudding","Clay Golem","Deva","Flesh Golem","Gray Ooze","Hell Hound","Imp","Invisible Stalker","Iron Golem","Lich","Night Hag","Nightmare","Quasit","Red Dragon Wyrmling","Roc","Shadow","Shambling Mound","Shield Guardian","Specter","Stone Golem","Vrock","Warhorse Skeleton","Vampire","Smoke Mephit","Nothic","Poltergeist","Arcanaloth","Crawling Claw","Death Slaad","Shadow Demon"];
+var ENSEED_NEW=["Amber Golem","Baba Lysaga's Creeping Hut","Barovian Witch","Broom of Animated Attack","Distended Human Corpse","Mongrel Folk","Phantom Warrior","Guardian Portrait","Snow Maiden","Strahd's Animated Armor","Animated Halberd"];
+function enSeed(){if(S.enSeedV>=1)return;var have={};S.enemies.forEach(function(e){have[cmKey(e.name)]=1});
+ ENSEED_LIB.forEach(function(n){var k=cmKey(n);if(have[k]||have[k+"s"])return;if(MONS[k]){lbAdd(k);have[k]=1;return}
+  S.enemies.push({id:uid(),name:n,location:"Roaming / Other",quick:"",statblock:"",notes:"Statblock needed: this monster is not in the built-in 5e library. Paste it here."});have[k]=1});
+ ENSEED_NEW.forEach(function(n){var k=cmKey(n);if(have[k])return;S.enemies.push({id:uid(),name:n,location:"Roaming / Other",quick:"",statblock:"",notes:"Curse of Strahd monster. Statblock needed: paste it here."});have[k]=1});
+ S.enSeedV=1;save()}
+enSeed();
+/*ES-END*/
 /*CQ-START*/
 var CQ=null;
 function cqEl(){var el=document.getElementById("cqov");if(!el){el=document.createElement("div");el.id="cqov";document.body.appendChild(el)}return el}
