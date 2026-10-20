@@ -441,7 +441,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=82;var APPLABEL="1.132";
+var APPV=83;var APPLABEL="1.133";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -1609,7 +1609,6 @@ function tvRun(){var T=S.trv,a=tvStart(),b=tvDest(),leg=tvLeg(a,b,T.roads);if(!l
  res.checks=checks;T.res=res;ui.tvc=null;save()}
 function tvEnemy(name){var k=cmKey(name),en=S.enemies.filter(function(e){return cmKey(e.name)===k||cmKey(e.name)===k+"s"})[0];if(en)return en;if(MONS[k])return lbAdd(k);var r=cmFind(name);if(r)return lbAdd(cmKey(r.n));return null}
 function tvGo(i){var T=S.trv,e=T.res&&T.res.enc&&T.res.enc[i];if(!e||!e.mons.length)return;
- if(S.combatants.some(function(c){return c.kind==="mon"})&&ui.tvc!==i){ui.tvc=i;render();return}
  ui.tvc=null;tvLoad(e)}
 function tvLoad(e){S.combatants=S.combatants.filter(function(c){return c.kind!=="mon"});S.round=1;S.turnId="";var miss=[];
  e.mons.forEach(function(m){var en=tvEnemy(m.m);if(!en){miss.push(m.m);return}addEnemies(en,Math.max(1,Math.min(20,m.n)))});
@@ -1658,7 +1657,6 @@ function restEncOut(list,rv){if(rv.loc===2)return'<div class="mute" style="margi
  if(!list.length)return'<div class="mute" style="margin:8px 0">No random encounter while resting.</div>';
  return list.map(function(e,i){return'<div class="card" style="margin:8px 0;border-color:var(--acc)"><div><b>Random encounter, '+tvFmt(e.t)+' into the rest</b> <span class="mute">('+(rv.night?"night":"day")+', '+(rv.loc===1?"road":"wilderness")+')</span></div><div style="font-size:1.05em"><b>'+esc(e.text)+'</b></div>'+(e.hint?'<div class="mute">'+esc(e.hint)+'</div>':'')+(e.mons.length?'<div><button class="pri" data-rs="goenc" data-i="'+i+'">Go to encounter</button></div>':'')+'</div>'}).join("")}
 function restGoEnc(b){var e=ui.rsEnc&&ui.rsEnc[+b.dataset.i];if(!e)return;
- if(S.combatants.some(function(c){return c.kind==="mon"})&&!b.dataset.c){b.dataset.c="1";b.textContent="Tap again to replace the current encounter";return}
  var el=document.getElementById("restov");if(el)el.style.display="none";tvLoad(e)}
 document.addEventListener("input",function(e){var r=e.target.dataset&&e.target.dataset.rsl;if(!r)return;var v=document.querySelector('[data-rslv="'+r+'"]');if(!v)return;if(r==="time")v.textContent=e.target.value==="1"?"Night":"Day";else[].forEach.call(v.children,function(c,i){c.classList.toggle("on",i===+e.target.value)})});
 function lnBar(){return'<div style="display:flex;gap:8px;margin-bottom:12px"><button data-a="tab" data-t="Locations" class="'+(ui.tab==="Locations"?"pri":"")+'">Locations</button><button data-a="tab" data-t="NPCs" class="'+(ui.tab==="NPCs"?"pri":"")+'">NPCs</button></div>'}
@@ -1687,7 +1685,7 @@ function tvAnimClick(e){var b=e.target.closest("[data-ta]"),A=TA;if(e.target.id=
  if(a==="close")tvAnimClose();
  else if(a==="skip"){var n=A.r.enc[A.next];if(n){A.t=n.t;A.pause=true}else{A.t=A.total;A.done=true}tvAnimDraw()}
  else if(a==="cont"){A.next++;A.pause=false;A.last=performance.now();tvAnimDraw()}
- else if(a==="go"){var en=A.r.enc[A.next];if(!en)return;if(S.combatants.some(function(c){return c.kind==="mon"})&&!b.dataset.c){b.dataset.c="1";b.textContent="Tap again to replace the current encounter";return}tvAnimClose();tvLoad(en)}
+ else if(a==="go"){var en=A.r.enc[A.next];if(!en)return;tvAnimClose();tvLoad(en)}
  else if(a==="arrive"){var nm=A.r.b;if(S.locations.some(function(l){return l.name===nm})){SS.loc=nm;saveSess()}S.trv.start="";S.trv.res=null;save();tvAnimClose();render()}}
 document.addEventListener("keydown",function(e){if(e.key==="Escape"&&TA)tvAnimClose()});
 /*TV-END*/
