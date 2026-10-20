@@ -141,3 +141,5 @@ v1.112 (build 75): Adds the Curse of Strahd monster list to the Enemies tab once
 v1.113 (build 76): Curse of Strahd statblocks added (creeping hut, witch, broom, distended corpse, mongrelfolk, phantom warrior, guardian portrait, Strahd's animated armor, Amber Golem). Added all seeded monsters to the default list, with a Restore CoS monsters button on the Enemies tab.
 
 v1.114 (build 77): All missing monster statblocks added (vampire, mephit, nothic, poltergeist, arcanaloth, crawling claw, death slaad, shadow demon, snow maiden, animated halberd). Appendix D NPCs added (Baba Lysaga, Ezmerelda, Izek, Madam Eva, Pidlwick II, Rahadin, Rictavio, Vladimir, the Abbot). Enemies tab renamed Enemies & NPCs.
+
+v1.120 (build 78): Short and long rest popups have Day/Night and Wilderness/Road/Safe sliders and roll random encounters while resting, with a Go to encounter button.
