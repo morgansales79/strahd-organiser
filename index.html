@@ -193,14 +193,14 @@ header{min-height:104px;padding:12px 18px!important;background:linear-gradient(9
 /* v1.174 motion and full-screen group damage */
 @keyframes cosFade{from{opacity:0}to{opacity:1}}
 @keyframes cosUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-.tabfade{animation:cosUp .42s ease both}
-#atkpop,#tgpop,#downpop,#startpop,#tvanim,#tvmo,#restov,#rulov,#libov,#cmpov,#cqov,#esov,#gcov,#gsov,#mapov,#nzov,#scanov{animation:cosFade .32s ease both}
-.fadein{animation:cosFade .32s ease both}
+.tabfade{animation:cosUp .63s ease both}
+#atkpop,#tgpop,#downpop,#startpop,#tvanim,#tvmo,#restov,#rulov,#libov,#cmpov,#cqov,#esov,#gcov,#gsov,#mapov,#nzov,#scanov{animation:cosFade .48s ease both}
+.fadein{animation:cosFade .48s ease both}
 @keyframes cosOut{from{opacity:1}to{opacity:0}}
-body>.cosghost{animation:cosOut .28s ease forwards!important;pointer-events:none!important}
-button,select,input,textarea,.card,.cb,.pill{transition:background-color .2s ease,border-color .2s ease,color .2s ease,opacity .2s ease,box-shadow .2s ease}
+body>.cosghost{animation:cosOut .42s ease forwards!important;pointer-events:none!important}
+button,select,input,textarea,.card,.cb,.pill{transition:background-color .3s ease,border-color .3s ease,color .3s ease,opacity .3s ease,box-shadow .3s ease}
 button:active{transform:scale(.97)}
-button{transition:background-color .2s ease,border-color .2s ease,color .2s ease,opacity .2s ease,box-shadow .2s ease,transform .12s ease}
+button{transition:background-color .3s ease,border-color .3s ease,color .3s ease,opacity .3s ease,box-shadow .3s ease,transform .12s ease}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 #mdov .calc,#mdov .calc.wide{width:calc(100vw - 16px)!important;height:calc(100dvh - 16px)!important;max-height:none!important;padding:14px!important;display:flex;flex-direction:column}
 #mdov .mdcols{flex:1;min-height:0}
@@ -469,7 +469,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=100;var APPLABEL="1.175";
+var APPV=101;var APPLABEL="1.176";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -1077,7 +1077,7 @@ var _render0=render;render=function(){var t=ui.tab,ch=ui._ft!==t;ui._ft=t;_rende
 
 var OVL=["atkpop","tgpop","downpop","startpop","tvanim","tvmo","restov","rulov","libov","cmpov","cqov","esov","gcov","gsov","mapov","nzov","scanov","mdov"],OVS={};
 function ovVis(el){return el.childElementCount>0&&!el.hidden&&getComputedStyle(el).display!=="none"}
-function ovGhost(c){c.removeAttribute("hidden");c.classList.add("cosghost");if(!c.style.display||c.style.display==="none")c.style.display="flex";document.body.appendChild(c);setTimeout(function(){if(c.parentNode)c.parentNode.removeChild(c)},320)}
+function ovGhost(c){c.removeAttribute("hidden");c.classList.add("cosghost");if(!c.style.display||c.style.display==="none")c.style.display="flex";document.body.appendChild(c);setTimeout(function(){if(c.parentNode)c.parentNode.removeChild(c)},470)}
 function ovAttach(el){if(el._ov)return;el._ov=1;var was=ovVis(el);if(was)OVS[el.id]=el.cloneNode(true);
  new MutationObserver(function(){var v=ovVis(el);if(v){OVS[el.id]=el.cloneNode(true);was=true}else if(was){was=false;var c=OVS[el.id];OVS[el.id]=null;if(c)ovGhost(c)}}).observe(el,{childList:true,subtree:true,attributes:true,attributeFilter:["style","hidden","class"]})}
 function ovScan(){OVL.forEach(function(id){var el=document.getElementById(id);if(el&&!el.classList.contains("cosghost"))ovAttach(el)})}
