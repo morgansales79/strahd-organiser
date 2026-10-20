@@ -137,3 +137,5 @@ v1.110 (build 73): New "Random Encounters & Travel" tab (encounter tables with Y
 v1.111 (build 74): Trinket encounters now roll on the Gothic Trinkets d100 table and show the trinket found.
 
 v1.112 (build 75): Adds the Curse of Strahd monster list to the Enemies tab once (library statblocks where available, empty entries where a statblock is needed).
+
+v1.113 (build 76): Curse of Strahd statblocks added (creeping hut, witch, broom, distended corpse, mongrelfolk, phantom warrior, guardian portrait, Strahd's animated armor, Amber Golem). Added all seeded monsters to the default list, with a Restore CoS monsters button on the Enemies tab.
