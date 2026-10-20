@@ -133,3 +133,5 @@ build 71 (v1.91): dark is now the default (no longer follows the device light se
 build 72 (v1.100): 'Not in this fight' needs a second tap to confirm; prepared-encounter planner is now a popout; search box on the add-enemy dropdowns (encounter page and planner)
 
 v1.110 (build 73): New "Random Encounters & Travel" tab (encounter tables with Yes/No toggles, start/destination travel with roads and long-rest options, rolls encounters and sends them to the Encounter page). Encounter page: Party level and Players boxes for the difficulty rating.
+
+v1.111 (build 74): Trinket encounters now roll on the Gothic Trinkets d100 table and show the trinket found.
