@@ -143,3 +143,5 @@ v1.113 (build 76): Curse of Strahd statblocks added (creeping hut, witch, broom,
 v1.114 (build 77): All missing monster statblocks added (vampire, mephit, nothic, poltergeist, arcanaloth, crawling claw, death slaad, shadow demon, snow maiden, animated halberd). Appendix D NPCs added (Baba Lysaga, Ezmerelda, Izek, Madam Eva, Pidlwick II, Rahadin, Rictavio, Vladimir, the Abbot). Enemies tab renamed Enemies & NPCs.
 
 v1.120 (build 78): Short and long rest popups have Day/Night and Wilderness/Road/Safe sliders and roll random encounters while resting, with a Go to encounter button.
+
+v1.121 (build 79): Search boxes for the travel start/destination; Wilderness / Road / Safe labels under the rest slider.

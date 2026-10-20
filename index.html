@@ -35,6 +35,7 @@ label.f input,label.f select,label.f textarea{margin-top:3px;color:var(--text);f
 .row{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.rsl3{display:flex;justify-content:space-between;font-size:13px;opacity:.9}.rsl3 span.on{color:var(--acc);font-weight:700}
 .rsl{display:flex;align-items:center;gap:10px}.rsl input{flex:1}.rsl span{font-size:13px;min-width:62px}.rsl span:last-child{text-align:right}
 .trg{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:14px;align-items:start}@media(max-width:860px){.trg{grid-template-columns:1fr}}.tvt{width:100%;border-collapse:collapse}.tvt th,.tvt td{text-align:left;padding:4px 6px;border-bottom:1px solid var(--line)}.tvt td:last-child,.tvt th:last-child{text-align:right}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -439,7 +440,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=78;var APPLABEL="1.120";
+var APPV=79;var APPLABEL="1.121";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -1615,7 +1616,7 @@ function tvLoad(e){S.combatants=S.combatants.filter(function(c){return c.kind!==
  if(S.party.length&&!S.combatants.some(function(c){return c.kind==="pc"})){var pb=document.querySelector('[data-a="encparty"]');if(pb)pb.click()}}
 function tvView(){var T=S.trv,a=tvStart(),b=tvDest(),pts=tvPts(),leg=tvLeg(a,b,T.roads),pp=tvPartyPt();
  var tbl=function(nm,tb,k){return'<div class="card"><h3>'+nm+' encounters</h3><table class="tvt"><thead><tr><th>d12+d8</th><th>Encounter</th><th>Allowed</th></tr></thead><tbody>'+tb.map(function(e){return'<tr><td>'+e[0]+'</td><td>'+esc(e[1]+(e[2]&&e[2]!=="1"&&e[2].charAt(0)!=="*"?" ("+e[2]+")":""))+'</td><td><label class="chk"><input type="checkbox" class="yn" data-tve="'+k+'" data-r="'+e[0]+'"'+(T.dis[k][e[0]]?"":" checked")+' aria-label="Allow '+esc(e[1])+'"></label></td></tr>'}).join("")+'</tbody></table></div>'};
- var sel=function(id,cur,ex){return'<select data-tvc="'+id+'">'+pts.filter(function(p){return p!==ex}).map(function(p){return'<option'+(p===cur?" selected":"")+'>'+esc(p)+'</option>'}).join("")+'</select>'};
+ var tq=ui.tvq||(ui.tvq={start:"",dest:""});var sel=function(id,cur,ex){var q=String(tq[id]||"").toLowerCase().trim(),l=pts.filter(function(p){return p!==ex&&(!q||p.toLowerCase().indexOf(q)>-1)});return'<input type="search" data-tvq="'+id+'" value="'+esc(tq[id]||"")+'" placeholder="Search locations\u2026" aria-label="Search locations"><select data-tvc="'+id+'">'+(l.length?l.map(function(p){return'<option'+(p===cur?" selected":"")+'>'+esc(p)+'</option>'}).join(""):'<option value="">No matches</option>')+'</select>'};
  var hrs='';for(var h=0;h<24;h++)hrs+='<option value="'+h+'"'+(h===T.hour?" selected":"")+'>'+(h<10?"0":"")+h+':00</option>';
  var r=T.res,out='';
  if(r&&r.err)out='<div class="card"><div class="mute">'+esc(r.err)+'</div></div>';
@@ -1635,12 +1636,16 @@ document.addEventListener("click",function(e){var b=e.target.closest&&e.target.c
  if(a==="start"){tvRun();render()}else if(a==="go")tvGo(+b.dataset.i);else if(a==="clear"){T.res=null;ui.tvc=null;save();render()}
  else if(a==="follow"){T.start="";save();render()}else if(a==="wisp"){T.wisp=false;save();render()}
  else if(a==="arrive"&&T.res){var n=T.res.b;if(S.locations.some(function(l){return l.name===n})){SS.loc=n;saveSess()}T.start="";T.res=null;save();render()}});
+document.addEventListener("input",function(e){var el=e.target,d=el&&el.dataset;if(!d||!d.tvq||!S.trv)return;var T=S.trv,k=d.tvq,q=el.value.toLowerCase().trim(),pos=el.selectionStart;ui.tvq=ui.tvq||{start:"",dest:""};ui.tvq[k]=el.value;
+ var cur=k==="start"?tvStart():tvDest(),ex=k==="dest"?tvStart():"",l=TRVM.pts.filter(function(p){return p!==ex&&(!q||p.toLowerCase().indexOf(q)>-1)}).sort(function(a,b){return a.localeCompare(b)});
+ if(l.length&&l.indexOf(cur)<0){if(k==="start"){T.start=l[0];if(T.dest===l[0])T.dest=""}else T.dest=l[0];save()}
+ render();var n=document.querySelector('[data-tvq="'+k+'"]');if(n){n.focus();try{n.setSelectionRange(pos,pos)}catch(x){}}});
 document.addEventListener("change",function(e){var el=e.target,d=el&&el.dataset,T=S.trv;if(!d)return;
  if(d.tve){var k=d.tve;if(el.checked)delete T.dis[k][d.r];else T.dis[k][d.r]=1;save();return}
  if(!d.tvc)return;var c=d.tvc;
  if(c==="start"){T.start=el.value;if(T.dest===el.value)T.dest=""}else if(c==="dest")T.dest=el.value;else if(c==="rest")T.rest=!!el.checked;else if(c==="roads")T.roads=!!el.checked;else if(c==="restchk")T.restChk=!!el.checked;else if(c==="hour")T.hour=parseInt(el.value,10)||0;
  save();render()});
-function restEncUi(night){var loc=ui.rsLoc||0;return'<div class="card" style="margin:10px 0;gap:6px"><b>Random encounters while resting</b><div class="mute">Checked every 30 minutes with the Barovia rules: 18 or higher on the road, 15 or higher in the wilderness, none if it is safe.</div><div class="rsl"><span>Day</span><input type="range" min="0" max="1" step="1" value="'+(night?1:0)+'" data-rsl="time" aria-label="Day or night"><span>Night</span></div><div class="mute" data-rslv="time">'+(night?"Night":"Day")+'</div><div class="rsl"><span>Wilderness</span><input type="range" min="0" max="2" step="1" value="'+loc+'" data-rsl="loc" aria-label="Wilderness, road or safe"><span>Safe</span></div><div class="mute" data-rslv="loc">'+["Wilderness","Road","Safe"][loc]+'</div></div>'}
+function restEncUi(night){var loc=ui.rsLoc||0;return'<div class="card" style="margin:10px 0;gap:6px"><b>Random encounters while resting</b><div class="mute">Checked every 30 minutes with the Barovia rules: 18 or higher on the road, 15 or higher in the wilderness, none if it is safe.</div><div class="rsl"><span>Day</span><input type="range" min="0" max="1" step="1" value="'+(night?1:0)+'" data-rsl="time" aria-label="Day or night"><span>Night</span></div><div class="mute" data-rslv="time">'+(night?"Night":"Day")+'</div><div class="rsl"><input type="range" min="0" max="2" step="1" value="'+loc+'" data-rsl="loc" aria-label="Wilderness, road or safe"></div><div class="rsl3" data-rslv="loc">'+["Wilderness","Road","Safe"].map(function(n,i){return'<span'+(i===loc?' class="on"':'')+'>'+n+'</span>'}).join("")+'</div></div>'}
 function restEncRead(){var t=document.querySelector('[data-rsl="time"]'),l=document.querySelector('[data-rsl="loc"]'),r={night:!!t&&t.value==="1",loc:l?parseInt(l.value,10)||0:0};ui.rsLoc=r.loc;return r}
 function restEncRoll(hours,rv){var T=S.trv,out=[],found=[],i,thr=rv.loc===1?18:15;if(rv.loc===2)return out;
  for(i=1;i<=Math.ceil(hours*2-1e-9);i++){var t=Math.min(i*0.5,hours);if(found.filter(function(f){return f>t-12-1e-9}).length>=2)continue;
@@ -1654,7 +1659,7 @@ function restEncOut(list,rv){if(rv.loc===2)return'<div class="mute" style="margi
 function restGoEnc(b){var e=ui.rsEnc&&ui.rsEnc[+b.dataset.i];if(!e)return;
  if(S.combatants.some(function(c){return c.kind==="mon"})&&!b.dataset.c){b.dataset.c="1";b.textContent="Tap again to replace the current encounter";return}
  var el=document.getElementById("restov");if(el)el.style.display="none";tvLoad(e)}
-document.addEventListener("input",function(e){var r=e.target.dataset&&e.target.dataset.rsl;if(!r)return;var v=document.querySelector('[data-rslv="'+r+'"]');if(v)v.textContent=r==="time"?(e.target.value==="1"?"Night":"Day"):["Wilderness","Road","Safe"][+e.target.value]});
+document.addEventListener("input",function(e){var r=e.target.dataset&&e.target.dataset.rsl;if(!r)return;var v=document.querySelector('[data-rslv="'+r+'"]');if(!v)return;if(r==="time")v.textContent=e.target.value==="1"?"Night":"Day";else[].forEach.call(v.children,function(c,i){c.classList.toggle("on",i===+e.target.value)})});
 /*TV-END*/
 /*ES-START*/
 var ENSEED_LIB=["Acolyte","Archmage","Assassin","Cult Fanatic","Gladiator","Guard","Knight","Mage","Noble","Priest","Spy","Thug","Veteran","Animated Armor","Flying Sword","Rug of Smothering","Bat","Cat","Baboon","Draft Horse","Giant Goat","Giant Poisonous Snake","Giant Spider","Giant Wolf Spider","Goat","Mastiff","Mule","Raven","Riding Horse","Saber-Toothed Tiger","Swarm of Centipedes","Swarm of Insects","Swarm of Poisonous Snakes","Swarm of Rats","Swarm of Spiders","Swarm of Wasps","Black Pudding","Clay Golem","Deva","Flesh Golem","Gray Ooze","Hell Hound","Imp","Invisible Stalker","Iron Golem","Lich","Night Hag","Nightmare","Quasit","Red Dragon Wyrmling","Roc","Shadow","Shambling Mound","Shield Guardian","Specter","Stone Golem","Vrock","Warhorse Skeleton","Vampire","Smoke Mephit","Nothic","Poltergeist","Arcanaloth","Crawling Claw","Death Slaad","Shadow Demon"];
