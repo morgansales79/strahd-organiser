@@ -424,7 +424,7 @@ function norm(raw){
   s.npcs=arr(b.npcs).map(function(n){return{id:str(n.id)||uid(),name:str(n.name),location:LOCS.indexOf(n.location)>-1?n.location:"Roaming / Other",met:!!n.met,notes:str(n.notes),stats:str(n.stats)}});
   s.quests=arr(b.quests).map(function(q){return{id:str(q.id)||uid(),name:str(q.name),location:LOCS.indexOf(q.location)>-1?q.location:"Roaming / Other",status:QST.indexOf(q.status)>-1?q.status:"Not started",notes:str(q.notes)}});
  }
- if(Array.isArray(b.enemies))s.enemies=b.enemies.map(function(e){return{id:str(e.id)||uid(),name:str(e.name),location:LOCS.indexOf(e.location)>-1?e.location:"Roaming / Other",quick:str(e.quick),statblock:str(e.statblock),notes:str(e.notes)}});else s.enemies=f.enemies;
+ if(Array.isArray(b.enemies))s.enemies=b.enemies.map(function(e){return{npc:(e.npc===true||e.npc===false)?e.npc:undefined,id:str(e.id)||uid(),name:str(e.name),location:LOCS.indexOf(e.location)>-1?e.location:"Roaming / Other",quick:str(e.quick),statblock:str(e.statblock),notes:str(e.notes)}});else s.enemies=f.enemies;
  if(!(b.eseed>=3)){s.enemies.forEach(function(e){if(e.name==="Vampire (Strahd)"&&e.statblock===ENEMYOLD["Vampire (Strahd)"]){e.name="Strahd von Zarovich";e.quick="AC 16, HP 144, CR 15"}});ENEMIES.forEach(function(sd){if(!s.enemies.find(function(e){return e.name.toLowerCase()===sd[0].toLowerCase()}))s.enemies.push({id:uid(),name:sd[0],location:sd[1],quick:sd[2],statblock:sd[3],notes:""})})}
  if(false){ENEMIES.forEach(function(sd){if(!s.enemies.find(function(e){return e.name.toLowerCase()===sd[0].toLowerCase()}))s.enemies.push({id:uid(),name:sd[0],location:sd[1],quick:sd[2],statblock:sd[3],notes:""})})}
  s.eseed=3;
@@ -447,7 +447,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=94;var APPLABEL="1.161";
+var APPV=95;var APPLABEL="1.170";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -543,9 +543,9 @@ function entities(k,title,noun){
   var ctl=k==="npcs"?'<label class="chk"><input type="checkbox" class="yn" data-k="npcs" data-id="'+x.id+'" data-f="met"'+(x.met?" checked":"")+'><span>Met by the party</span></label>':'<label class="f">Status<select data-k="quests" data-id="'+x.id+'" data-f="status">'+opts(QST,x.status)+'</select></label>';
   return'<div class="card">'+fld("Name",k,x.id,"name",x.name)+(k==="npcs"?fld("Quick stats",k,x.id,"stats",x.stats||""):"")+'<label class="f">Location<select data-k="'+k+'" data-id="'+x.id+'" data-f="location">'+opts(abc(LOCS),x.location)+'</select></label>'+ctl+'<label class="f">Notes<textarea style="min-height:'+(k==="quests"?"180px":k==="npcs"?"150px":"64px")+'" data-k="'+k+'" data-id="'+x.id+'" data-f="notes">'+esc(x.notes)+'</textarea></label><div>'+delBtn(k,x.id,x.name)+'</div></div>'}).join("")+'</div>':'<div class="empty">'+(k==="quests"&&ui.hideDone&&S.quests.length?"No quests to show. Untick Hide completed to see finished quests.":"Nothing here yet.")+'</div>')}
 function enemies(){
- var q=ui.q.toLowerCase(),items=S.enemies.filter(function(x){return x.name.toLowerCase().indexOf(q)>-1}).sort(function(a,b){var na=/^New /.test(a.name),nb=/^New /.test(b.name);return na!==nb?(na?-1:1):a.name.localeCompare(b.name)});
- return'<div class="row"><h2>Enemies &amp; NPCs</h2><div style="display:flex;gap:8px;flex:1;justify-content:flex-end;flex-wrap:wrap"><div style="flex:1;max-width:260px"><input data-ui="q" value="'+esc(ui.q)+'" placeholder="Search Enemies &amp; NPCs" aria-label="Search Enemies and NPCs"></div><label class="chk"><input type="checkbox" class="yn" data-a="stat"'+(ui.stat?" checked":"")+'><span>Show detailed statblocks</span></label><label class="btn" tabindex="0">Take photo of statblock<input type="file" id="scfk" accept="image/*" capture="environment" hidden></label><label class="btn" tabindex="0">Scan statblock<input type="file" id="scfc" accept="image/*" hidden></label><label class="btn" tabindex="0">Import PDF<input type="file" id="scfp" accept="application/pdf,.pdf" hidden></label><button data-a="libopen">5e monster library</button><button data-a="cmpopen">Check against 5e</button><button data-a="enrestore" title="Adds back any default Curse of Strahd monsters you have removed">Restore CoS monsters</button><button class="pri" data-a="add" data-k="enemies">Add enemy</button></div></div>'+(ui.enMsg?'<div class="mute" style="margin-bottom:8px">'+esc(ui.enMsg)+'</div>':'')+(items.length?'<div class="grid">'+items.map(function(x){
-  return'<div class="card">'+fld("Name","enemies",x.id,"name",x.name)+fld("Quick stats","enemies",x.id,"quick",x.quick)+'<label class="f">Found at<select data-k="enemies" data-id="'+x.id+'" data-f="location">'+opts(abc(LOCS),x.location)+'</select></label>'+(ui.stat?'<label class="f">Detailed statblock<textarea style="min-height:360px;font-size:15px" data-k="enemies" data-id="'+x.id+'" data-f="statblock" placeholder="Paste or type the full statblock: abilities, actions, traits">'+esc(x.statblock)+'</textarea></label>':'')+'<label class="f">Notes<textarea style="min-height:90px" data-k="enemies" data-id="'+x.id+'" data-f="notes">'+esc(x.notes)+'</textarea></label><div>'+delBtn("enemies",x.id,x.name)+'</div></div>'}).join("")+'</div>':'<div class="empty">Nothing here yet.</div>')}
+ var q=ui.q.toLowerCase(),tabN=ui.enTab==='n',items=S.enemies.filter(function(x){return isNpcEn(x)===tabN&&x.name.toLowerCase().indexOf(q)>-1}).sort(function(a,b){var na=/^New /.test(a.name),nb=/^New /.test(b.name);return na!==nb?(na?-1:1):a.name.localeCompare(b.name)});
+ return'<div style="display:flex;gap:8px;margin-bottom:12px"><button data-a="entab" data-v="e" class="'+(tabN?"":"pri")+'">Enemies</button><button data-a="entab" data-v="n" class="'+(tabN?"pri":"")+'">NPC statblocks</button></div><div class="row"><h2>'+(tabN?'NPC statblocks':'Enemies')+'</h2><div style="display:flex;gap:8px;flex:1;justify-content:flex-end;flex-wrap:wrap"><div style="flex:1;max-width:260px"><input data-ui="q" value="'+esc(ui.q)+'" placeholder="Search '+(tabN?'NPC statblocks':'enemies')+'" aria-label="Search"></div><label class="chk"><input type="checkbox" class="yn" data-a="stat"'+(ui.stat?" checked":"")+'><span>Show detailed statblocks</span></label><label class="btn" tabindex="0">Take photo of statblock<input type="file" id="scfk" accept="image/*" capture="environment" hidden></label><label class="btn" tabindex="0">Scan statblock<input type="file" id="scfc" accept="image/*" hidden></label><label class="btn" tabindex="0">Import PDF<input type="file" id="scfp" accept="application/pdf,.pdf" hidden></label><button data-a="libopen">5e monster library</button><button data-a="cmpopen">Check against 5e</button><button data-a="enrestore" title="Adds back any default Curse of Strahd monsters you have removed">Restore CoS monsters</button><button class="pri" data-a="'+(tabN?"addnpcsb":"add")+'" data-k="enemies">'+(tabN?"Add NPC":"Add enemy")+'</button></div></div>'+(ui.enMsg?'<div class="mute" style="margin-bottom:8px">'+esc(ui.enMsg)+'</div>':'')+(items.length?'<div class="grid">'+items.map(function(x){
+  return'<div class="card">'+fld("Name","enemies",x.id,"name",x.name)+fld("Quick stats","enemies",x.id,"quick",x.quick)+'<label class="f">Found at<select data-k="enemies" data-id="'+x.id+'" data-f="location">'+opts(abc(LOCS),x.location)+'</select></label>'+(ui.stat?'<label class="f">Detailed statblock<textarea style="min-height:360px;font-size:15px" data-k="enemies" data-id="'+x.id+'" data-f="statblock" placeholder="Paste or type the full statblock: abilities, actions, traits">'+esc(x.statblock)+'</textarea></label>':'')+'<label class="f">Notes<textarea style="min-height:90px" data-k="enemies" data-id="'+x.id+'" data-f="notes">'+esc(x.notes)+'</textarea></label><label class="chk"><input type="checkbox" class="yn" data-a="enpc" data-id="'+x.id+'"'+(isNpcEn(x)?" checked":"")+'><span>NPC (kept on the NPC tab, and can be targeted by monster attacks)</span></label><div>'+delBtn("enemies",x.id,x.name)+'</div></div>'}).join("")+'</div>':'<div class="empty">Nothing here yet.</div>')}
 function parseExpr(s){
  s=String(s||"").trim();if(!s||!/^[\d\s+\-,.]+$/.test(s))return NaN;
  var t=s.replace(/\s*([+-])\s*/g,"$1").replace(/[\s,]+/g,"+"),m=t.match(/[+-]?\d+/g);
@@ -946,75 +946,83 @@ function atkPop(c,h){var el=document.getElementById("atkpop");if(!el){el=documen
 document.addEventListener("keydown",function(e){if(e.key==="Escape"){var el=document.getElementById("atkpop");if(el)el.style.display="none"}});
 /*ATK-END*/
 /*TG-START*/
+var NPCNAMES=["baba lysaga","ezmerelda d'avenir","izek strazni","madam eva","pidlwick ii","rahadin","rictavio"];
+function isNpcEn(e){if(!e)return false;if(e.npc===true||e.npc===false)return e.npc;return NPCNAMES.indexOf(String(e.name||"").toLowerCase())>-1}
 function svParse(sb){var out=[],ls=String(sb||"").split(/\n/),i,L,txt,j,nx,m;
  for(i=0;i<ls.length;i++){L=ls[i];var h=L.match(/^\s*([A-Z][^.:]{1,45}?)\.\s+\S/);if(!h||/Attack(?: Roll)?:/i.test(L))continue;
   txt=L;for(j=i+1;j<ls.length;j++){nx=ls[j];if(!nx.trim()||/^[A-Z][A-Z ]+$/.test(nx.trim())||/^\s*[A-Z][^.:]{1,45}\.\s/.test(nx))break;txt+=" "+nx.trim()}
   m=txt.match(/DC\s*(\d+)\s+(Strength|Dexterity|Constitution|Intelligence|Wisdom|Charisma)\s+saving throw/i);if(!m)continue;
-  var tail=txt.slice(m.index),parts=[],re=/(\d+)?\s*\((\d+)d(\d+)(?:\s*([+\u2212-])\s*(\d+))?\)\s*([a-z]+)?\s*damage/gi,mm;
+  var tail=txt.slice(m.index),parts=[],re=/(\d+)?\s*\((\d+)d(\d+)(?:\s*([+−-])\s*(\d+))?\)\s*([a-z]+)?\s*damage/gi,mm;
   while((mm=re.exec(tail))){parts.push({n:+mm[2],d:+mm[3],k:mm[4]?(mm[4]==="+"?1:-1)*(+mm[5]):0,t:mm[6]||""})}
   if(!parts.length)continue;
   out.push({kind:"sv",name:h[1].trim(),dc:+m[1],ab:m[2].slice(0,3).toLowerCase(),parts:parts,half:/half as much/i.test(tail),aoe:/(cone|line|radius|sphere|cube|each creature)/i.test(txt),magic:true})}
  return out}
 function actList(en){var a=atkParse(en.statblock).map(function(x){x.kind="atk";return x});return a.concat(svParse(en.statblock))}
-function tgLabel(x){return x.kind==="sv"?x.name+" DC "+x.dc+" "+x.ab.toUpperCase():x.name+" "+(x.bonus>=0?"+":"\u2212")+Math.abs(x.bonus)}
-function tgMemb(c){var id=String(c.ref||"");if(id.slice(-4)==="#pet")return null;return S.party.find(function(x){return x.id===id})||null}
+function tgLabel(x){return x.kind==="sv"?x.name+" DC "+x.dc+" "+x.ab.toUpperCase():x.name+" "+(x.bonus>=0?"+":"−")+Math.abs(x.bonus)}
+function tgMemb(c){var id=String(c.ref||"");if(c.kind!=="pc"||id.slice(-4)==="#pet")return null;return S.party.find(function(x){return x.id===id})||null}
+function tgEn(c){return c.kind==="mon"?S.enemies.find(function(e){return e.id===c.ref}):null}
+function tgTargets(mid){return S.combatants.filter(function(c){if(c.id===mid)return false;if(c.kind==="pc")return true;return isNpcEn(tgEn(c))})}
 function tgMaOk(m){return!!m&&(/wizard|sorcerer/i.test(m.className||"")||/mage armou?r/i.test((m.notes||"")+" "+(m.sheet||"")))}
 function tgMaOn(m){return!ui.tgMa||ui.tgMa[m.id]!==false}
 function tgAc(c){var m=tgMemb(c);if(c.wsOn&&c.wsAc)return parseInt(c.wsAc,10);var base=m&&m.ac!==""&&m.ac!==undefined?parseInt(m.ac,10):parseInt(c.ac,10);if(m&&tgMaOk(m)&&!m.ma&&tgMaOn(m))return 13+pcMod(m,"dex");return base}
-function tgSvBon(c,ab){var m=tgMemb(c);if(m)return pcBon(m,"sv_"+ab,ab);var d=parseInt(c.dex,10);return ab==="dex"&&!isNaN(d)?d:0}
+function tgSvBon(c,ab){var m=tgMemb(c);if(m)return pcBon(m,"sv_"+ab,ab);var en=tgEn(c),sb=en?String(en.statblock||""):"",nm={str:"Str",dex:"Dex",con:"Con",int:"Int",wis:"Wis",cha:"Cha"}[ab],x=sb.match(new RegExp("Saving Throws[^\\n]*?\\b"+nm+"\\w*\\s*([+\\u2212-]\\s*\\d+)","i"));if(x)return parseInt(x[1].replace(/−/g,"-").replace(/\s/g,""),10)||0;
+ var y=sb.match(new RegExp(ab.toUpperCase()+"\\s*\\d+\\s*\\(([+\\u2212-]\\d+)\\)","i"));if(y)return parseInt(y[1].replace(/−/g,"-"),10)||0;var d=parseInt(c.dex,10);return ab==="dex"&&!isNaN(d)?d:0}
+function tgRes(c){var m=tgMemb(c);if(m)return{res:m.res||"",imm:m.imm||"",vul:m.vul||""};var en=tgEn(c),sb=en?String(en.statblock||""):"",g=function(re){var x=sb.match(re);return x?x[1]:""};
+ return{res:g(/Damage Resistances?\s*:?\s*([^\n]+)/i),imm:g(/Damage Immunities\s*:?\s*([^\n]+)/i),vul:g(/Damage Vulnerabilities\s*:?\s*([^\n]+)/i)}}
 function tgHas(txt,t,phys,magic){txt=String(txt||"").toLowerCase();if(!txt||!t||txt.indexOf(t)<0)return false;if(phys&&magic&&/non-?magical|nonmagical/.test(txt))return false;return true}
-function tgFactor(c,t,magic){var m=tgMemb(c);if(!m||!t)return{f:1,w:""};t=t.toLowerCase();var phys=/^(bludgeoning|piercing|slashing)$/.test(t),im=tgHas(m.imm,t,phys,magic),r=tgHas(m.res,t,phys,magic),v=tgHas(m.vul,t,phys,magic);
+function tgFactor(c,t,magic){var m=tgRes(c);if(!t)return{f:1,w:""};t=t.toLowerCase();var phys=/^(bludgeoning|piercing|slashing)$/.test(t),im=tgHas(m.imm,t,phys,magic),r=tgHas(m.res,t,phys,magic),v=tgHas(m.vul,t,phys,magic);
  if(im)return{f:0,w:"immune"};if(r&&!v)return{f:0.5,w:"resistant"};if(v&&!r)return{f:2,w:"vulnerable"};return{f:1,w:""}}
 function tgRollParts(parts,crit){return parts.map(function(p){var n=p.n*(crit?2:1),t=p.k,rs=[],i;for(i=0;i<n;i++){var v=1+Math.floor(Math.random()*p.d);rs.push(v);t+=v}return{t:p.t,v:Math.max(0,t)}})}
 function tgDmg(row,at){if(!row.parts)return{tot:0,bits:[]};var tot=0,bits=[];row.parts.forEach(function(p){var v=p.v,note="";
  if(at.kind==="sv"&&row.passed){if(ui.tg&&ui.tg.half)v=Math.floor(v/2);else v=0}
  var fx=tgFactor(row.c,p.t,at.magic);if(fx.f!==1){v=Math.floor(v*fx.f);note=" ("+fx.w+")"}
  tot+=v;bits.push(v+(p.t?" "+p.t:"")+note)});return{tot:tot,bits:bits}}
+function tgIsAoe(at){return at.kind==="sv"&&at.aoe}
 function tgOpen(mid,i){var mc=S.combatants.find(function(x){return x.id===mid}),en=mc&&S.enemies.find(function(e){return e.id===mc.ref}),at=en&&actList(en)[i];if(!at)return;
- var pcs=S.combatants.filter(function(c){return c.kind==="pc"}),sel={};if(at.kind==="sv"&&at.aoe)pcs.forEach(function(c){sel[c.id]=true});else if(pcs.length===1)sel[pcs[0].id]=true;
+ var tg=tgTargets(mid),sel={};if(tgIsAoe(at))tg.forEach(function(c){sel[c.id]=true});else if(tg.length===1)sel[tg[0].id]=true;
  ui.tg={mid:mid,i:i,sel:sel,half:at.kind==="sv"?at.half:false,res:null};tgDraw()}
 function tgCur(){var T=ui.tg;if(!T)return null;var mc=S.combatants.find(function(x){return x.id===T.mid}),en=mc&&S.enemies.find(function(e){return e.id===mc.ref}),at=en&&actList(en)[T.i];return at?{mc:mc,at:at}:null}
-function tgRoll(){var T=ui.tg,k=tgCur();if(!T||!k)return;var at=k.at,rows=[],shared=null;
+function tgRestore(row){if(!row.snap)return;var c=row.c;c.hp=row.snap.hp;c.wsHp=row.snap.wsHp;c.wsOn=row.snap.wsOn;pcFromCombat(c);row.snap=null}
+function tgUndoAll(){var T=ui.tg;if(T&&T.res){T.res.rows.forEach(tgRestore);save()}}
+function tgApplyRow(row,at){tgRestore(row);var tg=row.c,amt=tgDmg(row,at).tot;row.snap={hp:tg.hp,wsHp:tg.wsHp,wsOn:tg.wsOn};if(amt<1)return;
+ if(tg.wsOn){var wh=parseInt(tg.wsHp,10)||0,left=amt-wh;if(left>=0){tg.wsHp="0";tg.wsOn=false;if(left>0)tg.hp=String(Math.max(0,(parseInt(tg.hp,10)||0)-left))}else tg.wsHp=String(wh-amt)}
+ else tg.hp=String(Math.max(0,(parseInt(tg.hp,10)||0)-amt));
+ pcFromCombat(tg)}
+function tgRoll(){var T=ui.tg,k=tgCur();if(!T||!k)return;var at=k.at,rows=[],shared=null;tgUndoAll();
  if(at.kind==="sv")shared=tgRollParts(at.parts,false);
- S.combatants.filter(function(c){return c.kind==="pc"&&T.sel[c.id]}).forEach(function(c){var row={c:c,id:c.id};
+ tgTargets(T.mid).filter(function(c){return T.sel[c.id]}).forEach(function(c){var row={c:c,id:c.id};
   if(at.kind==="atk"){var r1=d20(),r2=d20(),md=ui.atkMode,nat=md==="a"?Math.max(r1,r2):md==="d"?Math.min(r1,r2):r1,tot=nat+at.bonus,ac=tgAc(c),crit=nat===20,fum=nat===1;
-   row.nat=nat;row.r=md==="n"?""+nat:(md==="a"?"adv ":"dis ")+r1+"/"+r2+" \u2192 "+nat;row.tot=tot;row.ac=ac;row.crit=crit;row.hit=crit||(!fum&&(isNaN(ac)||tot>=ac));row.fum=fum;row.parts=row.hit?tgRollParts(at.parts,crit):null}
+   row.nat=nat;row.r=md==="n"?""+nat:(md==="a"?"adv ":"dis ")+r1+"/"+r2+" → "+nat;row.tot=tot;row.ac=ac;row.crit=crit;row.hit=crit||(!fum&&(isNaN(ac)||tot>=ac));row.fum=fum;row.parts=row.hit?tgRollParts(at.parts,crit):null}
   else{var b=tgSvBon(c,at.ab),n=d20(),t=n+b;row.nat=n;row.bon=b;row.tot=t;row.passed=t>=at.dc;row.parts=shared}
   rows.push(row)});
- T.res={rows:rows};tgCount(at.kind==="atk"?rows.length:(rows.length?1:0))}
+ T.res={rows:rows};rows.forEach(function(r){tgApplyRow(r,at)});save();tgCount(at.kind==="atk"?rows.length:(rows.length?1:0))}
 function tgRowHtml(row,at,i){var c=row.c,h='<div class="tgrow"><b>'+esc(c.name)+'</b> ',d=tgDmg(row,at);
- if(at.kind==="atk"){h+='<span class="mute">d20 '+row.r+(at.bonus>=0?" + ":" \u2212 ")+Math.abs(at.bonus)+' = '+row.tot+(isNaN(row.ac)?'':' vs AC '+row.ac)+'</span> '+(row.crit?'<b class="ok">CRITICAL HIT</b>':row.fum?'<b class="bad">Natural 1, miss</b>':row.hit?'<b class="ok">Hit</b>':'<b class="bad">Miss</b>')}
- else{h+='<span class="mute">'+at.ab.toUpperCase()+' save d20 '+row.nat+(row.bon>=0?" + ":" \u2212 ")+Math.abs(row.bon)+' = '+row.tot+' vs DC '+at.dc+'</span> <select data-tg="pass" data-i="'+i+'" aria-label="Save result"><option value="0"'+(row.passed?"":" selected")+'>Failed save</option><option value="1"'+(row.passed?" selected":"")+'>Saved'+(ui.tg.half?" (half damage)":" (no damage)")+'</option></select>'}
+ if(at.kind==="atk"){h+='<span class="mute">d20 '+row.r+(at.bonus>=0?" + ":" − ")+Math.abs(at.bonus)+' = '+row.tot+(isNaN(row.ac)?'':' vs AC '+row.ac)+'</span> '+(row.crit?'<b class="ok">CRITICAL HIT</b>':row.fum?'<b class="bad">Natural 1, miss</b>':row.hit?'<b class="ok">Hit</b>':'<b class="bad">Miss</b>')}
+ else{h+='<span class="mute">'+at.ab.toUpperCase()+' save d20 '+row.nat+(row.bon>=0?" + ":" − ")+Math.abs(row.bon)+' = '+row.tot+' vs DC '+at.dc+'</span> <select data-tg="pass" data-i="'+i+'" aria-label="Save result"><option value="0"'+(row.passed?"":" selected")+'>Failed save</option><option value="1"'+(row.passed?" selected":"")+'>Saved'+(ui.tg.half?" (half damage)":" (no damage)")+'</option></select>'}
  if(row.parts)h+='<div>Damage: <b>'+d.tot+'</b> <span class="mute">'+(d.bits.length?d.bits.join(" + "):"")+'</span></div>';
- if(row.parts||at.kind==="sv")h+=(row.applied?'<div class="mute">Applied: '+esc(c.name)+' now '+esc(c.hp)+'/'+esc(c.max||"?")+' HP</div>':(d.tot>0?'<button class="del" data-tg="apply" data-i="'+i+'">Apply '+d.tot+' damage</button>':'<span class="mute">No damage</span>'));
+ h+='<div class="mute">'+(d.tot>0?'Taken off: ':'No damage. ')+esc(c.name)+' now '+esc(c.hp||"?")+'/'+esc(c.max||"?")+' HP</div>';
  return h+'</div>'}
 function tgDraw(){var T=ui.tg,el=document.getElementById("tgpop");if(!el){el=document.createElement("div");el.id="tgpop";document.body.appendChild(el);el.addEventListener("click",tgClick);el.addEventListener("change",tgChange)}
- var k=tgCur();if(!T||!k){el.style.display="none";return}var at=k.at,mc=k.mc,pcs=S.combatants.filter(function(c){return c.kind==="pc"}),h='';
- h+='<div class="atkbox tgbox"><div class="atkh"><b>'+esc(mc.name)+'</b>: '+esc(tgLabel(at))+'</div>'+(S.turnId===mc.id?'<div class="mute">'+(function(){var en2=S.enemies.find(function(e){return e.id===mc.ref}),nn=multiN(en2),cc=ui.turnAtk&&ui.turnAtk.id===mc.id?ui.turnAtk.n:0;return"This turn: "+Math.min(cc,nn)+" of "+nn+" attack"+(nn>1?"s":"")+" made"+(nn>1?" (Multiattack)":"")+". The turn moves on when they are all used and you close this."})()+'</div>':'')
- if(!pcs.length)h+='<div class="mute">No party members are in this encounter. Close this and use Add party first, or make a quick roll without a target.</div>';
- else{h+='<div class="mute">'+(at.kind==="sv"?"Tick everyone caught in the area. The damage is rolled once for all of them.":"Tick the target or targets. Each gets its own attack roll.")+'</div><div class="tgsel">'+pcs.map(function(c){var m=tgMemb(c),ac=tgAc(c);return'<label class="chk tgp"><input type="checkbox" class="yn" data-tg="sel" data-id="'+c.id+'"'+(T.sel[c.id]?" checked":"")+'><span><b>'+esc(c.name)+'</b> <span class="mute">'+(at.kind==="atk"?'AC '+(isNaN(ac)?'?':ac):'HP '+esc(c.hp||"?"))+'</span></span></label>'+(m&&tgMaOk(m)&&at.kind==="atk"?(m.ma?'<span class="mute tgma">Mage Armor already in AC</span>':'<label class="chk tgma"><input type="checkbox" class="yn" data-tg="ma" data-id="'+m.id+'"'+(tgMaOn(m)?" checked":"")+'><span>Mage Armor</span></label>'):'')}).join("")+'</div>';
+ var k=tgCur();if(!T||!k){el.style.display="none";return}var at=k.at,mc=k.mc,pcs=tgTargets(mc.id),h='',aoe=tgIsAoe(at);
+ h+='<div class="atkbox tgbox"><div class="atkh"><b>'+esc(mc.name)+'</b>: '+esc(tgLabel(at))+'</div>'+(S.turnId===mc.id?'<div class="mute">'+(function(){var en2=S.enemies.find(function(e){return e.id===mc.ref}),nn=multiN(en2),cc=ui.turnAtk&&ui.turnAtk.id===mc.id?ui.turnAtk.n:0;return"This turn: "+Math.min(cc,nn)+" of "+nn+" attack"+(nn>1?"s":"")+" made"+(nn>1?" (Multiattack)":"")+". The turn moves on when they are all used and you close this."})()+'</div>':'');
+ if(!pcs.length)h+='<div class="mute">There are no party members or NPCs in this encounter. Close this and use Add party first, or make a quick roll without a target.</div>';
+ else{h+='<div class="mute">'+(aoe?"Tick everyone caught in the area. The damage is rolled once for all of them.":"Choose the target.")+' Damage is taken off automatically.</div><div class="tgsel">'+pcs.map(function(c){var m=tgMemb(c),ac=tgAc(c),isn=c.kind==="mon";return'<label class="chk tgp"><input type="'+(aoe?"checkbox":"radio")+'"'+(aoe?' class="yn"':' name="tgsel"')+' data-tg="sel" data-id="'+c.id+'"'+(T.sel[c.id]?" checked":"")+'><span><b>'+esc(c.name)+'</b>'+(isn?' <span class="pill">NPC</span>':'')+' <span class="mute">'+(at.kind==="atk"?'AC '+(isNaN(ac)?'?':ac):'HP '+esc(c.hp||"?"))+'</span></span></label>'+(m&&tgMaOk(m)&&at.kind==="atk"?(m.ma?'<span class="mute tgma">Mage Armor already in AC</span>':'<label class="chk tgma"><input type="checkbox" class="yn" data-tg="ma" data-id="'+m.id+'"'+(tgMaOn(m)?" checked":"")+'><span>Mage Armor</span></label>'):'')}).join("")+'</div>';
   if(at.kind==="atk")h+='<label class="f">Roll<select data-tg="mode"><option value="n"'+(ui.atkMode==="n"?" selected":"")+'>Normal</option><option value="a"'+(ui.atkMode==="a"?" selected":"")+'>Advantage</option><option value="d"'+(ui.atkMode==="d"?" selected":"")+'>Disadvantage</option></select></label>';
   else h+='<label class="chk"><input type="checkbox" class="yn" data-tg="half"'+(T.half?" checked":"")+'><span>Half damage on a successful save</span></label>';
   h+='<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="pri" data-tg="roll">'+(T.res?"Roll again":"Roll")+'</button><button data-tg="quick">Quick roll, no target</button></div>';
-  if(T.res){h+=T.res.rows.length?T.res.rows.map(function(r,i){return tgRowHtml(r,at,i)}).join(""):'<div class="mute">Nobody is ticked.</div>';if(T.res.rows.filter(function(r){return!r.applied&&r.parts&&tgDmg(r,at).tot>0}).length>1)h+='<button class="del" data-tg="applyall">Apply to everyone</button>'}}
+  if(T.res)h+=T.res.rows.length?T.res.rows.map(function(r,i){return tgRowHtml(r,at,i)}).join(""):'<div class="mute">Nobody is selected.</div>'}
  h+='<button data-tg="close">Close</button></div>';el.innerHTML=h;el.style.display="flex"}
-function tgApply(row,at){var tg=row.c,amt=tgDmg(row,at).tot;if(row.applied||amt<1)return;
- if(tg.wsOn){var wh=parseInt(tg.wsHp,10)||0,left=amt-wh;if(left>=0){tg.wsHp="0";tg.wsOn=false;if(left>0)tg.hp=String(Math.max(0,(parseInt(tg.hp,10)||0)-left))}else tg.wsHp=String(wh-amt)}
- else tg.hp=String(Math.max(0,(parseInt(tg.hp,10)||0)-amt));
- pcFromCombat(tg);row.applied=true;save()}
 function tgChange(e){var el=e.target,d=el.dataset,T=ui.tg;if(!d||!d.tg||!T)return;var g=d.tg;
- if(g==="sel"){T.sel[d.id]=!!el.checked;if(T.res){T.res=null}tgDraw()}
- else if(g==="ma"){ui.tgMa=ui.tgMa||{};ui.tgMa[d.id]=!!el.checked;T.res=null;tgDraw()}
+ if(g==="sel"){tgUndoAll();T.res=null;if(el.type==="radio")T.sel={};T.sel[d.id]=!!el.checked;tgDraw()}
+ else if(g==="ma"){tgUndoAll();ui.tgMa=ui.tgMa||{};ui.tgMa[d.id]=!!el.checked;T.res=null;tgDraw()}
  else if(g==="mode"){ui.atkMode=el.value;saveUi()}
- else if(g==="half"){T.half=!!el.checked;var k=tgCur();if(T.res&&k)T.res.rows.forEach(function(r){r.applied=false});tgDraw()}
- else if(g==="pass"&&T.res){var r=T.res.rows[+d.i];if(r&&!r.applied){r.passed=el.value==="1";tgDraw()}}}
+ else if(g==="half"){T.half=!!el.checked;var k=tgCur();if(T.res&&k){T.res.rows.forEach(function(r){tgApplyRow(r,k.at)});save();render()}tgDraw()}
+ else if(g==="pass"&&T.res){var r=T.res.rows[+d.i],k2=tgCur();if(r&&k2){r.passed=el.value==="1";tgApplyRow(r,k2.at);save();render();tgDraw()}}}
 function tgClose(){var el=document.getElementById("tgpop");if(el)el.style.display="none";var done=tgTurnDone();ui.tg=null;if(done)advanceTurn();else render()}
 function tgClick(e){var T=ui.tg,el=document.getElementById("tgpop"),b=e.target.closest("[data-tg]");if(e.target===el){tgClose();return}if(!b||!T||b.tagName==="INPUT"||b.tagName==="SELECT")return;var g=b.dataset.tg,k=tgCur();
  if(g==="close"){tgClose()}
- else if(g==="roll"){tgRoll();tgDraw()}
- else if(g==="quick"&&k){var hh=atkRoll(k.mc,T.i);tgCount(1);el.style.display="none";atkPop(k.mc,hh);if(tgTurnDone()){ui.tg=null;advanceTurn()}else render()}
- else if(g==="apply"&&k&&T.res){var r=T.res.rows[+b.dataset.i];if(r){tgApply(r,k.at);tgDraw();render()}}
- else if(g==="applyall"&&k&&T.res){T.res.rows.forEach(function(r){tgApply(r,k.at)});tgDraw();render()}}
+ else if(g==="roll"){tgRoll();render();tgDraw()}
+ else if(g==="quick"&&k){var hh=atkRoll(k.mc,T.i);tgCount(1);el.style.display="none";atkPop(k.mc,hh);if(tgTurnDone()){ui.tg=null;advanceTurn()}else render()}}
 document.addEventListener("keydown",function(e){if(e.key==="Escape"){var el=document.getElementById("tgpop");if(el&&el.style.display!=="none")tgClose()}});
 
 function advanceTurn(){var oo=encOrder().has;if(!oo.length)return;
@@ -1403,6 +1411,9 @@ document.addEventListener("click",function(e){
  else if(a==="add"){
   var blank={party:{id:uid(),name:"New adventurer",className:"",level:"1",ac:"",maxHp:"",passivePerception:"",notes:"",race:"",background:"",speed:"",init:"",str:"",dex:"",con:"",int:"",wis:"",cha:"",sheet:""},npcs:{id:uid(),name:"New NPC",location:"Roaming / Other",met:false,notes:""},quests:{id:uid(),name:"New quest",location:"Roaming / Other",status:"Not started",notes:""},enemies:{id:uid(),name:"New enemy",location:"Roaming / Other",quick:"",statblock:"",notes:""},sessions:{id:uid(),name:"Session "+(S.sessions.length+1),date:"",day:String(S.day),notes:""}}[k];
   S[k].unshift(blank);save();render()}
+ else if(a==="entab"){ui.enTab=b.dataset.v==="n"?"n":"e";ui.q="";render()}
+ else if(a==="enpc"){var ee=S.enemies.find(function(x){return x.id===b.dataset.id});if(ee){ee.npc=!isNpcEn(ee);save();render()}}
+ else if(a==="addnpcsb"){S.enemies.unshift({id:uid(),name:"New NPC",npc:true,location:"Roaming / Other",quick:"",statblock:"",notes:""});save();render()}
  else if(a==="nedit"){nzOpen(b.dataset.n,true)}
  else if(a==="locfull"){nzOpen(b.dataset.loc)}
  else if(a==="addloc"){var ni=document.getElementById("newloc"),nl=ni?ni.value.trim():"";if(nl&&LOCS.indexOf(nl)<0){LOCS.push(nl);S.locations.push({name:nl,status:"Not visited",notes:""});save();ui.q="";render()}}
