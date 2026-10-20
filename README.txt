@@ -131,3 +131,5 @@ build 69 (v1.82): compact enemies list, stats removed
 build 70 (v1.90): Custom NPC / Custom quest popup on location cards in edit mode; Edit buttons for NPCs and quests (name, status, stats, notes)
 build 71 (v1.91): dark is now the default (no longer follows the device light setting); notes popout has its own Light/Dark toggle that only affects that page
 build 72 (v1.100): 'Not in this fight' needs a second tap to confirm; prepared-encounter planner is now a popout; search box on the add-enemy dropdowns (encounter page and planner)
+
+v1.110 (build 73): New "Random Encounters & Travel" tab (encounter tables with Yes/No toggles, start/destination travel with roads and long-rest options, rolls encounters and sends them to the Encounter page). Encounter page: Party level and Players boxes for the difficulty rating.
