@@ -197,7 +197,7 @@ header{min-height:104px;padding:12px 18px!important;background:linear-gradient(9
 #atkpop,#tgpop,#downpop,#startpop,#tvanim,#tvmo,#restov,#rulov,#libov,#cmpov,#cqov,#esov,#gcov,#gsov,#mapov,#nzov,#scanov{animation:cosFade .48s ease both}
 .fadein{animation:cosFade .48s ease both}
 @keyframes cosOut{from{opacity:1}to{opacity:0}}
-body>.cosghost{animation:cosOut .42s ease forwards!important;pointer-events:none!important}
+body>.cosghost{animation:cosOut .48s ease forwards!important;pointer-events:none!important}
 button,select,input,textarea,.card,.cb,.pill{transition:background-color .3s ease,border-color .3s ease,color .3s ease,opacity .3s ease,box-shadow .3s ease}
 button:active{transform:scale(.97)}
 button{transition:background-color .3s ease,border-color .3s ease,color .3s ease,opacity .3s ease,box-shadow .3s ease,transform .12s ease}
@@ -470,7 +470,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=102;var APPLABEL="1.180";
+var APPV=103;var APPLABEL="1.181";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -1074,11 +1074,17 @@ function downCheck(){var first=!ui.down;ui.down=ui.down||{};var now=[];S.combata
 function startAsk(){if(S.turnId||!encOrder().has.length)return;var el=document.getElementById("startpop");if(!el){el=document.createElement("div");el.id="startpop";document.body.appendChild(el);el.addEventListener("click",function(e){var b=e.target.closest("[data-st]");if(e.target===el||(b&&b.dataset.st==="no")){el.style.display="none";return}if(b&&b.dataset.st==="yes"){el.style.display="none";if(!S.turnId)advanceTurn()}})}
  el.innerHTML='<div class="atkbox"><div class="atkh"><b>Start combat?</b></div><div class="mute">All initiative scores are in. Starting puts the turn on '+esc((encOrder().has[0]||{}).name||"the first combatant")+'.</div><div style="display:flex;gap:8px"><button class="pri" data-st="yes" style="flex:1">Yes</button><button data-st="no" style="flex:1">No</button></div></div>';el.style.display="flex"}
 
-var _render0=render;render=function(){var t=ui.tab,ch=ui._ft!==t;ui._ft=t;_render0.apply(this,arguments);if(ch){var m=document.getElementById("main");if(m){m.classList.remove("tabfade");void m.offsetWidth;m.classList.add("tabfade")}}};
+var _render0=render;render=function(){var t=ui.tab+"|"+(ui.tab==="Enemies"?ui.enTab:""),ch=ui._ft!==t,pre={},had=!!ui._ft;ui._ft=t;
+ if(!ch)[].forEach.call(document.querySelectorAll("#main [data-pid],#main .sppop"),function(e){var r=e.getBoundingClientRect();pre[e.dataset.pid||"_pop"]={c:e.cloneNode(true),r:r}});
+ _render0.apply(this,arguments);var m=document.getElementById("main");
+ if(ch){if(m){m.classList.remove("tabfade");void m.offsetWidth;m.classList.add("tabfade")}return}
+ if(!m||!had)return;var now={};
+ [].forEach.call(m.querySelectorAll("[data-pid],.sppop"),function(e){var k=e.dataset.pid||"_pop";now[k]=1;if(!pre[k]){e.classList.remove("fadein");void e.offsetWidth;e.classList.add("fadein")}});
+ Object.keys(pre).forEach(function(k){if(now[k])return;var g=pre[k].c,r=pre[k].r;g.removeAttribute("id");g.style.cssText+=";position:fixed;margin:0;box-sizing:border-box;left:"+r.left+"px;top:"+r.top+"px;width:"+r.width+"px;height:"+r.height+"px;z-index:5";g.classList.add("cosghost");document.body.appendChild(g);setTimeout(function(){if(g.parentNode)g.parentNode.removeChild(g)},520)})};
 
 var OVL=["atkpop","tgpop","downpop","startpop","tvanim","tvmo","restov","rulov","libov","cmpov","cqov","esov","gcov","gsov","mapov","nzov","scanov","mdov"],OVS={};
 function ovVis(el){return el.childElementCount>0&&!el.hidden&&getComputedStyle(el).display!=="none"}
-function ovGhost(c){c.removeAttribute("hidden");c.classList.add("cosghost");if(!c.style.display||c.style.display==="none")c.style.display="flex";document.body.appendChild(c);setTimeout(function(){if(c.parentNode)c.parentNode.removeChild(c)},470)}
+function ovGhost(c){c.removeAttribute("hidden");c.classList.add("cosghost");if(!c.style.display||c.style.display==="none")c.style.display="flex";document.body.appendChild(c);setTimeout(function(){if(c.parentNode)c.parentNode.removeChild(c)},520)}
 function ovAttach(el){if(el._ov)return;el._ov=1;var was=ovVis(el);if(was)OVS[el.id]=el.cloneNode(true);
  new MutationObserver(function(){var v=ovVis(el);if(v){OVS[el.id]=el.cloneNode(true);was=true}else if(was){was=false;var c=OVS[el.id];OVS[el.id]=null;if(c)ovGhost(c)}}).observe(el,{childList:true,subtree:true,attributes:true,attributeFilter:["style","hidden","class"]})}
 function ovScan(){OVL.forEach(function(id){var el=document.getElementById(id);if(el&&!el.classList.contains("cosghost"))ovAttach(el)})}
