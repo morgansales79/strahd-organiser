@@ -100,6 +100,7 @@ input[type=checkbox]:focus-visible{outline:2px solid var(--acc2);outline-offset:
 .chk.done span{text-decoration:line-through;color:var(--mute)}
 .pgrid{grid-template-columns:repeat(auto-fill,minmax(340px,1fr))}.pc{border-top:3px solid var(--acc)}.phead{display:flex;flex-direction:column;gap:6px}.pname{font-size:1.3rem;font-weight:700;background:transparent;border-color:transparent;padding:4px 6px}.pname:focus{background:var(--field);border-color:var(--line)}.psub{display:grid;grid-template-columns:1fr 70px;gap:6px}.psub input:first-child{grid-column:1/-1}.pbg{font-size:.9rem}.tiles{display:grid;gap:8px}.t5{grid-template-columns:repeat(5,1fr)}.t6{grid-template-columns:repeat(6,1fr)}.tile{display:flex;flex-direction:column;align-items:center;gap:2px;background:var(--field);border:1px solid var(--line);border-radius:10px;padding:6px 4px;min-width:0}.tile .tl{font-size:.62rem;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);text-align:center}.tile input{text-align:center;font-size:1.15rem;font-weight:700;border:none;background:transparent;padding:4px 0;width:100%;min-width:0}.tile .mod{font-size:.8rem;color:var(--acc2);font-weight:700;min-height:1.1em}details summary{cursor:pointer;padding:6px 0}@media(max-width:520px){.t5{grid-template-columns:repeat(3,1fr)}.t6{grid-template-columns:repeat(3,1fr)}}
 #atkpop{display:none;position:fixed;inset:0;z-index:1060;background:rgba(0,0,0,.55);align-items:center;justify-content:center;padding:16px}.atkbox{background:var(--panel);color:var(--text);border:2px solid var(--acc);border-radius:14px;padding:18px;width:min(460px,100%);display:flex;flex-direction:column;gap:12px}.atkh{font-size:1.2rem}.atkb{font-size:1.15rem;line-height:1.6}
+#tgpop{display:none;position:fixed;inset:0;z-index:1065;background:rgba(0,0,0,.55);align-items:center;justify-content:center;padding:12px}.tgbox{max-height:94vh;overflow:auto;width:min(560px,100%)}.tgsel{display:grid;grid-template-columns:1fr;gap:4px}.tgp{margin:0}.tgma{margin:0 0 4px 28px;font-size:.9rem}.tgrow{border-top:1px solid var(--line);padding-top:8px;display:flex;flex-direction:column;gap:4px;font-size:1rem}.tgrow .ok{color:#3f9f6a}.tgrow .bad{color:#c0334d}
 .atkrow{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.atkrow button{padding:6px 10px;font-size:13px}.atklog{margin-top:6px;font-size:14px;line-height:1.5}.atklog:empty{display:none}
 .cb{display:grid;grid-template-columns:76px 1fr;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px;margin-bottom:10px}.cb.cur{border-color:var(--acc);box-shadow:0 0 0 2px var(--acc)}.cb.down{opacity:.6}.cinit{display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--field);border:1px solid var(--line);border-radius:10px;padding:4px}.cinit input{text-align:center;font-size:1.6rem;font-weight:800;border:none;background:transparent;padding:2px;width:100%}.tl{font-size:.62rem;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}.cbody{display:flex;flex-direction:column;gap:8px;min-width:0}.cname{font-weight:700;font-size:1.05rem;flex:1;min-width:140px}.hpline{display:flex;gap:8px;align-items:flex-end}.hpf{display:flex;flex-direction:column;width:84px}.hpf input{text-align:center;font-weight:700}.bar{height:10px;background:var(--field);border:1px solid var(--line);border-radius:6px;overflow:hidden}.bar div{height:100%;transition:width .2s}.hpctl{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.hpctl input{width:80px;text-align:center}.pill.now{background:var(--acc);color:#fff;border-color:var(--acc)}.pill.dn{border-color:#c0334d;color:#c0334d}.pill.big{font-size:1rem;padding:6px 14px;color:var(--text)}.addrow{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.addrow select{flex:1;min-width:200px}.addrow input[type=number]{width:80px}.sbx{white-space:pre-wrap;font:13px/1.45 inherit;margin:6px 0 0;background:var(--field);border:1px solid var(--line);border-radius:8px;padding:10px;max-height:420px;overflow:auto}@media(max-width:520px){.cb{grid-template-columns:1fr}}
 .clist{display:grid;grid-template-columns:repeat(auto-fill,minmax(400px,1fr));gap:8px;align-items:start}.clist>.mute{grid-column:1/-1}.clist .cb{margin:0;padding:6px 8px;gap:8px;grid-template-columns:56px 1fr}.cinit input{font-size:1.3rem}.cl1{display:flex;align-items:center;gap:6px;flex-wrap:nowrap}.cl1 .cname{min-width:0;padding:6px 8px}.cl1 .del{min-height:32px;padding:2px 8px;font-size:.8rem}.cl2{display:flex;align-items:flex-end;gap:6px;flex-wrap:wrap}.cl2 button{min-height:36px;padding:4px 10px}.cl2 .amt{width:104px;padding:6px 6px}.cl2 .plus{min-width:36px;padding:4px 8px}.atot{font-weight:700;color:var(--acc2);min-width:34px}.hpf{width:56px}.hpf input{padding:6px 2px}.cbody{gap:5px}.bar{height:6px}.addp{padding:8px 12px;gap:6px;margin-bottom:10px!important}.addp details{margin:0}.addp summary{padding:2px 0;font-size:.85rem}@media(max-width:520px){.clist{grid-template-columns:1fr}.clist .cb{grid-template-columns:56px 1fr}}
@@ -403,7 +404,7 @@ function norm(raw){
  var xl=old?[]:arr(b.locations).filter(function(l){return l&&l.name&&BASELOCS.indexOf(str(l.name))<0}).map(function(l){return str(l.name)});LOCS.length=0;BASELOCS.concat(xl).forEach(function(n){if(LOCS.indexOf(n)<0)LOCS.push(n)});
  var f=fresh();
  var s={v:6,day:Math.max(1,parseInt(b.day,10)||1),hour:isNaN(parseFloat(b.hour))?8:Math.max(0,Math.min(23.99,Math.round(parseFloat(b.hour)*60)/60))};
- s.party=arr(b.party).map(function(m){return{id:str(m.id)||uid(),name:str(m.name),className:str(m.className),level:str(m.level),ac:str(m.ac),maxHp:str(m.maxHp),passivePerception:str(m.passivePerception),notes:str(m.notes),race:str(m.race),background:str(m.background),speed:str(m.speed),init:str(m.init),str:str(m.str),dex:str(m.dex),con:str(m.con),int:str(m.int),wis:str(m.wis),cha:str(m.cha),sheet:str(m.sheet),sp:(m.sp&&typeof m.sp==="object")?m.sp:{},curHp:str(m.curHp),hdUsed:Math.max(0,parseInt(m.hdUsed,10)||0),su:(m.su&&typeof m.su==="object")?m.su:{},arcUsed:!!m.arcUsed,wsFav:arr(m.wsFav).map(function(f){return{id:str(f.id)||uid(),name:str(f.name),hp:str(f.hp),ac:str(f.ac),cr:str(f.cr),note:str(f.note)}}),wsCur:str(m.wsCur),moon:!!m.moon,wsOn:!!m.wsOn,wsName:str(m.wsName),wsHp:str(m.wsHp),wsAc:str(m.wsAc),petName:str(m.petName),petType:str(m.petType),petHp:str(m.petHp),petCur:str(m.petCur),petAc:str(m.petAc),petSpeed:str(m.petSpeed),petNotes:str(m.petNotes),ma:!!m.ma,acBase:str(m.acBase),tl:(m.tl===0||m.tl===1||m.tl===2)?m.tl:null}});
+ s.party=arr(b.party).map(function(m){return{id:str(m.id)||uid(),name:str(m.name),className:str(m.className),level:str(m.level),ac:str(m.ac),maxHp:str(m.maxHp),passivePerception:str(m.passivePerception),notes:str(m.notes),race:str(m.race),background:str(m.background),speed:str(m.speed),init:str(m.init),str:str(m.str),dex:str(m.dex),con:str(m.con),int:str(m.int),wis:str(m.wis),cha:str(m.cha),sheet:str(m.sheet),sp:(m.sp&&typeof m.sp==="object")?m.sp:{},curHp:str(m.curHp),hdUsed:Math.max(0,parseInt(m.hdUsed,10)||0),su:(m.su&&typeof m.su==="object")?m.su:{},arcUsed:!!m.arcUsed,wsFav:arr(m.wsFav).map(function(f){return{id:str(f.id)||uid(),name:str(f.name),hp:str(f.hp),ac:str(f.ac),cr:str(f.cr),note:str(f.note)}}),wsCur:str(m.wsCur),moon:!!m.moon,wsOn:!!m.wsOn,wsName:str(m.wsName),wsHp:str(m.wsHp),wsAc:str(m.wsAc),petName:str(m.petName),petType:str(m.petType),petHp:str(m.petHp),petCur:str(m.petCur),petAc:str(m.petAc),petSpeed:str(m.petSpeed),petNotes:str(m.petNotes),ma:!!m.ma,acBase:str(m.acBase),res:str(m.res),imm:str(m.imm),vul:str(m.vul),tl:(m.tl===0||m.tl===1||m.tl===2)?m.tl:null}});
  s.round=Math.max(1,parseInt(b.round,10)||1);s.turnId=str(b.turnId);
  s.combatants=arr(b.combatants).map(function(c){return{id:str(c.id)||uid(),kind:c.kind==="pc"?"pc":"mon",ref:str(c.ref),name:str(c.name),init:str(c.init),dex:str(c.dex),hp:str(c.hp),max:str(c.max),ac:str(c.ac),wsName:str(c.wsName),wsHp:str(c.wsHp),wsMax:str(c.wsMax),wsAc:str(c.wsAc),wsOn:!!c.wsOn,pet:!!c.pet}});
  s.sess=(b.sess&&typeof b.sess==="object")?b.sess:null;s.trv=tvNorm(b.trv);s.enSeedV=parseInt(b.enSeedV,10)||0;
@@ -445,7 +446,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=92;var APPLABEL="1.154";
+var APPV=93;var APPLABEL="1.160";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -474,6 +475,7 @@ function pcDC(m){var cs=pcCast(m);if(!cs.length)return'';return'<div class="tile
 function pcExtra(m){var id=m.id,pb=pcPB(m),mk=["\u25cb","\u25cf","\u25c9"],h='',has=false;
  ABIL.forEach(function(a){if(m[a[0]])has=true});
  h+='<div class="pcx"><div class="pcxh"><b>Saving throws</b><span class="mute">Prof. bonus '+sgn(pb)+'</span></div><div class="pcxg">'+ABIL.map(function(a){var lv=(m.sp&&m.sp["sv_"+a[0]])||0;return'<button class="pcxb'+(lv?" on":"")+'" data-a="prof" data-id="'+id+'" data-s="sv_'+a[0]+'" title="Tap to change proficiency">'+mk[lv]+' '+a[1]+' <b>'+sgn(pcBon(m,"sv_"+a[0],a[0]))+'</b></button>'}).join("")+'</div></div>';
+ h+='<div class="pcx"><div class="pcxh"><b>Damage resistances</b><span class="mute">comma separated; applied automatically to monster attacks</span></div><div class="addrow"><input data-k="party" data-id="'+id+'" data-f="res" value="'+esc(m.res||"")+'" placeholder="Resistant: fire, cold" aria-label="Resistances"><input data-k="party" data-id="'+id+'" data-f="imm" value="'+esc(m.imm||"")+'" placeholder="Immune: poison" aria-label="Immunities"><input data-k="party" data-id="'+id+'" data-f="vul" value="'+esc(m.vul||"")+'" placeholder="Vulnerable: radiant" aria-label="Vulnerabilities"></div><div class="mute" style="font-size:.8rem">Tip: write &ldquo;bludgeoning, piercing, slashing (nonmagical)&rdquo; for the usual physical resistance.</div></div>';
  h+='<div class="pcx"><div class="pcxh"><b>Skills</b><span class="mute">\u25cb none \u00b7 \u25cf proficient \u00b7 \u25c9 expertise</span></div><div class="pcxg">'+SKL.map(function(k){var lv=(m.sp&&m.sp[k[0]])||0;return'<button class="pcxb'+(lv?" on":"")+'" data-a="prof" data-id="'+id+'" data-s="'+k[0]+'">'+mk[lv]+' '+k[1]+' <span class="mute">'+k[2].toUpperCase()+'</span> <b>'+sgn(pcBon(m,k[0],k[2]))+'</b></button>'}).join("")+'</div>'+(m.sheet?'<button data-a="profread" data-id="'+id+'" style="margin-top:6px">Read proficiencies from sheet text</button>':'')+'</div>';
  function pas(k,ab){return 10+pcBon(m,k,ab)}
  h+='<div class="tiles t3"><div class="tile"><span class="tl">Passive Perc.</span><b class="pv">'+pas("prc","wis")+'</b>'+(m.passivePerception&&parseInt(m.passivePerception,10)!==pas("prc","wis")?'<span class="mute" style="font-size:11px">sheet: '+esc(m.passivePerception)+'</span>':'')+'</div><div class="tile"><span class="tl">Passive Insight</span><b class="pv">'+pas("ins","wis")+'</b></div><div class="tile"><span class="tl">Passive Invest.</span><b class="pv">'+pas("inv","int")+'</b></div></div>';
@@ -942,14 +944,86 @@ function atkPop(c,h){var el=document.getElementById("atkpop");if(!el){el=documen
  el.innerHTML='<div class="atkbox" role="dialog" aria-label="Attack result"><div class="atkh"><b>'+esc(c.name)+'</b></div><div class="atkb">'+h+'</div><button class="pri" data-ap="1">Close</button></div>';el.style.display="flex"}
 document.addEventListener("keydown",function(e){if(e.key==="Escape"){var el=document.getElementById("atkpop");if(el)el.style.display="none"}});
 /*ATK-END*/
+/*TG-START*/
+function svParse(sb){var out=[],ls=String(sb||"").split(/\n/),i,L,txt,j,nx,m;
+ for(i=0;i<ls.length;i++){L=ls[i];var h=L.match(/^\s*([A-Z][^.:]{1,45}?)\.\s+\S/);if(!h||/Attack(?: Roll)?:/i.test(L))continue;
+  txt=L;for(j=i+1;j<ls.length;j++){nx=ls[j];if(!nx.trim()||/^[A-Z][A-Z ]+$/.test(nx.trim())||/^\s*[A-Z][^.:]{1,45}\.\s/.test(nx))break;txt+=" "+nx.trim()}
+  m=txt.match(/DC\s*(\d+)\s+(Strength|Dexterity|Constitution|Intelligence|Wisdom|Charisma)\s+saving throw/i);if(!m)continue;
+  var tail=txt.slice(m.index),parts=[],re=/(\d+)?\s*\((\d+)d(\d+)(?:\s*([+\u2212-])\s*(\d+))?\)\s*([a-z]+)?\s*damage/gi,mm;
+  while((mm=re.exec(tail))){parts.push({n:+mm[2],d:+mm[3],k:mm[4]?(mm[4]==="+"?1:-1)*(+mm[5]):0,t:mm[6]||""})}
+  if(!parts.length)continue;
+  out.push({kind:"sv",name:h[1].trim(),dc:+m[1],ab:m[2].slice(0,3).toLowerCase(),parts:parts,half:/half as much/i.test(tail),aoe:/(cone|line|radius|sphere|cube|each creature)/i.test(txt),magic:true})}
+ return out}
+function actList(en){var a=atkParse(en.statblock).map(function(x){x.kind="atk";return x});return a.concat(svParse(en.statblock))}
+function tgLabel(x){return x.kind==="sv"?x.name+" DC "+x.dc+" "+x.ab.toUpperCase():x.name+" "+(x.bonus>=0?"+":"\u2212")+Math.abs(x.bonus)}
+function tgMemb(c){var id=String(c.ref||"");if(id.slice(-4)==="#pet")return null;return S.party.find(function(x){return x.id===id})||null}
+function tgMaOk(m){return!!m&&(/wizard|sorcerer/i.test(m.className||"")||/mage armou?r/i.test((m.notes||"")+" "+(m.sheet||"")))}
+function tgMaOn(m){return!ui.tgMa||ui.tgMa[m.id]!==false}
+function tgAc(c){var m=tgMemb(c);if(c.wsOn&&c.wsAc)return parseInt(c.wsAc,10);var base=m&&m.ac!==""&&m.ac!==undefined?parseInt(m.ac,10):parseInt(c.ac,10);if(m&&tgMaOk(m)&&!m.ma&&tgMaOn(m))return 13+pcMod(m,"dex");return base}
+function tgSvBon(c,ab){var m=tgMemb(c);if(m)return pcBon(m,"sv_"+ab,ab);var d=parseInt(c.dex,10);return ab==="dex"&&!isNaN(d)?d:0}
+function tgHas(txt,t,phys,magic){txt=String(txt||"").toLowerCase();if(!txt||!t||txt.indexOf(t)<0)return false;if(phys&&magic&&/non-?magical|nonmagical/.test(txt))return false;return true}
+function tgFactor(c,t,magic){var m=tgMemb(c);if(!m||!t)return{f:1,w:""};t=t.toLowerCase();var phys=/^(bludgeoning|piercing|slashing)$/.test(t),im=tgHas(m.imm,t,phys,magic),r=tgHas(m.res,t,phys,magic),v=tgHas(m.vul,t,phys,magic);
+ if(im)return{f:0,w:"immune"};if(r&&!v)return{f:0.5,w:"resistant"};if(v&&!r)return{f:2,w:"vulnerable"};return{f:1,w:""}}
+function tgRollParts(parts,crit){return parts.map(function(p){var n=p.n*(crit?2:1),t=p.k,rs=[],i;for(i=0;i<n;i++){var v=1+Math.floor(Math.random()*p.d);rs.push(v);t+=v}return{t:p.t,v:Math.max(0,t)}})}
+function tgDmg(row,at){if(!row.parts)return{tot:0,bits:[]};var tot=0,bits=[];row.parts.forEach(function(p){var v=p.v,note="";
+ if(at.kind==="sv"&&row.passed){if(ui.tg&&ui.tg.half)v=Math.floor(v/2);else v=0}
+ var fx=tgFactor(row.c,p.t,at.magic);if(fx.f!==1){v=Math.floor(v*fx.f);note=" ("+fx.w+")"}
+ tot+=v;bits.push(v+(p.t?" "+p.t:"")+note)});return{tot:tot,bits:bits}}
+function tgOpen(mid,i){var mc=S.combatants.find(function(x){return x.id===mid}),en=mc&&S.enemies.find(function(e){return e.id===mc.ref}),at=en&&actList(en)[i];if(!at)return;
+ var pcs=S.combatants.filter(function(c){return c.kind==="pc"}),sel={};if(at.kind==="sv"&&at.aoe)pcs.forEach(function(c){sel[c.id]=true});else if(pcs.length===1)sel[pcs[0].id]=true;
+ ui.tg={mid:mid,i:i,sel:sel,half:at.kind==="sv"?at.half:false,res:null};tgDraw()}
+function tgCur(){var T=ui.tg;if(!T)return null;var mc=S.combatants.find(function(x){return x.id===T.mid}),en=mc&&S.enemies.find(function(e){return e.id===mc.ref}),at=en&&actList(en)[T.i];return at?{mc:mc,at:at}:null}
+function tgRoll(){var T=ui.tg,k=tgCur();if(!T||!k)return;var at=k.at,rows=[],shared=null;
+ if(at.kind==="sv")shared=tgRollParts(at.parts,false);
+ S.combatants.filter(function(c){return c.kind==="pc"&&T.sel[c.id]}).forEach(function(c){var row={c:c,id:c.id};
+  if(at.kind==="atk"){var r1=d20(),r2=d20(),md=ui.atkMode,nat=md==="a"?Math.max(r1,r2):md==="d"?Math.min(r1,r2):r1,tot=nat+at.bonus,ac=tgAc(c),crit=nat===20,fum=nat===1;
+   row.nat=nat;row.r=md==="n"?""+nat:(md==="a"?"adv ":"dis ")+r1+"/"+r2+" \u2192 "+nat;row.tot=tot;row.ac=ac;row.crit=crit;row.hit=crit||(!fum&&(isNaN(ac)||tot>=ac));row.fum=fum;row.parts=row.hit?tgRollParts(at.parts,crit):null}
+  else{var b=tgSvBon(c,at.ab),n=d20(),t=n+b;row.nat=n;row.bon=b;row.tot=t;row.passed=t>=at.dc;row.parts=shared}
+  rows.push(row)});
+ T.res={rows:rows}}
+function tgRowHtml(row,at,i){var c=row.c,h='<div class="tgrow"><b>'+esc(c.name)+'</b> ',d=tgDmg(row,at);
+ if(at.kind==="atk"){h+='<span class="mute">d20 '+row.r+(at.bonus>=0?" + ":" \u2212 ")+Math.abs(at.bonus)+' = '+row.tot+(isNaN(row.ac)?'':' vs AC '+row.ac)+'</span> '+(row.crit?'<b class="ok">CRITICAL HIT</b>':row.fum?'<b class="bad">Natural 1, miss</b>':row.hit?'<b class="ok">Hit</b>':'<b class="bad">Miss</b>')}
+ else{h+='<span class="mute">'+at.ab.toUpperCase()+' save d20 '+row.nat+(row.bon>=0?" + ":" \u2212 ")+Math.abs(row.bon)+' = '+row.tot+' vs DC '+at.dc+'</span> <select data-tg="pass" data-i="'+i+'" aria-label="Save result"><option value="0"'+(row.passed?"":" selected")+'>Failed save</option><option value="1"'+(row.passed?" selected":"")+'>Saved'+(ui.tg.half?" (half damage)":" (no damage)")+'</option></select>'}
+ if(row.parts)h+='<div>Damage: <b>'+d.tot+'</b> <span class="mute">'+(d.bits.length?d.bits.join(" + "):"")+'</span></div>';
+ if(row.parts||at.kind==="sv")h+=(row.applied?'<div class="mute">Applied: '+esc(c.name)+' now '+esc(c.hp)+'/'+esc(c.max||"?")+' HP</div>':(d.tot>0?'<button class="del" data-tg="apply" data-i="'+i+'">Apply '+d.tot+' damage</button>':'<span class="mute">No damage</span>'));
+ return h+'</div>'}
+function tgDraw(){var T=ui.tg,el=document.getElementById("tgpop");if(!el){el=document.createElement("div");el.id="tgpop";document.body.appendChild(el);el.addEventListener("click",tgClick);el.addEventListener("change",tgChange)}
+ var k=tgCur();if(!T||!k){el.style.display="none";return}var at=k.at,mc=k.mc,pcs=S.combatants.filter(function(c){return c.kind==="pc"}),h='';
+ h+='<div class="atkbox tgbox"><div class="atkh"><b>'+esc(mc.name)+'</b>: '+esc(tgLabel(at))+'</div>';
+ if(!pcs.length)h+='<div class="mute">No party members are in this encounter. Close this and use Add party first, or make a quick roll without a target.</div>';
+ else{h+='<div class="mute">'+(at.kind==="sv"?"Tick everyone caught in the area. The damage is rolled once for all of them.":"Tick the target or targets. Each gets its own attack roll.")+'</div><div class="tgsel">'+pcs.map(function(c){var m=tgMemb(c),ac=tgAc(c);return'<label class="chk tgp"><input type="checkbox" class="yn" data-tg="sel" data-id="'+c.id+'"'+(T.sel[c.id]?" checked":"")+'><span><b>'+esc(c.name)+'</b> <span class="mute">'+(at.kind==="atk"?'AC '+(isNaN(ac)?'?':ac):'HP '+esc(c.hp||"?"))+'</span></span></label>'+(m&&tgMaOk(m)&&at.kind==="atk"?(m.ma?'<span class="mute tgma">Mage Armor already in AC</span>':'<label class="chk tgma"><input type="checkbox" class="yn" data-tg="ma" data-id="'+m.id+'"'+(tgMaOn(m)?" checked":"")+'><span>Mage Armor</span></label>'):'')}).join("")+'</div>';
+  if(at.kind==="atk")h+='<label class="f">Roll<select data-tg="mode"><option value="n"'+(ui.atkMode==="n"?" selected":"")+'>Normal</option><option value="a"'+(ui.atkMode==="a"?" selected":"")+'>Advantage</option><option value="d"'+(ui.atkMode==="d"?" selected":"")+'>Disadvantage</option></select></label>';
+  else h+='<label class="chk"><input type="checkbox" class="yn" data-tg="half"'+(T.half?" checked":"")+'><span>Half damage on a successful save</span></label>';
+  h+='<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="pri" data-tg="roll">'+(T.res?"Roll again":"Roll")+'</button><button data-tg="quick">Quick roll, no target</button></div>';
+  if(T.res){h+=T.res.rows.length?T.res.rows.map(function(r,i){return tgRowHtml(r,at,i)}).join(""):'<div class="mute">Nobody is ticked.</div>';if(T.res.rows.filter(function(r){return!r.applied&&r.parts&&tgDmg(r,at).tot>0}).length>1)h+='<button class="del" data-tg="applyall">Apply to everyone</button>'}}
+ h+='<button data-tg="close">Close</button></div>';el.innerHTML=h;el.style.display="flex"}
+function tgApply(row,at){var tg=row.c,amt=tgDmg(row,at).tot;if(row.applied||amt<1)return;
+ if(tg.wsOn){var wh=parseInt(tg.wsHp,10)||0,left=amt-wh;if(left>=0){tg.wsHp="0";tg.wsOn=false;if(left>0)tg.hp=String(Math.max(0,(parseInt(tg.hp,10)||0)-left))}else tg.wsHp=String(wh-amt)}
+ else tg.hp=String(Math.max(0,(parseInt(tg.hp,10)||0)-amt));
+ pcFromCombat(tg);row.applied=true;save()}
+function tgChange(e){var el=e.target,d=el.dataset,T=ui.tg;if(!d||!d.tg||!T)return;var g=d.tg;
+ if(g==="sel"){T.sel[d.id]=!!el.checked;if(T.res){T.res=null}tgDraw()}
+ else if(g==="ma"){ui.tgMa=ui.tgMa||{};ui.tgMa[d.id]=!!el.checked;T.res=null;tgDraw()}
+ else if(g==="mode"){ui.atkMode=el.value;saveUi()}
+ else if(g==="half"){T.half=!!el.checked;var k=tgCur();if(T.res&&k)T.res.rows.forEach(function(r){r.applied=false});tgDraw()}
+ else if(g==="pass"&&T.res){var r=T.res.rows[+d.i];if(r&&!r.applied){r.passed=el.value==="1";tgDraw()}}}
+function tgClick(e){var T=ui.tg,el=document.getElementById("tgpop"),b=e.target.closest("[data-tg]");if(e.target===el){el.style.display="none";return}if(!b||!T||b.tagName==="INPUT"||b.tagName==="SELECT")return;var g=b.dataset.tg,k=tgCur();
+ if(g==="close"){el.style.display="none";render()}
+ else if(g==="roll"){tgRoll();tgDraw()}
+ else if(g==="quick"&&k){var hh=atkRoll(k.mc,T.i);el.style.display="none";atkPop(k.mc,hh)}
+ else if(g==="apply"&&k&&T.res){var r=T.res.rows[+b.dataset.i];if(r){tgApply(r,k.at);tgDraw();render()}}
+ else if(g==="applyall"&&k&&T.res){T.res.rows.forEach(function(r){tgApply(r,k.at)});tgDraw();render()}}
+document.addEventListener("keydown",function(e){if(e.key==="Escape"){var el=document.getElementById("tgpop");if(el&&el.style.display!=="none")el.style.display="none"}});
+/*TG-END*/
+
 
 function encOrder(){
  var has=[],no=[];
  S.combatants.forEach(function(c,i){var n=parseInt(c.init,10);(isNaN(n)?no:has).push({c:c,i:i,n:n})});
  has.sort(function(a,b){return b.n-a.n||(parseInt(b.c.dex,10)||0)-(parseInt(a.c.dex,10)||0)||a.i-b.i});
  return{has:has.map(function(x){return x.c}),no:no.map(function(x){return x.c})}}
-function atkBtns(c,en){var a=atkParse(en.statblock);if(!a.length)return'';
- return'<div class="atkrow">'+a.map(function(x,i){return'<button data-a="atk" data-id="'+c.id+'" data-i="'+i+'">'+esc(x.name)+' '+(x.bonus>=0?"+":"\u2212")+Math.abs(x.bonus)+'</button>'}).join("")+'</div><div class="atklog" id="atk-'+c.id+'">'+(ui.atkLog[c.id]||"")+'</div>'}
+function atkBtns(c,en){var a=actList(en);if(!a.length)return'';
+ return'<div class="atkrow">'+a.map(function(x,i){return'<button data-a="atk" data-id="'+c.id+'" data-i="'+i+'">'+esc(tgLabel(x))+'</button>'}).join("")+'</div><div class="atklog" id="atk-'+c.id+'">'+(ui.atkLog[c.id]||"")+'</div>'}
 function addEnemies(en,qn){var sbk=en.statblock||"",qk=en.quick||"";
   var hm=qk.match(/HP\s*(\d+)/i)||sbk.match(/HP\s*(\d+)/),am=qk.match(/AC\s*(\d+)/i)||sbk.match(/AC\s*(\d+)/),dm=sbk.match(/DEX\s*\d+\s*\(([+-]\d+)\)/),dx=dm?parseInt(dm[1],10):0;
   var have=S.combatants.filter(function(c){return c.ref===en.id}).length;
@@ -1373,7 +1447,7 @@ document.addEventListener("click",function(e){
  else if(a==="calcheal"){var t0=parseExpr(ui.calc.expr);if(isNaN(t0)||t0<1)return;if(ui.calc.cfm){ui.calc.cfm=false;calcApply("calcheal")}else{ui.calc.cfm=true;healSync()}}
  else if(a==="hideunmet"){ui.hideUnmet=!ui.hideUnmet;saveUi();render()}
  else if(a==="atktog"){ui.atk=!ui.atk;saveUi();render()}
- else if(a==="atk"){var ac=S.combatants.find(function(x){return x.id===b.dataset.id});if(ac){var hh=atkRoll(ac,+b.dataset.i);ui.atkLog[ac.id]=hh;var le=document.getElementById("atk-"+ac.id);if(le)le.innerHTML=hh;atkPop(ac,hh)}}
+ else if(a==="atk"){var ac=S.combatants.find(function(x){return x.id===b.dataset.id});if(ac)tgOpen(ac.id,+b.dataset.i)}
  else if(a==="prof"){var pm=S.party.find(function(x){return x.id===b.dataset.id});if(pm){pm.sp=pm.sp||{};pm.sp[b.dataset.s]=((pm.sp[b.dataset.s]||0)+1)%3;save();render()}}
  else if(a==="toolcyc"){var tm=S.party.find(function(x){return x.id===b.dataset.id});if(tm){tm.tl=(pcTools(tm)+1)%3;save();render()}}
  else if(a==="profread"){var rm=S.party.find(function(x){return x.id===b.dataset.id});if(rm){var rn=pcRead(rm);save();render();ui.msg=rn?"Set "+rn+" proficiencies from the sheet text. Tap any to adjust.":"Could not find skill or save bonuses in the sheet text.";render()}}
