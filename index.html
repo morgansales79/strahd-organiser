@@ -373,7 +373,7 @@ var QUESTS=[
 ["Cure the Mad Mage","Mount Baratok","Restoring his wits reveals Mordenkainen. He offers a safe rest in his mansion and may help against Strahd if the Tarokka reading names him an ally."],
 ["Defeat Strahd von Zarovich","Castle Ravenloft",""]
 ];
-var TABS=["Dashboard","Active Session","Party","Locations","NPCs","Quests","Enemies","Spells","Encounter","Random Encounters & Travel","Map","Strahd","Sessions"];
+var TABS=["Dashboard","Active Session","Party","Locations","NPCs","Quests","Enemies","Spells","Encounter","Travel","Map","Strahd","Sessions"];
 var MOODS=["Curious","Amused","Courteous","Obsessed","Wary","Angry","Hunting"];
 var QST=["Not started","Active","Done"],LST=["Not visited","Visited","Cleared"];
 var uid=function(){return Math.random().toString(36).slice(2,10)};
@@ -445,7 +445,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=90;var APPLABEL="1.152";
+var APPV=91;var APPLABEL="1.153";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -1030,7 +1030,7 @@ function render(){
  try{hdClk()}catch(e){}
  if(ui.tab==="Active Session")setTimeout(spThumbs,0);
  document.getElementById("nav").innerHTML=TABS.filter(function(t){return t!=="NPCs"}).map(function(t){return'<button data-a="tab" data-t="'+t+'" class="'+(t===ui.tab||(t==="Locations"&&ui.tab==="NPCs")?"on":"")+'">'+(t==="Enemies"?"Enemies &amp; NPCs":t==="Locations"?"Locations &amp; NPCs":t)+'</button>'}).join("")+'<button data-a="gcopen" class="navcalc">Calculator</button>';
- var v={Dashboard:dash,Party:party,Locations:function(){return lnBar()+locations()},NPCs:function(){return lnBar()+entities("npcs","NPCs","NPC")},Map:mapView,Quests:function(){return entities("quests","Quests","quest")},Enemies:enemies,Encounter:encounter,"Random Encounters & Travel":tvView,Spells:spView,"Active Session":sessView,Strahd:strahd,Sessions:sessions}[ui.tab];
+ var v={Dashboard:dash,Party:party,Locations:function(){return lnBar()+locations()},NPCs:function(){return lnBar()+entities("npcs","NPCs","NPC")},Map:mapView,Quests:function(){return entities("quests","Quests","quest")},Enemies:enemies,Encounter:encounter,"Travel":tvView,Spells:spView,"Active Session":sessView,Strahd:strahd,Sessions:sessions}[ui.tab];
  document.getElementById("main").innerHTML=(ui.rs?'<div class="card" style="margin-bottom:14px"><h3>Replace everything with this backup?</h3><div class="mute">Your current organiser data will be overwritten.</div><div style="display:flex;gap:8px"><button class="pri" data-a="rsok">Replace</button><button data-a="rscancel">Cancel</button></div></div>':"")+v();
  document.getElementById("bk").innerHTML=ui.bk?'<div class="card" style="max-width:1160px;margin:16px auto 0"><div class="row" style="margin:0"><div><h3>Backup created</h3><div class="mute">Copy the text into a file and save it with a .json extension. Use Restore file to load it later.</div></div><div style="display:flex;gap:8px"><button data-a="copy">Copy backup</button><button data-a="closebk">Close</button></div></div><textarea id="bkt" readonly style="min-height:140px;font-family:monospace;font-size:12px">'+esc(ui.bk)+'</textarea></div>':""}
 /*SESS-START*/
@@ -1584,6 +1584,7 @@ var TVTR={4:1,5:1,6:1,10:1,15:1};
 function tvNorm(b){b=b&&typeof b==="object"?b:{};var d=b.dis&&typeof b.dis==="object"?b.dis:{},r=function(o){var x={};if(o&&typeof o==="object")Object.keys(o).forEach(function(k){if(o[k])x[k]=1});return x};
  var rs=b.res&&typeof b.res==="object"?b.res:null;
  return{dis:{d:r(d.d),n:r(d.n)},start:str(b.start),startFor:str(b.startFor),npcs:Array.isArray(b.npcs)?b.npcs.filter(function(x){return x&&typeof x.id==="string"&&typeof x.name==="string"}).map(function(x){return{id:x.id,name:x.name.slice(0,60)}}).slice(0,20):[],dest:str(b.dest),rest:!!b.rest,roads:b.roads!==false,restChk:b.restChk!==false,hour:Math.max(0,Math.min(23,parseInt(b.hour,10)>=0?parseInt(b.hour,10):8)),wisp:!!b.wisp,res:rs,order:Array.isArray(b.order)?b.order.filter(function(x){return typeof x==="string"}).slice(0,60):[],front:Math.max(1,Math.min(10,parseInt(b.front,10)||2))}}
+function tvSet(k,v){var T=S.trv,os=tvStart(),od=tvDest();if(k==="start"){T.start=v;T.startFor=SS.loc||"";if(v===od)T.dest=os!==v?os:""}else{T.dest=v;if(v===os){T.start=od;T.startFor=SS.loc||""}}}
 function tvPts(){return TRVM.pts.slice().sort(function(a,b){return a.localeCompare(b)})}
 function tvPartyPt(){var n=SS&&SS.loc||"";n=TVALIAS[n]||n;return TRVM.pts.indexOf(n)>-1?n:""}
 function tvStart(){var T=S.trv,pp=tvPartyPt();if(pp&&T.startFor!==(SS&&SS.loc||""))return pp;return T.start&&TRVM.pts.indexOf(T.start)>-1?T.start:(pp||tvPts()[0])}
@@ -1621,14 +1622,14 @@ function tvLoad(e){S.combatants=[];ui.initq=null;S.round=1;S.turnId="";var miss=
  var mn=document.getElementById("main");if(mn)mn.scrollTop=0;}
 function tvView(){var T=S.trv,a=tvStart(),b=tvDest(),pts=tvPts(),leg=tvLeg(a,b,T.roads),pp=tvPartyPt();
  var tbl=function(nm,tb,k){return'<div class="card"><h3>'+nm+' encounters</h3><table class="tvt"><thead><tr><th>d12+d8</th><th>Encounter</th><th>Allowed</th></tr></thead><tbody>'+tb.map(function(e){return'<tr><td>'+e[0]+'</td><td>'+esc(e[1]+(e[2]&&e[2]!=="1"&&e[2].charAt(0)!=="*"?" ("+e[2]+")":""))+'</td><td><label class="chk"><input type="checkbox" class="yn" data-tve="'+k+'" data-r="'+e[0]+'"'+(T.dis[k][e[0]]?"":" checked")+' aria-label="Allow '+esc(e[1])+'"></label></td></tr>'}).join("")+'</tbody></table></div>'};
- var tq=ui.tvq||(ui.tvq={start:"",dest:""});var sel=function(id,cur,ex){var q=String(tq[id]||"").toLowerCase().trim(),l=pts.filter(function(p){return p!==ex&&(!q||p.toLowerCase().indexOf(q)>-1)});return'<input type="search" data-tvq="'+id+'" value="'+esc(tq[id]||"")+'" placeholder="Search locations\u2026" aria-label="Search locations"><select data-tvc="'+id+'">'+(l.length?l.map(function(p){return'<option'+(p===cur?" selected":"")+'>'+esc(p)+'</option>'}).join(""):'<option value="">No matches</option>')+'</select>'};
+ var tq=ui.tvq||(ui.tvq={start:"",dest:""});var sel=function(id,cur,ex){var q=String(tq[id]||"").toLowerCase().trim(),l=pts.filter(function(p){return (!q||p.toLowerCase().indexOf(q)>-1)});return'<input type="search" data-tvq="'+id+'" value="'+esc(tq[id]||"")+'" placeholder="Search locations\u2026" aria-label="Search locations"><select data-tvc="'+id+'">'+(l.length?l.map(function(p){return'<option'+(p===cur?" selected":"")+'>'+esc(p)+'</option>'}).join(""):'<option value="">No matches</option>')+'</select>'};
  var hrs='';for(var h=0;h<24;h++)hrs+='<option value="'+h+'"'+(h===T.hour?" selected":"")+'>'+(h<10?"0":"")+h+':00</option>';
  var r=T.res,out='';
  if(r&&r.err)out='<div class="card"><div class="mute">'+esc(r.err)+'</div></div>';
  else if(r){out='<div class="card" style="border-color:var(--acc)"><h3>'+esc(r.a)+' to '+esc(r.b)+'</h3><div class="mute">'+r.mi+' miles, about '+tvFmt(r.H)+' of walking'+(r.rest?', plus an 8 hour long rest at the halfway point ('+tvFmt(r.total)+' in all)':'')+'. Started at '+(r.hour<10?"0":"")+r.hour+':00. '+(r.roads?'Following roads and trails where they exist.':'Cross-country.')+' '+r.checks+' encounter checks rolled'+(r.skipped?' ('+r.skipped+' skipped by the two-per-12-hours limit)':'')+'.</div>'+
   (r.enc.length?r.enc.map(function(e,i){return'<div class="card" style="background:var(--bg)"><div><b>'+tvFmt(e.t)+' into the journey</b> <span class="mute">('+e.clock+', '+(e.night?'night':'day')+(e.rest?', during the long rest':'')+')</span></div><div style="font-size:1.05em"><b>'+esc(e.text)+'</b></div>'+tvXHtml(e)+(e.mons.length?'<div><button class="pri" data-tv="go" data-i="'+i+'">'+(ui.tvc===i?"Replace the current encounter?":"Go to encounter")+'</button></div>':'')+'</div>'}).join(""):'<div><b>No random encounter on this journey.</b></div>')+
   '<div style="display:flex;gap:8px;flex-wrap:wrap">'+(S.locations.some(function(l){return l.name===r.b})?'<button data-tv="arrive">Party arrives at '+esc(r.b)+'</button>':'')+'<button data-tv="anim">Show on map</button><button data-tv="clear">Clear result</button></div></div>'}
- return'<div class="row"><h2>Random Encounters &amp; Travel</h2></div><div class="trg"><div style="display:flex;flex-direction:column;gap:14px">'+tbl("Daytime",TVD,"d")+tbl("Nighttime",TVN,"n")+'</div><div style="display:flex;flex-direction:column;gap:14px"><div class="card"><h3>Travel</h3>'+
+ return'<div class="row"><h2>Travel</h2></div><div class="trg"><div style="display:flex;flex-direction:column;gap:14px">'+tbl("Daytime",TVD,"d")+tbl("Nighttime",TVN,"n")+'</div><div style="display:flex;flex-direction:column;gap:14px"><div class="card"><h3>Travel</h3>'+
   '<label class="f">Starting location'+sel("start",a,"")+'</label><div class="mute">'+(!T.start&&pp?'Defaults to where the party is (the Location pane on Active Session).':'')+(T.start?'<button data-tv="follow">Use the party location again</button>':'')+'</div>'+
   '<label class="f">Destination'+sel("dest",b,a)+'</label>'+
   '<label class="chk"><input type="checkbox" class="yn" data-tvc="rest"'+(T.rest?" checked":"")+'><span>Will require a long rest (8 hours)</span></label>'+
@@ -1642,13 +1643,13 @@ document.addEventListener("click",function(e){var b=e.target.closest&&e.target.c
  else if(a==="follow"){T.start="";save();render()}else if(a==="wisp"){T.wisp=false;save();render()}
  else if(a==="arrive"&&T.res){var n=T.res.b;if(S.locations.some(function(l){return l.name===n})){SS.loc=n;saveSess()}T.start="";T.res=null;save();render()}});
 document.addEventListener("input",function(e){var el=e.target,d=el&&el.dataset;if(!d||!d.tvq||!S.trv)return;var T=S.trv,k=d.tvq,q=el.value.toLowerCase().trim(),pos=el.selectionStart;ui.tvq=ui.tvq||{start:"",dest:""};ui.tvq[k]=el.value;
- var cur=k==="start"?tvStart():tvDest(),ex=k==="dest"?tvStart():"",l=TRVM.pts.filter(function(p){return p!==ex&&(!q||p.toLowerCase().indexOf(q)>-1)}).sort(function(a,b){return a.localeCompare(b)});
- if(l.length&&l.indexOf(cur)<0){if(k==="start"){T.start=l[0];T.startFor=SS.loc||"";if(T.dest===l[0])T.dest=""}else T.dest=l[0];save()}
+ var cur=k==="start"?tvStart():tvDest(),ex=k==="dest"?tvStart():"",l=TRVM.pts.filter(function(p){return (!q||p.toLowerCase().indexOf(q)>-1)}).sort(function(a,b){return a.localeCompare(b)});
+ if(l.length&&l.indexOf(cur)<0){tvSet(k,l[0]);save()}
  render();var n=document.querySelector('[data-tvq="'+k+'"]');if(n){n.focus();try{n.setSelectionRange(pos,pos)}catch(x){}}});
 document.addEventListener("change",function(e){var el=e.target,d=el&&el.dataset,T=S.trv;if(!d)return;
  if(d.tve){var k=d.tve;if(el.checked)delete T.dis[k][d.r];else T.dis[k][d.r]=1;save();return}
  if(!d.tvc)return;var c=d.tvc;
- if(c==="start"){T.start=el.value;T.startFor=SS.loc||"";if(T.dest===el.value)T.dest=""}else if(c==="dest")T.dest=el.value;else if(c==="rest")T.rest=!!el.checked;else if(c==="roads")T.roads=!!el.checked;else if(c==="restchk")T.restChk=!!el.checked;else if(c==="hour")T.hour=parseInt(el.value,10)||0;
+ if(c==="start"||c==="dest")tvSet(c,el.value);else if(c==="rest")T.rest=!!el.checked;else if(c==="roads")T.roads=!!el.checked;else if(c==="restchk")T.restChk=!!el.checked;else if(c==="hour")T.hour=parseInt(el.value,10)||0;
  save();render()});
 function restEncUi(night){var loc=ui.rsLoc||0;return'<div class="card" style="margin:10px 0;gap:6px"><b>Random encounters while resting</b><div class="mute">Checked every 30 minutes with the Barovia rules: 18 or higher on the road, 15 or higher in the wilderness, none if it is safe.</div><div class="rsl"><span>Day</span><input type="range" min="0" max="1" step="1" value="'+(night?1:0)+'" data-rsl="time" aria-label="Day or night"><span>Night</span></div><div class="mute" data-rslv="time">'+(night?"Night":"Day")+'</div><div class="rsl"><input type="range" min="0" max="2" step="1" value="'+loc+'" data-rsl="loc" aria-label="Wilderness, road or safe"></div><div class="rsl3" data-rslv="loc">'+["Wilderness","Road","Safe"].map(function(n,i){return'<span'+(i===loc?' class="on"':'')+'>'+n+'</span>'}).join("")+'</div></div>'}
 function restEncRead(){var t=document.querySelector('[data-rsl="time"]'),l=document.querySelector('[data-rsl="loc"]'),r={night:!!t&&t.value==="1",loc:l?parseInt(l.value,10)||0:0};ui.rsLoc=r.loc;return r}
