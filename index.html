@@ -189,6 +189,22 @@ header{min-height:104px;padding:12px 18px!important;background:linear-gradient(9
 .rcard.drag{position:fixed;z-index:50;margin:0;box-shadow:0 8px 24px rgba(0,0,0,.45);border-color:var(--acc)}
 .rph{border:2px dashed var(--acc2);border-radius:10px;margin-bottom:8px}
 @media (prefers-reduced-motion:no-preference){button{transition:border-color .15s}}
+
+/* v1.174 motion and full-screen group damage */
+@keyframes cosFade{from{opacity:0}to{opacity:1}}
+@keyframes cosUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.tabfade{animation:cosUp .35s ease both}
+#atkpop,#tgpop,#downpop,#startpop,#tvanim,#tvmo,#restov,#rulov,#libov,#cmpov,#cqov,#esov,#gcov,#gsov,#mapov,#nzov,#scanov{animation:cosFade .25s ease both}
+.fadein{animation:cosFade .25s ease both}
+button,select,input,textarea,.card,.cb,.pill{transition:background-color .2s ease,border-color .2s ease,color .2s ease,opacity .2s ease,box-shadow .2s ease}
+button:active{transform:scale(.97)}
+button{transition:background-color .2s ease,border-color .2s ease,color .2s ease,opacity .2s ease,box-shadow .2s ease,transform .12s ease}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+#mdov .calc,#mdov .calc.wide{width:calc(100vw - 16px)!important;height:calc(100dvh - 16px)!important;max-height:none!important;padding:14px!important;display:flex;flex-direction:column}
+#mdov .mdcols{flex:1;min-height:0}
+#mdov .mdleft{overflow:auto}
+@media (max-width:719px){#mdov .mdcols{overflow:auto}}
+@media (min-width:720px){#mdov .mdcols{align-items:stretch}#mdov .mdleft{flex:0 0 340px}#mdov .mdright{min-height:0}#mdov .mdl{max-height:none!important;flex:1;min-height:0;overflow:auto}}
 </style>
 </head>
 <body>
@@ -451,7 +467,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=98;var APPLABEL="1.173";
+var APPV=99;var APPLABEL="1.174";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -743,11 +759,11 @@ function mdSpellHtml(m){
  h+='<div class="crow"><button class="pri" data-a="mdroll">Roll damage</button>'+(sp.dc?'<button data-a="mdsave">Roll saves for selected</button>':'')+'</div>'+rl;
  return h}
 function mdDraw(){var el=mdEl(),m=ui.md;if(!m||!m.open){el.innerHTML="";return}
- var o=encOrder(),list=o.has.concat(o.no),tot=parseExpr(m.expr),K=function(k,l,cls){return'<button class="'+(cls||"")+'" data-a="mkey" data-k="'+k+'">'+(l||k)+'</button>'},old=el.querySelector(".mdl"),st=old?old.scrollTop:0,nsel=0,cnt=mdCount(m.expr),sp=m.spell?spFind(m.spell):null;
+ var o=encOrder(),list=o.has.concat(o.no),tot=parseExpr(m.expr),K=function(k,l,cls){return'<button class="'+(cls||"")+'" data-a="mkey" data-k="'+k+'">'+(l||k)+'</button>'},old=el.querySelector(".mdl"),st=old?old.scrollTop:0,nsel=0,cnt=mdCount(m.expr),sp=m.spell?spFind(m.spell):null,fr=!!m.fresh;m.fresh=false;
  var rows=list.map(function(c){var on=!!m.sel[c.id],mo=mdModeOf(m,c.id),dm=isNaN(tot)?null:mdAmt(mo,tot),rs=m.res&&m.res[c.id];if(on)nsel++;
   return'<div class="mdr'+(on?" on":"")+'"><label class="chk"><input type="checkbox" class="yn" data-a="mdsel" data-id="'+c.id+'"'+(on?" checked":"")+'><span><b>'+esc(c.name)+'</b> <span class="mute">'+(c.wsOn?"beast "+esc(c.wsHp):esc(c.hp||"?"))+'/'+esc(c.wsOn?c.wsMax:(c.max||"?"))+'</span></span></label><span class="mdseg"><button class="'+(mo==="f"?"pri":"")+'" data-a="mdmode" data-w="f" data-id="'+c.id+'">Full</button><button class="'+(mo==="h"?"pri":"")+'" data-a="mdmode" data-w="h" data-id="'+c.id+'">Half</button><button class="'+(mo==="n"?"pri":"")+'" data-a="mdmode" data-w="n" data-id="'+c.id+'">None</button></span><span class="mdp">'+(on&&dm!==null?"&minus;"+dm:"")+'</span>'+
   (rs?'<div class="mdres mute">'+esc(rs.ab)+' save: d20 '+rs.r+' '+sgn(rs.mod)+' = <b>'+rs.t+'</b> vs DC '+rs.dc+' &mdash; '+(rs.ok?"saved":"failed")+'</div>':'')+'</div>'}).join("");
- el.innerHTML='<div class="calcbk" data-a="mdx"></div><div class="calc'+(m.sp?" wide":"")+'"><div class="chead"><b>Group damage</b><button data-a="mdx" aria-label="Close">Close</button></div>'+
+ el.innerHTML='<div class="calcbk'+(fr?" fadein":"")+'" data-a="mdx"></div><div class="calc'+(m.sp?" wide":"")+(fr?" fadein":"")+'"><div class="chead"><b>Group damage</b><button data-a="mdx" aria-label="Close">Close</button></div>'+
  '<div class="mdcols"><div class="mdleft"><input id="mdin" class="cdisp" readonly inputmode="none" value="'+esc(m.expr)+'" placeholder="Tap numbers: 11 + 6 + 3" aria-label="Damage expression">'+
  '<div class="ctot">Total: <b>'+(isNaN(tot)?"-":tot)+'</b> <span class="mute mdcnt">&middot; '+cnt+' value'+(cnt===1?"":"s")+' added</span></div>'+
  '<div class="kp">'+K("7")+K("8")+K("9")+K("back","&#9003;","kfn")+K("4")+K("5")+K("6")+K("clr","C","kfn")+K("1")+K("2")+K("3")+K("-","&minus;","kfn")+K("0","0","k0")+K("+","+","kfn")+'</div>'+
@@ -757,7 +773,7 @@ function mdDraw(){var el=mdEl(),m=ui.md;if(!m||!m.open){el.innerHTML="";return}
  '<div class="crow mdapply"><button class="del" data-a="mdgo" style="flex:1"'+(nsel&&!isNaN(tot)&&tot>0?"":" disabled")+'>Apply damage to '+nsel+'</button></div></div></div></div>';
  var nl=el.querySelector(".mdl");if(nl)nl.scrollTop=st}
 function mdClick(a,b){var m=ui.md;
- if(a==="mdopen"){var k=b.dataset&&b.dataset.spk||"";ui.md={open:true,expr:"",sel:{},mode:{},sp:!!k,spell:k,lvl:"",dc:"",res:{},roll:null,cf:false};if(k)mdPickSpell(ui.md);mdDraw();return true}
+ if(a==="mdopen"){var k=b.dataset&&b.dataset.spk||"";ui.md={open:true,fresh:true,expr:"",sel:{},mode:{},sp:!!k,spell:k,lvl:"",dc:"",res:{},roll:null,cf:false};if(k)mdPickSpell(ui.md);mdDraw();return true}
  if(!m||!m.open)return false;
  if(a==="mdx"){m.open=false;mdDraw();return true}
  if(a==="mdcfx"){m.cf=false;spS().form=null;mdDraw();return true}
@@ -1054,6 +1070,8 @@ function downCheck(){var first=!ui.down;ui.down=ui.down||{};var now=[];S.combata
 
 function startAsk(){if(S.turnId||!encOrder().has.length)return;var el=document.getElementById("startpop");if(!el){el=document.createElement("div");el.id="startpop";document.body.appendChild(el);el.addEventListener("click",function(e){var b=e.target.closest("[data-st]");if(e.target===el||(b&&b.dataset.st==="no")){el.style.display="none";return}if(b&&b.dataset.st==="yes"){el.style.display="none";if(!S.turnId)advanceTurn()}})}
  el.innerHTML='<div class="atkbox"><div class="atkh"><b>Start combat?</b></div><div class="mute">All initiative scores are in. Starting puts the turn on '+esc((encOrder().has[0]||{}).name||"the first combatant")+'.</div><div style="display:flex;gap:8px"><button class="pri" data-st="yes" style="flex:1">Yes</button><button data-st="no" style="flex:1">No</button></div></div>';el.style.display="flex"}
+
+var _render0=render;render=function(){var t=ui.tab,ch=ui._ft!==t;ui._ft=t;_render0.apply(this,arguments);if(ch){var m=document.getElementById("main");if(m){m.classList.remove("tabfade");void m.offsetWidth;m.classList.add("tabfade")}}};
 /*TG-END*/
 
 
