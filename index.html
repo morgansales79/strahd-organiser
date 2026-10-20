@@ -207,6 +207,7 @@ button{transition:background-color .3s ease,border-color .3s ease,color .3s ease
 #mdov .mdleft{overflow:auto}
 @media (max-width:719px){#mdov .mdcols{overflow:auto}}
 @media (min-width:720px){#mdov .mdcols{align-items:stretch}#mdov .mdleft{flex:0 0 340px}#mdov .mdright{min-height:0}#mdov .mdl{max-height:none!important;flex:1;min-height:0;overflow:auto}}
+.spol{margin:0 0 8px;padding-left:20px}.sphb{height:6px;border-radius:3px;background:var(--line,#8884);overflow:hidden;margin:4px 0}.sphb i{display:block;height:100%}
 </style>
 </head>
 <body>
@@ -469,7 +470,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=101;var APPLABEL="1.176";
+var APPV=102;var APPLABEL="1.180";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -1176,7 +1177,7 @@ function render(){
  document.getElementById("main").innerHTML=(ui.rs?'<div class="card" style="margin-bottom:14px"><h3>Replace everything with this backup?</h3><div class="mute">Your current organiser data will be overwritten.</div><div style="display:flex;gap:8px"><button class="pri" data-a="rsok">Replace</button><button data-a="rscancel">Cancel</button></div></div>':"")+v();
  document.getElementById("bk").innerHTML=ui.bk?'<div class="card" style="max-width:1160px;margin:16px auto 0"><div class="row" style="margin:0"><div><h3>Backup created</h3><div class="mute">Copy the text into a file and save it with a .json extension. Use Restore file to load it later.</div></div><div style="display:flex;gap:8px"><button data-a="copy">Copy backup</button><button data-a="closebk">Close</button></div></div><textarea id="bkt" readonly style="min-height:140px;font-family:monospace;font-size:12px">'+esc(ui.bk)+'</textarea></div>':""}
 /*SESS-START*/
-var SPDEF=[["loc","Location",[4,6]],["init","Initiative",[2,6]],["party","Party",[4,3]],["dice","Dice",[2,3]],["npcs","NPCs here",[2,6]],["quests","Quests here",[2,3]],["enemies","Enemies here",[4,3]],["notes","Session notes",[2,3]],["log","Session log",[2,6]],["day","Day and round",[2,3]],["maps","Maps",[4,3]]];
+var SPDEF=[["loc","Location",[4,6]],["init","Initiative",[2,6]],["party","Party",[4,3]],["dice","Dice",[2,3]],["npcs","NPCs here",[2,6]],["quests","Quests here",[2,3]],["enemies","Enemies here",[4,3]],["notes","Session notes",[2,3]],["log","Session log",[2,6]],["day","Day and round",[2,3]],["maps","Maps",[4,3]],["travel","Travel",[4,4]],["order","Marching order",[2,3]],["combat","Combat controls",[2,3]],["rest","Rests and time",[2,3]],["hp","Party health",[4,3]]];
 var SPSZ={small:[2,3],large:[4,6],tall:[2,6],wide:[4,3]};
 var SS={};
 function spInit(){var d={on:{loc:1,party:1,init:1,dice:1,notes:1},order:SPDEF.map(function(p){return p[0]}),size:{},loc:"",notes:"",log:[]},r=S.sess;
@@ -1212,6 +1213,19 @@ if(id==="maps"){var ml=mpList(ln);
   return ml.length?'<div class="spmaps">'+ml.map(function(m,i){return'<button class="spmap" data-sp="mapopen" data-i="'+i+'" aria-label="Open map '+esc(m.name||("Map "+(i+1)))+'"><span class="spmi">'+(m.ok?'<img data-mpi="'+i+'" alt="">':'<em class="mute">Not downloaded yet</em>')+'</span><span>'+esc(m.name||("Map "+(i+1)))+'</span></button>'}).join("")+'</div>':'<div class="mute">No maps for '+esc(ln)+'. Add pictures under the location\'s heading in the Google Doc, then Sync.</div>'}
  if(id==="notes"){return'<textarea class="spta" data-sp-notes="1" placeholder="Session notes (kept on this device)" aria-label="Session notes">'+esc(SS.notes)+'</textarea>'}
  if(id==="log"){return'<div class="sprow"><input id="splog" placeholder="Add a log entry" aria-label="Log entry" style="flex:1"><button class="pri" data-sp="logadd">Add</button></div>'+(SS.log.length?SS.log.map(function(e,i){return'<div class="spit"><div class="sprow"><span class="mute" style="flex:none">'+esc(e.t)+'</span><span style="flex:1">'+esc(e.x)+'</span><button class="del" data-sp="logdel" data-i="'+i+'" aria-label="Delete entry">×</button></div></div>'}).join(""):'<div class="mute">Nothing logged yet.</div>')}
+
+ if(id==="travel"){var T=S.trv,pts=tvPts(),a0=tvStart(),b0=tvDest(),r=T.res,op=function(c){return pts.map(function(q){return'<option'+(q===c?" selected":"")+'>'+esc(q)+'</option>'}).join("")};
+  return'<div class="spcol"><label class="f">From<select data-tvc="start" aria-label="Travel start">'+op(a0)+'</select></label><label class="f">To<select data-tvc="dest" aria-label="Travel destination">'+op(b0)+'</select></label><label class="chk"><input type="checkbox" class="yn" data-tvc="roads"'+(T.roads?" checked":"")+'><span>Use roads</span></label><div class="sprow"><button class="pri" data-tv="start">Start travel</button><button data-sp="mo">Marching order</button></div>'+
+   (r&&!r.err?'<div class="mute">Last trip: '+esc(r.a||a0)+' to '+esc(r.b||b0)+', '+tvFmt(r.total)+', '+(r.enc?r.enc.length:0)+' encounter(s). <button data-a="tab" data-t="Travel">Open Travel</button></div>':'')+'</div>'}
+ if(id==="order"){var od=tvOrder(),fr=S.trv.front||2;
+  return od.length?'<ol class="spol">'+od.map(function(i,k){return'<li>'+esc(tvNm(i))+(tvIsNpc(i)?' <span class="mute">(NPC)</span>':'')+(k<fr?' <span class="pill">front</span>':'')+'</li>'}).join("")+'</ol><button data-sp="mo">Change order</button>':'<div class="mute">Add party members first.</div>'}
+ if(id==="combat"){
+  return'<div class="spcol"><div class="sprow"><span class="pill big">Round '+S.round+'</span><button class="pri" data-a="nextturn">'+(S.turnId?"Next turn":"Start combat")+'</button></div><div class="sprow"><button data-a="mdopen">Group damage</button><button data-sp="tab" data-t="Encounter">Open Encounter</button></div></div>'}
+ if(id==="rest"){
+  return'<div class="spcol"><div class="sprow"><b>Day '+S.day+'</b> <span>'+tvClock(S.hour||0)+'</span></div><div class="mute">'+esc(clkNext())+'</div><div class="sprow"><button data-sp="adv" data-h="0.5">+30 min</button><button data-sp="adv" data-h="1">+1 hr</button></div><div class="sprow"><button data-a="restshort">Short rest</button><button data-a="restlong">Long rest</button></div></div>'}
+ if(id==="hp"){
+  return S.party.length?S.party.map(function(m){var mx=parseInt(m.maxHp,10)||0,cu=m.curHp===""||m.curHp==null?mx:(parseInt(m.curHp,10)||0),pc=mx?Math.max(0,Math.min(100,Math.round(cu*100/mx))):0,ex=[m.res&&"Res: "+m.res,m.imm&&"Imm: "+m.imm,m.vul&&"Vul: "+m.vul].filter(Boolean).join("; ");
+   return'<div class="spit"><div class="sprow"><b style="flex:1">'+esc(m.name)+'</b><span>'+cu+(mx?" / "+mx:"")+'</span><span class="mute">AC '+esc(m.ac||"-")+'</span></div>'+(mx?'<div class="sphb"><i style="width:'+pc+'%;background:'+(pc>50?"#3f9f6a":pc>25?"#d9a03a":"#c0334d")+'"></i></div>':'')+(ex?'<div class="mute">'+esc(ex)+'</div>':'')+(tgMaOk(m)?'<label class="chk"><input type="checkbox" class="yn" data-sp="ma" data-id="'+m.id+'"'+(tgMaOn(m)?" checked":"")+'><span>Mage Armor</span></label>':'')+'</div>'}).join(""):'<div class="mute">No party members yet.</div>'}
  if(id==="day"){return clkHtml()+'<div class="mute" style="margin-top:6px">Combat round '+S.round+'</div>'}
  return""}
 var spUrls=[];
@@ -1282,6 +1296,10 @@ document.addEventListener("click",function(e){var b=e.target.closest("[data-sp]"
  else if(a==="tog"){SS.on[b.dataset.id]=b.checked?1:0;saveSess();render()}
  else if(a==="reset"){SS.on={loc:1,party:1,init:1,dice:1,notes:1};SS.size={};SS.order=SPDEF.map(function(p){return p[0]});saveSess();render()}
  else if(a==="rules")rulesOpen();
+ else if(a==="mo")moOpen();
+ else if(a==="tab"){ui.tab=b.dataset.t;render()}
+ else if(a==="adv"){clkAdv(parseFloat(b.dataset.h));save();render()}
+ else if(a==="ma"){ui.tgMa=ui.tgMa||{};ui.tgMa[b.dataset.id]=!!b.checked;render()}
  else if(a==="close"){SS.on[b.dataset.id]=0;saveSess();render()}
  else if(a==="roll")spRoll(+b.dataset.d);
  else if(a==="addmon")spAddMon(b.dataset.id);
