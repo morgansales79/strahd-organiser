@@ -477,7 +477,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=126;var APPLABEL="1.330";
+var APPV=127;var APPLABEL="1.340";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -536,7 +536,7 @@ function party(){
  return'<div class="row"><h2>Party</h2><div style="display:flex;gap:8px;flex-wrap:wrap"><label class="btn" tabindex="0">Take photo of sheet<input type="file" id="scpk" accept="image/*" capture="environment" hidden></label><label class="btn" tabindex="0">Scan character sheet<input type="file" id="scpc" accept="image/*" hidden></label><label class="btn" tabindex="0">Import PDF<input type="file" id="scpp" accept="application/pdf,.pdf" multiple hidden></label><button class="pri" data-a="add" data-k="party">Add member</button></div></div>'+importUI()+(S.party.length?'<div class="grid pgrid">'+S.party.map(function(m){
   var k="party",id=m.id;
   return'<div class="card pc"><div class="phead"><input class="pname" data-k="party" data-id="'+id+'" data-f="name" value="'+esc(m.name)+'" placeholder="Character name" aria-label="Character name"><div class="psub"><input data-k="party" data-id="'+id+'" data-f="race" value="'+esc(m.race)+'" placeholder="Race" aria-label="Race"><input data-k="party" data-id="'+id+'" data-f="className" value="'+esc(m.className)+'" placeholder="Class / subclass" aria-label="Class and subclass"><input class="lvl" data-k="party" data-id="'+id+'" data-f="level" value="'+esc(m.level)+'" placeholder="Lvl" aria-label="Level"></div><input class="pbg" data-k="party" data-id="'+id+'" data-f="background" value="'+esc(m.background)+'" placeholder="Background" aria-label="Background"></div>'+
-  '<div class="tiles" style="grid-template-columns:repeat('+(5+pcCast(m).length)+',1fr)">'+tileRO(k,id,"ac","AC",m.ac)+tileRO(k,id,"maxHp","Max HP",m.maxHp)+tile(k,id,"curHp","Current HP",(m.maxHp||m.curHp)?String(pcCur(m)):"")+tile(k,id,"speed","Speed",m.speed)+tile(k,id,"init","Initiative",m.init)+pcCast(m).map(function(c,i,all){return'<div class="tile"><span class="tl">Spell DC'+(all.length>1?' ('+c.ab+')':'')+'</span><b class="pv sdc">'+c.dc+'</b><span class="mute" style="font-size:11px">Atk '+sgn(c.at)+'</span></div>'}).join("")+'</div>'+
+  '<div class="tiles" style="grid-template-columns:repeat('+(5+pcCast(m).length)+',1fr)">'+tileRO(k,id,"ac","AC",m.ac)+tileRO(k,id,"maxHp","Max HP",m.maxHp)+tile(k,id,"curHp","Current HP",(m.maxHp||m.curHp)?String(pcCur(m)):"")+tileRO(k,id,"speed","Speed",m.speed)+tileRO(k,id,"init","Initiative",m.init)+pcCast(m).map(function(c,i,all){return'<div class="tile"><span class="tl">Spell DC'+(all.length>1?' ('+c.ab+')':'')+'</span><b class="pv sdc">'+c.dc+'</b><span class="mute" style="font-size:11px">Atk '+sgn(c.at)+'</span></div>'}).join("")+'</div>'+
   pcTabBar(m)+(function(){var tb=pcTab(m);
    if(tb==="spells")return pcSpellsUI(m);
    if(tb==="equip")return pcEqUI(m);
@@ -1930,7 +1930,16 @@ function eqProfOf(m,name){if(!m||!name)return null;var it=pfItem(name);if(!it)re
 function eqNpHtml(m,name){return eqProfOf(m,name)===false?' <span class="nprof-t">not proficient</span>':''}
 function pcMaxHp(m){var cl=[];try{cl=pcClasses(m)}catch(x){}cl=cl.filter(function(c){return HDIE[c.k]&&c.lv>0});if(!cl.length)return null;var con=pcMod(m,"con"),tot=0,first=true,hill=/hill dwarf/i.test(String(m.race||""));
  cl.forEach(function(c){var d=HDIE[c.k];for(var i=0;i<c.lv;i++){var base=first?d:Math.floor(d/2)+1;first=false;tot+=Math.max(1,base+con+(hill?1:0))}});return tot}
+var PC_SPD=[["wood elf",35],["elf",30],["dwarf",25],["halfling",25],["gnome",25],["centaur",40],["satyr",35],["leonin",35],["human",30],["half-elf",30],["half-orc",30],["dragonborn",30],["tiefling",30],["aasimar",30],["tabaxi",30],["goliath",30],["genasi",30],["firbolg",30],["kenku",30],["lizardfolk",30],["triton",30],["bugbear",30],["goblin",30],["hobgoblin",30],["orc",30],["yuan-ti",30],["tortle",30],["minotaur",30],["loxodon",30],["shifter",30],["changeling",30],["warforged",30],["kalashtar",30],["owlin",30],["fairy",30],["harengon",30],["aarakocra",30],["githyanki",30],["githzerai",30],["kobold",30],["grung",25]];
+function pcSpeed(m){var rc=String(m.race||"").toLowerCase(),b=null;if(!rc)return null;PC_SPD.some(function(r){if(rc.indexOf(r[0])>-1){b=r[1];return true}return false});if(b===null)return null;
+ var e=pcEq(m),ar=eqFind(e.armor),heavy=!!(ar&&/^Heavy/.test(ar.c)),cl=[];try{cl=pcClasses(m)}catch(x){}
+ var sTr=parseInt(m.str,10)||10,req=ar&&/Chain mail/i.test(ar.n)?13:ar&&/Splint|Plate/i.test(ar.n)?15:0;
+ if(req&&sTr<req&&!/dwarf/.test(rc))b-=10;
+ cl.forEach(function(c){if(c.k==="barbarian"&&c.lv>=5&&!heavy)b+=10;if(c.k==="monk"&&!(e.armor||e.shield)){b+=c.lv>=18?30:c.lv>=14?25:c.lv>=10?20:c.lv>=6?15:c.lv>=2?10:0}});return Math.max(0,b)}
 function pcAutoStats(m){if(!m||String(m.dex||"").trim()==="")return false;var ch=false,ac=String(eqAC(m).ac);if(m.ac!==ac){m.ac=ac;ch=true;S.combatants.forEach(function(c){if(c.kind==="pc"&&c.ref===m.id)c.ac=ac})}
+ var ini=sgn(pcMod(m,"dex"));if(m.init!==ini){m.init=ini;ch=true}
+ if(String(m.wis||"").trim()!==""){var pp=String(10+pcBon(m,"prc","wis"));if(m.passivePerception!==pp){m.passivePerception=pp;ch=true}}
+ var sp=pcSpeed(m);if(sp!==null){var st=sp+" ft.";if(m.speed!==st){m.speed=st;ch=true}}
  var hp=pcMaxHp(m);if(hp!==null&&String(m.con||"").trim()!==""){var hs=String(hp);if(m.maxHp!==hs){m.maxHp=hs;ch=true;if(String(m.curHp||"")!==""&&(parseInt(m.curHp,10)||0)>hp)m.curHp=hs;S.combatants.forEach(function(c){if(c.kind==="pc"&&c.ref===m.id){c.max=hs;if((parseInt(c.hp,10)||0)>hp)c.hp=hs}})}}return ch}
 var _renderPF=render;render=function(){var ch=false;(S.party||[]).forEach(function(m){if(pcAutoStats(m))ch=true});if(ch)save();return _renderPF.apply(this,arguments)};
 /*PF-END*/
