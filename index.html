@@ -106,6 +106,7 @@ input[type=checkbox]:focus-visible{outline:2px solid var(--acc2);outline-offset:
 .atkrow button.used,.atkrow button:disabled{opacity:.35;text-decoration:line-through;cursor:not-allowed}
 #startpop{display:none;position:fixed;inset:0;z-index:1075;background:rgba(0,0,0,.6);align-items:center;justify-content:center;padding:16px}
 #prepop{display:none;position:fixed;inset:0;z-index:1090;background:rgba(0,0,0,.6);align-items:center;justify-content:center;padding:16px}
+#hitov,#castov,#clov{display:none;position:fixed;inset:0;z-index:1085;background:rgba(0,0,0,.6);align-items:center;justify-content:center;padding:12px}#clov{z-index:1088}.clbox{background:var(--panel);color:var(--text);border:2px solid var(--acc);border-radius:14px;padding:16px;width:min(520px,100%);max-height:92dvh;overflow:auto;display:flex;flex-direction:column;gap:10px}.clbox.wide{width:min(760px,100%)}.cllist{display:flex;flex-wrap:wrap;gap:6px}.cllist .clrow{width:100%;border:1px solid var(--line);border-radius:8px;padding:6px 8px}.cllog{display:flex;flex-direction:column;gap:4px}.clrnd{font-weight:700;margin-top:8px;color:var(--acc)}.clent{display:flex;gap:8px;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);padding:4px 0}.clnotes{display:flex;flex-direction:column;gap:4px;margin-top:8px;font-size:1.05rem}.clres{font-size:1.1rem;padding:8px;border:1px dashed var(--line);border-radius:8px}
 #downpop{display:none;position:fixed;inset:0;z-index:1080;background:rgba(0,0,0,.6);align-items:center;justify-content:center;padding:16px}
 .atkrow{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.atkrow button{padding:6px 10px;font-size:13px}.atklog{margin-top:6px;font-size:14px;line-height:1.5}.atklog:empty{display:none}
 .cb{display:grid;grid-template-columns:76px 1fr;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px;margin-bottom:10px}.cb.cur{border-color:var(--acc);box-shadow:0 0 0 2px var(--acc)}.cb.down{opacity:.6}.cinit{display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--field);border:1px solid var(--line);border-radius:10px;padding:4px}.cinit input{text-align:center;font-size:1.6rem;font-weight:800;border:none;background:transparent;padding:2px;width:100%}.tl{font-size:.62rem;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}.cbody{display:flex;flex-direction:column;gap:8px;min-width:0}.cname{font-weight:700;font-size:1.05rem;flex:1;min-width:140px}.hpline{display:flex;gap:8px;align-items:flex-end}.hpf{display:flex;flex-direction:column;width:84px}.hpf input{text-align:center;font-weight:700}.bar{height:10px;background:var(--field);border:1px solid var(--line);border-radius:6px;overflow:hidden}.bar div{height:100%;transition:width .2s}.hpctl{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.hpctl input{width:80px;text-align:center}.pill.now{background:var(--acc);color:#fff;border-color:var(--acc)}.pill.dn{border-color:#c0334d;color:#c0334d}.pill.big{font-size:1rem;padding:6px 14px;color:var(--text)}.addrow{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.addrow select{flex:1;min-width:200px}.addrow input[type=number]{width:80px}.sbx{white-space:pre-wrap;font:13px/1.45 inherit;margin:6px 0 0;background:var(--field);border:1px solid var(--line);border-radius:8px;padding:10px;max-height:420px;overflow:auto}@media(max-width:520px){.cb{grid-template-columns:1fr}}
@@ -195,7 +196,7 @@ header{min-height:104px;padding:12px 18px!important;background:linear-gradient(9
 @keyframes cosFade{from{opacity:0}to{opacity:1}}
 @keyframes cosUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 .tabfade{animation:cosUp .63s ease both}
-#atkpop,#tgpop,#prepop,#downpop,#startpop,#tvanim,#tvmo,#restov,#rulov,#libov,#cmpov,#cqov,#esov,#gcov,#gsov,#mapov,#nzov,#scanov{animation:cosFade .48s ease both}
+#atkpop,#tgpop,#prepop,#hitov,#castov,#clov,#downpop,#startpop,#tvanim,#tvmo,#restov,#rulov,#libov,#cmpov,#cqov,#esov,#gcov,#gsov,#mapov,#nzov,#scanov{animation:cosFade .48s ease both}
 .fadein{animation:cosFade .48s ease both}
 @keyframes cosOut{from{opacity:1}to{opacity:0}}
 body>.cosghost{animation:cosOut .48s ease forwards!important;pointer-events:none!important}
@@ -215,6 +216,7 @@ button{transition:background-color .3s ease,border-color .3s ease,color .3s ease
 <header>
   <div><h1>Curse of Strahd Organiser</h1><p>Campaign notes for the 2016 edition</p></div>
   <div id="hdclk" class="hdclk" title="Barovian clock"></div>
+  <button id="hdcmb" class="pill" hidden title="Review the fight so far">Combat log</button>
   <button id="syncdot" class="pill" hidden title="Tap to sync">Not synced</button>
 </header>
 <div id="bk"></div>
@@ -406,7 +408,7 @@ var uid=function(){return Math.random().toString(36).slice(2,10)};
 var arr=function(x){return Array.isArray(x)?x.filter(function(i){return i&&typeof i==="object"}):[]};
 var str=function(x){return typeof x==="string"?x:(x==null?"":String(x))};
 function esc(s){return str(s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
-function fresh(){return{trv:tvNorm(),v:6,eseed:3,round:1,turnId:"",combatants:[],encSets:[],spells:[],day:1,hour:8,party:[{id:uid(),name:"Test Wizard (sample)",className:"Wizard",level:"5",race:"High Elf",ac:"12",maxHp:"28",dex:"14",con:"14",int:"17",wis:"12",str:"8",cha:"10",passivePerception:"11",notes:"Sample character to show spell slots. Delete me."},{id:uid(),name:"Test Warlock (sample)",className:"Warlock",level:"5",race:"Tiefling",ac:"13",maxHp:"38",dex:"14",con:"14",int:"10",wis:"12",str:"8",cha:"17",passivePerception:"11",notes:"Sample character to show pact slots. Delete me."}],sessions:[],
+function fresh(){return{trv:tvNorm(),v:6,eseed:3,clog:[],round:1,turnId:"",combatants:[],encSets:[],spells:[],day:1,hour:8,party:[{id:uid(),name:"Test Wizard (sample)",className:"Wizard",level:"5",race:"High Elf",ac:"12",maxHp:"28",dex:"14",con:"14",int:"17",wis:"12",str:"8",cha:"10",passivePerception:"11",notes:"Sample character to show spell slots. Delete me."},{id:uid(),name:"Test Warlock (sample)",className:"Warlock",level:"5",race:"Tiefling",ac:"13",maxHp:"38",dex:"14",con:"14",int:"10",wis:"12",str:"8",cha:"17",passivePerception:"11",notes:"Sample character to show pact slots. Delete me."}],sessions:[],
  npcs:NPCS.map(function(n){return{id:uid(),name:n[0],location:n[1],met:false,notes:seedNote(n[0],n[2]||""),stats:NPCSTATS[n[0]]||""}}),
  quests:QUESTS.map(function(q){return{id:uid(),name:q[0],location:q[1],status:"Not started",notes:q[2]||""}}),
  enemies:ENEMIES.map(function(e){return{id:uid(),name:e[0],location:e[1],quick:e[2],statblock:e[3],notes:""}}),
@@ -430,7 +432,7 @@ function norm(raw){
  var f=fresh();
  var s={v:6,day:Math.max(1,parseInt(b.day,10)||1),hour:isNaN(parseFloat(b.hour))?8:Math.max(0,Math.min(23.99,Math.round(parseFloat(b.hour)*60)/60))};
  s.party=arr(b.party).map(function(m){return{id:str(m.id)||uid(),name:str(m.name),className:str(m.className),level:str(m.level),ac:str(m.ac),maxHp:str(m.maxHp),passivePerception:str(m.passivePerception),notes:str(m.notes),race:str(m.race),background:str(m.background),speed:str(m.speed),init:str(m.init),str:str(m.str),dex:str(m.dex),con:str(m.con),int:str(m.int),wis:str(m.wis),cha:str(m.cha),sheet:str(m.sheet),sp:(m.sp&&typeof m.sp==="object")?m.sp:{},curHp:str(m.curHp),hdUsed:Math.max(0,parseInt(m.hdUsed,10)||0),su:(m.su&&typeof m.su==="object")?m.su:{},arcUsed:!!m.arcUsed,wsFav:arr(m.wsFav).map(function(f){return{id:str(f.id)||uid(),name:str(f.name),hp:str(f.hp),ac:str(f.ac),cr:str(f.cr),note:str(f.note)}}),wsCur:str(m.wsCur),moon:!!m.moon,wsOn:!!m.wsOn,wsName:str(m.wsName),wsHp:str(m.wsHp),wsAc:str(m.wsAc),petName:str(m.petName),petType:str(m.petType),petHp:str(m.petHp),petCur:str(m.petCur),petAc:str(m.petAc),petSpeed:str(m.petSpeed),petNotes:str(m.petNotes),ma:!!m.ma,acBase:str(m.acBase),res:str(m.res),imm:str(m.imm),vul:str(m.vul),tl:(m.tl===0||m.tl===1||m.tl===2)?m.tl:null,kn:sarr(m.kn),pr:sarr(m.pr)}});
- s.round=Math.max(1,parseInt(b.round,10)||1);s.turnId=str(b.turnId);
+ s.clog=arr(b.clog).map(function(e){return{id:str(e.id)||uid(),k:["dmg","heal","miss","cast"].indexOf(e.k)>-1?e.k:"dmg",r:Math.max(1,parseInt(e.r,10)||1),src:str(e.src),srcId:str(e.srcId),srcPc:!!e.srcPc,tgt:str(e.tgt),tgtId:str(e.tgtId),tgtPc:!!e.tgtPc,amt:Math.max(0,parseInt(e.amt,10)||0),what:str(e.what),h0:e.h0===undefined?undefined:parseInt(e.h0,10)||0,h1:e.h1===undefined?undefined:parseInt(e.h1,10)||0,dead:!!e.dead}}).slice(-600);s.round=Math.max(1,parseInt(b.round,10)||1);s.turnId=str(b.turnId);
  s.combatants=arr(b.combatants).map(function(c){return{id:str(c.id)||uid(),kind:c.kind==="pc"?"pc":"mon",ref:str(c.ref),name:str(c.name),init:str(c.init),dex:str(c.dex),hp:str(c.hp),max:str(c.max),ac:str(c.ac),wsName:str(c.wsName),wsHp:str(c.wsHp),wsMax:str(c.wsMax),wsAc:str(c.wsAc),wsOn:!!c.wsOn,pet:!!c.pet}});
  s.sess=(b.sess&&typeof b.sess==="object")?b.sess:null;s.trv=tvNorm(b.trv);s.enSeedV=parseInt(b.enSeedV,10)||0;
  s.encSets=arr(b.encSets).map(function(x){return{id:str(x.id)||uid(),name:str(x.name),notes:str(x.notes),items:arr(x.items).map(function(i){return{id:str(i.id)||uid(),ref:str(i.ref),qty:Math.max(1,Math.min(20,parseInt(i.qty,10)||1))}})}});
@@ -471,7 +473,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=108;var APPLABEL="1.212";
+var APPV=109;var APPLABEL="1.220";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -745,7 +747,7 @@ function mdDefLvl(sp){if(sp.l>0)return sp.l;var mx=1;S.party.forEach(function(p)
 function mdPickSpell(m){var sp=m.spell?spFind(m.spell):null;m.res={};m.roll=null;if(sp)m.lvl=mdDefLvl(sp)}
 function mdModeOf(m,id){return m.mode[id]||"f"}
 function mdAmt(mo,tot){return mo==="n"?0:mo==="h"?Math.floor(tot/2):tot}
-function mdSpellOpts(m){var q=String(m.spq||"").toLowerCase().trim(),all=spAll().filter(function(s){return s.dm&&s.dm.length}).sort(function(a,b){return a.n.localeCompare(b.n)}),sps=all.filter(function(s){return!q||s.n.toLowerCase().indexOf(q)>-1||s.k===m.spell});
+function mdSpellOpts(m){var q=String(m.spq||"").toLowerCase().trim(),all=spAll().filter(function(s){return s.dm&&s.dm.length&&(clIsAoe(s)||s.k===m.spell)}).sort(function(a,b){return a.n.localeCompare(b.n)}),sps=all.filter(function(s){return!q||s.n.toLowerCase().indexOf(q)>-1||s.k===m.spell});
  return'<option value="">Choose a spell... ('+sps.length+')</option>'+sps.map(function(s){return'<option value="'+esc(s.k)+'"'+(s.k===m.spell?" selected":"")+'>'+esc(s.n)+' ('+(s.l?"Lv "+s.l:"Cantrip")+(s.custom?", custom":"")+')</option>'}).join("")+'<option value="__new">Add custom spell...</option>'}
 function mdSpellHtml(m){
  var sp=m.spell?spFind(m.spell):null,h='';
@@ -1084,7 +1086,7 @@ var _render0=render;render=function(){var t=ui.tab+"|"+(ui.tab==="Enemies"?ui.en
  [].forEach.call(m.querySelectorAll("[data-pid],.sppop"),function(e){var k=e.dataset.pid||"_pop";now[k]=1;if(!pre[k]){e.classList.remove("fadein");void e.offsetWidth;e.classList.add("fadein")}});
  Object.keys(pre).forEach(function(k){if(now[k])return;var g=pre[k].c,r=pre[k].r;g.removeAttribute("id");g.style.cssText+=";position:fixed;margin:0;box-sizing:border-box;left:"+r.left+"px;top:"+r.top+"px;width:"+r.width+"px;height:"+r.height+"px;z-index:5";g.classList.add("cosghost");document.body.appendChild(g);setTimeout(function(){if(g.parentNode)g.parentNode.removeChild(g)},520)})};
 
-var OVL=["atkpop","tgpop","prepop","downpop","startpop","tvanim","tvmo","restov","rulov","libov","cmpov","cqov","esov","gcov","gsov","mapov","nzov","scanov","mdov"],OVS={};
+var OVL=["atkpop","tgpop","prepop","hitov","castov","clov","downpop","startpop","tvanim","tvmo","restov","rulov","libov","cmpov","cqov","esov","gcov","gsov","mapov","nzov","scanov","mdov"],OVS={};
 function ovVis(el){return el.childElementCount>0&&!el.hidden&&getComputedStyle(el).display!=="none"}
 function ovGhost(c){c.removeAttribute("hidden");c.classList.add("cosghost");if(!c.style.display||c.style.display==="none")c.style.display="flex";document.body.appendChild(c);setTimeout(function(){if(c.parentNode)c.parentNode.removeChild(c)},520)}
 function ovAttach(el){if(el._ov)return;el._ov=1;var was=ovVis(el);if(was)OVS[el.id]=el.cloneNode(true);
@@ -1133,7 +1135,7 @@ function cbSlots(c){if(c.kind!=="pc"||c.pet)return'';var m=S.party.find(function
  if(sl.pact){var u2=Math.min(sl.pact.n,su.p||0),p2='';for(k=0;k<sl.pact.n;k++)p2+='<button class="pip sm'+(k<sl.pact.n-u2?' on':'')+'" data-a="slot" data-id="'+m.id+'" data-l="p" data-i="'+k+'" aria-label="Pact slot"></button>';h+='<span class="slg"><span class="mute">Pact L'+sl.pact.lv+'</span>'+p2+'</span>'}
  return h?'<div class="slbar"><span class="mute">Slots</span>'+h+'</div>':''}
 function wsBlock(c){if(c.kind!=="pc"||c.pet)return'';var m=S.party.find(function(x){return x.id===c.ref});if(!(m&&/druid/i.test(m.className||""))&&!c.wsMax&&!c.wsOn)return'';var k='data-k="combatants" data-id="'+c.id+'"';
- if(c.wsOn)return'<div class="wsb on"><b>Wild Shape: '+esc(c.wsName||"Beast")+'</b><label class="hpf"><span class="tl">Beast HP</span><input '+k+' data-f="wsHp" value="'+esc(c.wsHp)+'" inputmode="numeric" style="width:60px"></label><span class="mute">/ '+esc(c.wsMax)+' &middot; AC '+esc(c.wsAc||"-")+'</span><button class="pri" data-a="calcopen" data-id="'+c.id+'">Beast damage / heal</button><button data-a="wsoff" data-id="'+c.id+'">Revert</button></div>';
+ if(c.wsOn)return'<div class="wsb on"><b>Wild Shape: '+esc(c.wsName||"Beast")+'</b><label class="hpf"><span class="tl">Beast HP</span><input '+k+' data-f="wsHp" value="'+esc(c.wsHp)+'" inputmode="numeric" style="width:60px"></label><span class="mute">/ '+esc(c.wsMax)+' &middot; AC '+esc(c.wsAc||"-")+'</span><button class="pri" data-a="calcopen" data-id="'+c.id+'">Beast damage / heal</button><button data-a="wsoff" data-id="'+c.id+'">Revert</button>'+clSlotBtn(c)+'</div>';
  return'<div class="wsb"><span class="mute">Wild Shape</span>'+wsSel(c)+'<input '+k+' data-f="wsName" value="'+esc(c.wsName)+'" placeholder="Beast" aria-label="Beast form" style="width:120px"><input '+k+' data-f="wsMax" value="'+esc(c.wsMax)+'" placeholder="HP" inputmode="numeric" aria-label="Beast HP" style="width:60px"><input '+k+' data-f="wsAc" value="'+esc(c.wsAc)+'" placeholder="AC" inputmode="numeric" aria-label="Beast AC" style="width:60px"><button data-a="wson" data-id="'+c.id+'">Wild Shape</button></div>'}
 function encCard(c,cur){
  var en=c.kind==="mon"?S.enemies.find(function(e){return e.id===c.ref}):null;
@@ -1145,7 +1147,7 @@ function encCard(c,cur){
  return'<div class="cb'+(cur?" cur":"")+(down?" down":"")+'"><div class="cinit"><span class="tl">Init</span><input '+k+' data-f="init" value="'+esc(c.init)+'" inputmode="numeric" aria-label="Initiative of '+esc(c.name)+'"></div>'+
  '<div class="cbody"><div class="cl1"><input class="cname" '+k+' data-f="name" value="'+esc(c.name)+'" aria-label="Name">'+tag+(cur?'<span class="pill now">Turn</span>':'')+(down?'<span class="pill dn">'+(c.kind==="pc"?"Down":"Defeated")+'</span>':'')+delBtn("combatants",c.id,c.name)+'</div>'+
  '<div class="bar"><div style="width:'+pct+'%;background:'+col+'"></div></div>'+
- '<div class="cl2"><label class="hpf"><span class="tl">HP</span><input '+k+' data-f="hp" value="'+esc(c.hp)+'" inputmode="numeric" aria-label="Current HP"></label><span class="mute">/</span><label class="hpf"><span class="tl">Max</span><input '+k+' data-f="max" value="'+esc(c.max)+'" inputmode="numeric" aria-label="Max HP"></label><label class="hpf"><span class="tl">AC</span><input '+k+' data-f="ac" value="'+esc(c.ac)+'" inputmode="numeric" aria-label="AC"></label><button class="pri" data-a="calcopen" data-id="'+c.id+'">Damage / Heal</button></div>'+
+ '<div class="cl2"><label class="hpf"><span class="tl">HP</span><input '+k+' data-f="hp" value="'+esc(c.hp)+'" inputmode="numeric" aria-label="Current HP"></label><span class="mute">/</span><label class="hpf"><span class="tl">Max</span><input '+k+' data-f="max" value="'+esc(c.max)+'" inputmode="numeric" aria-label="Max HP"></label><label class="hpf"><span class="tl">AC</span><input '+k+' data-f="ac" value="'+esc(c.ac)+'" inputmode="numeric" aria-label="AC"></label><button class="pri" data-a="calcopen" data-id="'+c.id+'">Damage / Heal</button>'+clBtns(c)+'</div>'+
  (ui.atk&&en&&en.statblock?atkBtns(c,en):'')+wsBlock(c)+cbSlots(c)+(en&&en.statblock?'<details><summary>Statblock</summary><pre class="sbx">'+esc(en.statblock)+'</pre></details>':'')+'<div class="ntrow"><button class="'+(cur?"pri":"")+'" data-a="nextfrom" data-id="'+c.id+'">Next turn &rarr;</button></div></div></div>'}
 var XPT=[[25,50,75,100],[50,100,150,200],[75,150,225,400],[125,250,375,500],[250,500,750,1100],[300,600,900,1400],[350,750,1100,1700],[450,900,1400,2100],[550,1100,1600,2400],[600,1200,1900,2800],[800,1600,2400,3600],[1000,2000,3000,4500],[1100,2200,3400,5100],[1250,2500,3800,5700],[1400,2800,4300,6400],[1600,3200,4800,7200],[2000,3900,5900,8800],[2100,4200,6300,9500],[2400,4900,7300,10900],[2800,5700,8500,12700]];
 var CRXP={"0":10,"0.125":25,"0.25":50,"0.5":100,"1":200,"2":450,"3":700,"4":1100,"5":1800,"6":2300,"7":2900,"8":3900,"9":5000,"10":5900,"11":7200,"12":8400,"13":10000,"14":11500,"15":13000,"16":15000,"17":18000,"18":20000,"19":22000,"20":25000,"21":33000,"22":41000,"23":50000,"24":62000,"25":75000,"26":90000,"27":105000,"28":120000,"29":135000,"30":155000};
@@ -1167,7 +1169,7 @@ function encounter(){
  var opts2=S.enemies.slice().sort(function(a,b){return a.name.localeCompare(b.name)}).map(function(e){return'<option value="'+e.id+'">'+esc(e.name)+(e.quick?" ("+esc(e.quick)+")":"")+'</option>'}).join("");
  (function(){var have={};S.enemies.forEach(function(e){have[cmKey(e.name)]=1});var lib=Object.keys(MONS).sort().filter(function(k){return!have[k]}).map(function(k){return'<option value="lib:'+esc(k)+'">'+esc(MONS[k].n)+' ('+esc(MONS[k].q)+')</option>'}).join("");opts2=(opts2?'<optgroup label="My enemies &amp; NPCs">'+opts2+'</optgroup>':"")+'<optgroup label="5e library (SRD)">'+lib+'</optgroup>'})();
  var started=!!cur&&S.combatants.some(function(c){return c.id===cur});
- return'<div class="row"><h2>Encounter'+(function(){var d=encDiff();return d?' <span class="mute" title="'+esc(d.tip)+'" style="font-weight:500">('+esc(d.label)+')</span>':''})()+(function(){var g=encInFight(),lo='',no='',i;for(i=1;i<=20;i++)lo+='<option'+(i===encLv()?" selected":"")+'>'+i+'</option>';for(i=1;i<=10;i++)no+='<option'+(i===encN()?" selected":"")+'>'+i+'</option>';return' <span style="font-size:13px;font-weight:500;opacity:'+(g?'.45':'1')+'" title="'+(g?'The party is in the fight, so the difficulty uses the real characters.':'Used for the difficulty until your party is added to the fight.')+'"><label class="hpf" style="display:inline-flex"><span class="tl">Party level</span><select style="width:auto" data-ui="enclv" aria-label="Party level"'+(g?" disabled":"")+'>'+lo+'</select></label> <label class="hpf" style="display:inline-flex"><span class="tl">Players</span><select style="width:auto" data-ui="encn" aria-label="Number of players"'+(g?" disabled":"")+'>'+no+'</select></label></span>'})()+'</h2><div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><span class="pill big">Round '+S.round+'</span><button class="pri" data-a="nextturn">'+(started?"Next turn":"Start combat")+'</button><label class="chk"><input type="checkbox" class="yn" data-a="hidedead"'+(ui.hideDead?" checked":"")+'><span>Hide defeated enemies'+(ui.hideDead&&nDead?" ("+nDead+" hidden)":"")+'</span></label><label class="chk"><input type="checkbox" data-a="atktog"'+(ui.atk?" checked":"")+'><span>Attack buttons</span></label>'+(ui.atk?'<label class="hpf"><span class="tl">Target AC</span><input data-ui="atkac" value="'+esc(ui.atkAc)+'" inputmode="numeric" style="width:60px"></label><select style="width:auto" data-ui="atkmode" aria-label="Roll mode"><option value="n"'+(ui.atkMode==="n"?" selected":"")+'>Normal</option><option value="a"'+(ui.atkMode==="a"?" selected":"")+'>Advantage</option><option value="d"'+(ui.atkMode==="d"?" selected":"")+'>Disadvantage</option></select>':'')+'<button data-a="mdopen">Group damage</button><button data-a="encsort">Update order</button><button data-a="encreset">Reset round</button><button class="del" data-a="encclear">'+(ui.clr?"Confirm clear all":"Clear all")+'</button></div></div>'+
+ return'<div class="row"><h2>Encounter'+(function(){var d=encDiff();return d?' <span class="mute" title="'+esc(d.tip)+'" style="font-weight:500">('+esc(d.label)+')</span>':''})()+(function(){var g=encInFight(),lo='',no='',i;for(i=1;i<=20;i++)lo+='<option'+(i===encLv()?" selected":"")+'>'+i+'</option>';for(i=1;i<=10;i++)no+='<option'+(i===encN()?" selected":"")+'>'+i+'</option>';return' <span style="font-size:13px;font-weight:500;opacity:'+(g?'.45':'1')+'" title="'+(g?'The party is in the fight, so the difficulty uses the real characters.':'Used for the difficulty until your party is added to the fight.')+'"><label class="hpf" style="display:inline-flex"><span class="tl">Party level</span><select style="width:auto" data-ui="enclv" aria-label="Party level"'+(g?" disabled":"")+'>'+lo+'</select></label> <label class="hpf" style="display:inline-flex"><span class="tl">Players</span><select style="width:auto" data-ui="encn" aria-label="Number of players"'+(g?" disabled":"")+'>'+no+'</select></label></span>'})()+'</h2><div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><span class="pill big">Round '+S.round+'</span><button class="pri" data-a="nextturn">'+(started?"Next turn":"Start combat")+'</button><label class="chk"><input type="checkbox" class="yn" data-a="hidedead"'+(ui.hideDead?" checked":"")+'><span>Hide defeated enemies'+(ui.hideDead&&nDead?" ("+nDead+" hidden)":"")+'</span></label><label class="chk"><input type="checkbox" data-a="atktog"'+(ui.atk?" checked":"")+'><span>Attack buttons</span></label>'+(ui.atk?'<label class="hpf"><span class="tl">Target AC</span><input data-ui="atkac" value="'+esc(ui.atkAc)+'" inputmode="numeric" style="width:60px"></label><select style="width:auto" data-ui="atkmode" aria-label="Roll mode"><option value="n"'+(ui.atkMode==="n"?" selected":"")+'>Normal</option><option value="a"'+(ui.atkMode==="a"?" selected":"")+'>Advantage</option><option value="d"'+(ui.atkMode==="d"?" selected":"")+'>Disadvantage</option></select>':'')+'<button data-a="mdopen">Group damage</button><button data-cl="review">Review combat</button><button data-cl="end">End combat</button><button data-a="encsort">Update order</button><button data-a="encreset">Reset round</button><button class="del" data-a="encclear">'+(ui.clr?"Confirm clear all":"Clear all")+'</button></div></div>'+
  esetCard()+'<div class="card addp"><div class="addrow"><input type="search" class="selq" placeholder="Search enemies\u2026" aria-label="Search enemies"><select id="encsel" aria-label="Enemy">'+(opts2||'<option value="">No enemies yet</option>')+'</select><input id="encqty" type="number" min="1" max="20" value="1" aria-label="How many"><button class="pri" data-a="encadd">Add enemies</button><button data-a="encparty">Add whole party</button><button data-a="encroll">Re-roll monsters</button></div><details class="mute"><summary>How difficulty is worked out</summary>'+(function(){var d=encDiff();return d?esc(d.tip):'Add enemies to see a rating.'})()+' Uses the standard Dungeon Master&rsquo;s Guide encounter rules, counting your whole Party tab at full strength.</details><details class="mute"><summary>How initiative works</summary>Monsters roll d20 + DEX modifier when added. Type each player\'s roll in their Init box, then press Update order (or Enter in the box).</details></div>'+
  (ui.initq&&ui.initq.length?'<div class="card" style="margin-bottom:14px;border-color:var(--acc)"><h3>Enter initiative rolls</h3><div class="mute">Type each player\'s roll (including modifiers). Press Enter to move to the next player; Enter on the last one sorts the order.</div><div class="g2">'+ui.initq.map(function(id){var c=S.combatants.find(function(x){return x.id===id});if(!c)return'';var kk='data-k="combatants" data-id="'+c.id+'"',pm=S.party.find(function(x){return x.id===c.ref}),dr=!c.pet&&pm&&/druid/i.test(pm.className||"");return'<div class="card initr"><b>'+esc(c.name)+(c.pet?' <span class="pill">Pet</span>':'')+'</b><div class="sprow2"><button class="del" data-a="initskip" data-id="'+c.id+'">Not in this fight</button><label class="hpf"><span class="tl">Initiative</span><input data-pq="1" enterkeyhint="next" '+kk+' data-f="init" inputmode="numeric" value="'+esc(c.init)+'" placeholder="Roll"></label><label class="hpf"><span class="tl">Current HP</span><input '+kk+' data-f="hp" inputmode="numeric" value="'+esc(c.hp)+'"></label><span class="mute">/ '+esc(c.max||"?")+'</span></div>'+(dr?'<div class="sprow2"><span class="mute">Wild Shape</span>'+wsSel(c)+'<input '+kk+' data-f="wsName" value="'+esc(c.wsName)+'" placeholder="Beast" style="width:130px"><input '+kk+' data-f="wsMax" value="'+esc(c.wsMax)+'" placeholder="HP" inputmode="numeric" style="width:64px"><input '+kk+' data-f="wsAc" value="'+esc(c.wsAc)+'" placeholder="AC" inputmode="numeric" style="width:64px"></div>':'')+'</div>'}).join("")+'</div><div><button class="pri" data-a="initdone">Done, sort the order</button></div></div>':'')+
  (S.combatants.length?'<div class="clist">'+o.has.map(function(c){return encCard(c,started&&c.id===cur)}).join("")+(o.no.length?'<div class="mute" style="margin:6px 0">Waiting for an initiative roll</div>'+o.no.map(function(c){return encCard(c,false)}).join(""):'')+'</div>':'<div class="empty">No combatants yet. Add enemies above, then add your party.</div>')+calcPanel()}
@@ -1228,7 +1230,7 @@ if(id==="maps"){var ml=mpList(ln);
  if(id==="order"){var od=tvOrder(),fr=S.trv.front||2;
   return od.length?'<ol class="spol">'+od.map(function(i,k){return'<li>'+esc(tvNm(i))+(tvIsNpc(i)?' <span class="mute">(NPC)</span>':'')+(k<fr?' <span class="pill">front</span>':'')+'</li>'}).join("")+'</ol><button data-sp="mo">Change order</button>':'<div class="mute">Add party members first.</div>'}
  if(id==="combat"){
-  return'<div class="spcol"><div class="sprow"><span class="pill big">Round '+S.round+'</span><button class="pri" data-a="nextturn">'+(S.turnId?"Next turn":"Start combat")+'</button></div><div class="sprow"><button data-a="mdopen">Group damage</button><button data-sp="tab" data-t="Encounter">Open Encounter</button></div></div>'}
+  return'<div class="spcol"><div class="sprow"><span class="pill big">Round '+S.round+'</span><button class="pri" data-a="nextturn">'+(S.turnId?"Next turn":"Start combat")+'</button></div><div class="sprow"><button data-a="mdopen">Group damage</button><button data-cl="review">Review combat</button><button data-cl="end">End combat</button><button data-sp="tab" data-t="Encounter">Open Encounter</button></div></div>'}
  if(id==="rest"){
   return'<div class="spcol"><div class="sprow"><b>Day '+S.day+'</b> <span>'+tvClock(S.hour||0)+'</span></div><div class="mute">'+esc(clkNext())+'</div><div class="sprow"><button data-sp="adv" data-h="0.5">+30 min</button><button data-sp="adv" data-h="1">+1 hr</button></div><div class="sprow"><button data-a="restshort">Short rest</button><button data-a="restlong">Long rest</button></div></div>'}
  if(id==="hp"){
@@ -1471,6 +1473,179 @@ function prepAsk(ids){var rows=S.party.filter(function(m){return ids.indexOf(m.i
  el.innerHTML='<div class="atkbox"><div class="atkh"><b>Prepare your spells</b></div><div class="mute">The long rest is over. Casters can now choose which spells to prepare for the day.</div>'+rows.map(function(m){var c=pcSpC(m),mx=pcPrepMax(m,c),n=sarr(m.pr).length;return'<div class="spit"><b>'+esc(m.name||"Adventurer")+'</b> <span class="mute">'+esc(c.cls)+' · '+n+(mx?' / '+mx:'')+' prepared</span><div class="mute">'+(c.prep?(c.book?"Choose from your spellbook.":"Choose from the full "+esc(c.list)+" list."):"Known spells only change when you level up. Check your prepared list.")+'</div></div>'}).join("")+'<div style="display:flex;gap:8px"><button class="pri" data-sx="goparty" style="flex:1">Open the Party tab</button><button data-sx="close" style="flex:1">Later</button></div></div>';el.style.display="flex"}
 var _restLong0=restLong;restLong=function(){var ids=S.party.filter(function(m){var cb=document.querySelector('[data-rl="'+m.id+'"]');return cb&&cb.checked}).map(function(m){return m.id});_restLong0();prepAsk(ids)};
 /*SPL-END*/
+/*CL-START*/
+var CL_ADD={"Chain Lightning":1,"Destructive Wave":1,"Psychic Scream":1,"Maddening Darkness":1,"Whirlwind":1,"Cloud of Daggers":1,"Thunderclap":1},CL_NO={"Produce Flame":1,"Branding Smite":1,"Flame Blade":1,"Heat Metal":1,"Immolation":1};
+function clIsAoe(sp){if(sp.custom)return true;if(CL_NO[sp.n])return false;if(CL_ADD[sp.n]||sp.a)return true;return /each creature (?:in|within|of)|all creatures? (?:in|within)|creatures? (?:in|within) (?:a|the|an) |in a \d+-foot|each creature that|any creature in/i.test(sp.x||"")}
+function clCmb(id){return S.combatants.find(function(c){return c.id===id})}
+function clTot(c){var h=parseInt(c.hp,10)||0;return c.wsOn?h+(parseInt(c.wsHp,10)||0):h}
+function clAdd(e){S.clog=Array.isArray(S.clog)?S.clog:[];var s0=e.srcId?clCmb(e.srcId):null,t0=e.tgtId?clCmb(e.tgtId):null;
+ e.id=uid();e.r=S.round||1;e.src=s0?s0.name:(e.src||"");e.srcPc=s0?s0.kind==="pc":false;e.tgt=t0?t0.name:(e.tgt||"");e.tgtPc=t0?t0.kind==="pc":false;
+ e.amt=Math.max(0,Math.round(e.amt||0));e.what=e.what||"";S.clog.push(e);if(S.clog.length>600)S.clog.shift();return e.id}
+function clDel(id){S.clog=(S.clog||[]).filter(function(e){return e.id!==id})}
+var _dmgTo0=dmgTo;dmgTo=function(tg,d){d=Math.max(0,d|0);if(!d)return;var h0=clTot(tg);_dmgTo0(tg,d);var h1=clTot(tg);
+ clAdd({k:"dmg",srcId:ui.cl?ui.cl.src:"",tgtId:tg.id,amt:d,what:ui.cl?ui.cl.what:"Group damage",h0:h0,h1:h1,dead:h1<=0})};
+var _tgRestore0=tgRestore;tgRestore=function(row){if(row&&row.logId){clDel(row.logId);row.logId=null}_tgRestore0(row)};
+var _tgApply0=tgApplyRow;tgApplyRow=function(row,at){_tgApply0(row,at);var amt=tgDmg(row,at).tot;if(amt>=1&&row.snap){var sn=row.snap,h0=(parseInt(sn.hp,10)||0)+(sn.wsOn?(parseInt(sn.wsHp,10)||0):0),h1=clTot(row.c);
+  row.logId=clAdd({k:"dmg",srcId:ui.tg?ui.tg.mid:"",tgtId:row.c.id,amt:amt,what:at.name||"Attack",h0:h0,h1:h1,dead:h1<=0})}};
+var _calcApply0=calcApply;calcApply=function(a){var tg=clCmb(ui.calc.target),h0=tg?clTot(tg):0,ai=parseExpr(ui.calc.expr);_calcApply0(a);if(!tg||isNaN(ai)||ai<1)return;
+ var h1=clTot(tg),dl=h0-h1;if(dl>0)clAdd({k:"dmg",src:"Manual",tgtId:tg.id,amt:dl,what:"Damage / Heal panel",h0:h0,h1:h1,dead:h1<=0});else if(dl<0)clAdd({k:"heal",src:"Manual",tgtId:tg.id,amt:-dl,what:"Damage / Heal panel",h0:h0,h1:h1})};
+var _mdClick0=mdClick;mdClick=function(a,b){if(a==="mdopen"&&!(b&&b.clcast))ui.cl=null;var r=_mdClick0(a,b);if(r&&(a==="mdx"||a==="mdgo"))ui.cl=null;return r};
+function clHeal(c,amt,ctx){var h0=clTot(c),mx=parseInt(c.wsOn?c.wsMax:c.max,10);
+ if(c.wsOn){var w=parseInt(c.wsHp,10)||0;c.wsHp=String(isNaN(mx)?w+amt:Math.min(mx,w+amt))}else{var h=parseInt(c.hp,10)||0;c.hp=String(isNaN(mx)?h+amt:Math.min(mx,h+amt))}
+ pcFromCombat(c);var h1=clTot(c);clAdd({k:"heal",srcId:ctx.src,tgtId:c.id,amt:h1-h0,what:ctx.what,h0:h0,h1:h1});return h1-h0}
+function clSlotOpts(m,min){var sl=pcSlots(m),su=m.su||{},o=[];
+ sl.max.forEach(function(n,i){var L=i+1,left=n-Math.min(n,su[L]||0);if(n&&left>0&&L>=min)o.push({v:String(L),l:L,left:left,lbl:"Level "+L+" slot ("+left+" left)"})});
+ if(sl.pact){var l2=sl.pact.n-Math.min(sl.pact.n,su.p||0);if(l2>0&&sl.pact.lv>=min)o.push({v:"p",l:sl.pact.lv,left:l2,lbl:"Pact slot, level "+sl.pact.lv+" ("+l2+" left)"})}return o}
+function clUseSlot(m,v){m.su=m.su||{};m.su[v]=(m.su[v]||0)+1}
+function clTargets(id){var o=S.combatants.filter(function(c){return c.id!==id});return o.filter(function(c){return c.kind==="mon"}).concat(o.filter(function(c){return c.kind!=="mon"}))}
+function clTier(m){var l=parseInt(m.level,10)||1;return l>=17?17:l>=11?11:l>=5?5:1}
+var CL_TYPES=["","bludgeoning","piercing","slashing","acid","cold","fire","force","lightning","necrotic","poison","psychic","radiant","thunder"];
+function clOv(id){var el=document.getElementById(id);if(!el){el=document.createElement("div");el.id=id;document.body.appendChild(el);el.addEventListener("click",function(e){if(e.target===el)clHide(id)})}return el}
+function clHide(id){var el=document.getElementById(id);if(el)el.style.display="none";if(id==="hitov")ui.ht=null;if(id==="castov")ui.cs=null}
+function clBtns(c){if(c.kind!=="pc")return"";var m=tgMemb(c),h='<button data-cl="hit" data-id="'+c.id+'">Hit</button>';if(m&&pcSpC(m))h+='<button data-cl="spell" data-id="'+c.id+'">Spell</button>';return h}
+function clSlotBtn(c){var m=tgMemb(c);if(!m||!m.moon||!c.wsOn)return"";return'<button data-cl="slotheal" data-id="'+c.id+'">Slot heal</button>'}
+function clTgtRows(list,type,sel,kind,fxType,magic){return list.map(function(x){var fx=fxType?tgFactor(x,fxType,magic):{f:1,w:""};
+ return'<label class="chk clrow"><input type="'+type+'" name="clt" data-clc="tgt" data-id="'+x.id+'"'+(sel[x.id]?" checked":"")+'><span><b>'+esc(x.name)+'</b> <span class="mute">'+(x.wsOn?"beast "+esc(x.wsHp):esc(x.hp||"?"))+'/'+esc(x.wsOn?x.wsMax:(x.max||"?"))+(x.ac?' &middot; AC '+esc(x.ac):'')+(x.kind==="pc"?' &middot; party':'')+(fx.w?' &middot; '+fx.w:'')+'</span></span></label>'}).join("")}
+/* hit */
+function clHitOpen(id){ui.ht={cid:id,tgt:"",amt:"",dice:"",type:"",magic:false,what:"",err:""};clHitDraw()}
+function clHitDraw(){var T=ui.ht;if(!T)return;var c=clCmb(T.cid);if(!c){clHide("hitov");return}
+ var tl=clTargets(c.id),tg=clCmb(T.tgt);if(!tg&&tl.length){tg=tl.filter(function(x){return x.kind==="mon"&&clTot(x)>0})[0]||tl[0];T.tgt=tg.id}
+ var sel={};sel[T.tgt]=true;var fx=tg&&T.type?tgFactor(tg,T.type,T.magic):{f:1,w:""},el=clOv("hitov");
+ el.innerHTML='<div class="clbox"><div class="atkh"><b>'+esc(c.name)+' hits&hellip;</b></div>'+(tl.length?'<div class="cllist">'+clTgtRows(tl,"radio",sel,"",T.type,T.magic)+'</div>':'<div class="mute">There is nobody else in the encounter.</div>')+
+ '<div class="sprow2"><label class="hpf"><span class="tl">Damage</span><input id="clhamt" data-clc="ht-amt" inputmode="numeric" value="'+esc(T.amt)+'" placeholder="8 or 5+3" style="width:110px"></label><label class="hpf"><span class="tl">Or roll dice</span><input data-clc="ht-dice" value="'+esc(T.dice)+'" placeholder="1d8+3" style="width:110px"></label><button data-clc="ht-roll">Roll</button></div>'+
+ '<div class="sprow2"><input data-clc="ht-what" value="'+esc(T.what)+'" placeholder="Weapon or attack (optional)" style="flex:1"><select data-clc="ht-type" aria-label="Damage type">'+CL_TYPES.map(function(t){return'<option value="'+t+'"'+(T.type===t?" selected":"")+'>'+(t||"Damage type (optional)")+'</option>'}).join("")+'</select></div>'+
+ (/^(bludgeoning|piercing|slashing)$/.test(T.type)?'<label class="chk"><input type="checkbox" class="yn" data-clc="ht-magic"'+(T.magic?" checked":"")+'><span>Magical weapon</span></label>':'')+
+ (fx.w?'<div class="mute">'+esc(tg.name)+' is '+fx.w+' to '+esc(T.type)+', so the damage is adjusted automatically.</div>':'')+(T.err?'<div style="color:#c0334d">'+esc(T.err)+'</div>':'')+
+ '<div style="display:flex;gap:8px"><button class="del" data-clc="ht-go" style="flex:1">Apply hit</button><button data-clc="ht-miss">Miss</button><button data-clc="ht-x">Cancel</button></div></div>';el.style.display="flex"}
+function clHitGo(){var T=ui.ht,c=T&&clCmb(T.cid),tg=T&&clCmb(T.tgt);if(!c||!tg){return}
+ var amt=parseExpr(T.amt);if(isNaN(amt)||amt<1){T.err="Enter the damage first.";clHitDraw();return}
+ var fx=T.type?tgFactor(tg,T.type,T.magic):{f:1,w:""},d=Math.floor(amt*fx.f);
+ ui.cl={src:c.id,what:(T.what.trim()||"Attack")+(T.type?" ("+T.type+")":"")+(fx.w?" ["+fx.w+"]":"")};dmgTo(tg,d);ui.cl=null;
+ if(!d){clAdd({k:"dmg",srcId:c.id,tgtId:tg.id,amt:0,what:(T.what.trim()||"Attack")+" ["+fx.w+"]",h0:clTot(tg),h1:clTot(tg)})}
+ clHide("hitov");save();render()}
+/* cast */
+var CL_HEAL={"Cure Wounds":function(L,md){return L+"d8+"+md},"Healing Word":function(L,md){return L+"d4+"+md},"Mass Cure Wounds":function(L,md){return Math.max(1,L-2)+"d8+"+md},"Mass Healing Word":function(L,md){return Math.max(1,L-2)+"d4+"+md},"Prayer of Healing":function(L,md){return L+"d8+"+md},"Aura of Vitality":function(){return"2d6"},"Heal":function(){return"70"},"Mass Heal":function(){return"700"}};
+function clCastOpen(id){ui.cs={cid:id,spk:"",mode:"",slot:"",free:false,sel:{},amt:"",dice:"",roll:"",err:"",q:""};clCastDraw()}
+function clCastLvl(m,sp,Cs){if(sp.l===0)return clTier(m);if(Cs.free)return sp.l;var so=clSlotOpts(m,sp.l),o=so.filter(function(x){return x.v===Cs.slot})[0]||so[0];return o?o.l:sp.l}
+function clDefMode(sp){return sp.dm&&sp.dm.length?"dmg":(CL_HEAL[sp.n]||/regains? (?:a number of )?hit points|hit points (?:equal|you regain)|regain hit points/i.test(sp.x||""))?"heal":"util"}
+function clCastDraw(){var Cs=ui.cs;if(!Cs)return;var c=clCmb(Cs.cid),m=c&&tgMemb(c);if(!m){clHide("castov");return}
+ var el=clOv("castov"),h='';
+ if(Cs.mode==="sh"){var so=clSlotOpts(m,1);
+  h+='<div class="atkh"><b>'+esc(c.name)+': Combat Wild Shape healing</b></div><div class="mute">Circle of the Moon. While in beast form you can use a bonus action to expend a spell slot and regain 1d8 hit points per level of the slot. Beast HP: '+esc(c.wsHp)+' / '+esc(c.wsMax)+'.</div>';
+  if(Cs.result)h+='<div class="clres">'+Cs.result+'</div><button class="pri" data-clc="x">Close</button>';
+  else h+=(so.length?'<div class="cllist">'+so.map(function(o){return'<button data-clc="sh-go" data-v="'+o.v+'">'+esc(o.lbl)+': heal '+o.l+'d8</button>'}).join("")+'</div>':'<div class="mute">No spell slots left.</div>')+'<button data-clc="x">Cancel</button>';
+ }else if(!Cs.spk){
+  var map={};spAll().forEach(function(sp){map[sp.k]=sp});
+  var cants=sarr(m.kn).filter(function(k){return map[k]&&map[k].l===0}),prep=sarr(m.pr).filter(function(k){return map[k]}),by=function(keys){return keys.map(function(k){return map[k]}).sort(function(a,b){return a.l-b.l||a.n.localeCompare(b.n)})};
+  h+='<div class="atkh"><b>'+esc(c.name)+' casts&hellip;</b></div>';
+  var lst=by(cants.concat(prep));
+  h+=lst.length?'<div class="cllist">'+lst.map(function(sp){return'<button data-clc="pick" data-k="'+esc(sp.k)+'">'+esc(sp.n)+' <span class="mute">'+(sp.l?"L"+sp.l:"cantrip")+'</span></button>'}).join("")+'</div>':'<div class="mute">No cantrips or prepared spells on the Party sheet yet. Search for a spell instead.</div>';
+  h+='<div class="sprow2"><input list="dl-clsp" id="clspq" data-clc="q" placeholder="Other spell" style="flex:1"><datalist id="dl-clsp">'+spAll().map(function(sp){return'<option value="'+esc(sp.n)+'">'}).join("")+'</datalist><button data-clc="pickq">Use</button></div><button data-clc="x">Cancel</button>';
+ }else{
+  var sp=spFind(Cs.spk);if(!sp){Cs.spk="";clCastDraw();return}
+  if(!Cs.mode)Cs.mode=clDefMode(sp);
+  var aoe=clIsAoe(sp)&&Cs.mode==="dmg",so2=sp.l>0?clSlotOpts(m,sp.l):[],lv=clCastLvl(m,sp,Cs),dt=sp.dm&&sp.dm[0]?sp.dm[0].t:"",cm=pcCast(m)[0],md=cm?pcMod(m,cm.ab.toLowerCase()):0;
+  if(Cs.mode==="heal"&&!Cs.dice&&CL_HEAL[sp.n])Cs.dice=CL_HEAL[sp.n](lv,md);
+  if(sp.l>0&&!Cs.free&&so2.length&&!so2.some(function(o){return o.v===Cs.slot}))Cs.slot=so2[0].v;
+  h+='<div class="atkh"><b>'+esc(c.name)+' casts '+esc(sp.n)+'</b></div><div class="mute">'+esc(sp.s||"")+' &middot; '+esc(sp.t||"")+' &middot; '+esc(sp.r||"")+' &middot; '+esc(sp.d||"")+(sp.cc?" &middot; concentration":"")+'</div>';
+  if(sp.l>0){h+=so2.length&&!Cs.free?'<label class="f">Spell slot<select data-clc="slot">'+so2.map(function(o){return'<option value="'+o.v+'"'+(o.v===Cs.slot?" selected":"")+'>'+esc(o.lbl)+'</option>'}).join("")+'</select></label>':'<div class="mute">'+(Cs.free?"No slot will be used.":"No slot of level "+sp.l+" or higher is left.")+'</div>';
+   h+='<label class="chk"><input type="checkbox" class="yn" data-clc="free"'+(Cs.free?" checked":"")+'><span>Cast without using a slot</span></label>'}
+  else h+='<div class="mute">Cantrip, no slot used.</div>';
+  h+='<div class="sprow2">'+[["dmg","Damage"],["heal","Healing"],["util","No HP change"]].map(function(x){return'<button class="'+(Cs.mode===x[0]?"pri":"")+'" data-clc="mode" data-v="'+x[0]+'">'+x[1]+'</button>'}).join("")+'</div>';
+  if(Cs.mode==="dmg"){h+='<div class="mute">'+(sp.dm?esc(spDiceOf(sp,lv).map(function(x){return x.d+(x.t?" "+x.t:"")}).join(" + ")):"No dice saved for this spell. Type the damage.")+'</div>'}
+  if(Cs.mode!=="util"&&!aoe){
+   h+='<div class="sprow2"><label class="hpf"><span class="tl">'+(Cs.mode==="heal"?"Healing":"Damage")+'</span><input id="clcamt" data-clc="amt" inputmode="numeric" value="'+esc(Cs.amt)+'" placeholder="Amount" style="width:100px"></label>'+
+    (Cs.mode==="heal"?'<label class="hpf"><span class="tl">Dice</span><input data-clc="dice" value="'+esc(Cs.dice)+'" placeholder="2d8+4" style="width:110px"></label>':'')+'<button data-clc="roll">Roll</button></div>'+(Cs.roll?'<div class="mute">'+esc(Cs.roll)+'</div>':'');
+   var tl=clTargets("");h+='<div class="mute">'+(Cs.mode==="heal"?"Choose who is healed":"Choose the target")+'</div><div class="cllist">'+clTgtRows(tl,Cs.mode==="heal"?"checkbox":"radio",Cs.sel,"",Cs.mode==="dmg"?dt:"",true)+'</div>'}
+  if(aoe)h+='<div class="mute">This is an area spell. The slot is used now, then the group damage window opens with the spell ready.</div>';
+  if(Cs.err)h+='<div style="color:#c0334d">'+esc(Cs.err)+'</div>';
+  h+='<div style="display:flex;gap:8px"><button class="pri" data-clc="go" style="flex:1"'+(sp.l>0&&!so2.length&&!Cs.free?" disabled":"")+'>'+(aoe?"Cast and open group damage":Cs.mode==="util"?"Cast":Cs.mode==="heal"?"Cast and heal":"Cast and apply damage")+'</button><button data-clc="back">Back</button><button data-clc="x">Cancel</button></div>';
+ }
+ el.innerHTML='<div class="clbox">'+h+'</div>';el.style.display="flex"}
+function clAoeOpen(c,m,sp,lvl,what){mdClick("mdopen",{dataset:{spk:sp.k},clcast:1});var M=ui.md;if(!M)return;M.lvl=lvl;var cm=pcCast(m)[0];if(cm)M.dc=String(cm.dc);M.sp=true;ui.cl={src:c.id,what:what};mdDraw()}
+function clCastGo(){var Cs=ui.cs,c=Cs&&clCmb(Cs.cid),m=c&&tgMemb(c),sp=Cs&&Cs.spk&&spFind(Cs.spk);if(!m||!sp)return;
+ var aoe=clIsAoe(sp)&&Cs.mode==="dmg",lv=clCastLvl(m,sp,Cs),sels=Object.keys(Cs.sel).filter(function(k){return Cs.sel[k]&&clCmb(k)}),amt=parseExpr(Cs.amt),dt=sp.dm&&sp.dm[0]?sp.dm[0].t:"";
+ if(sp.l>0&&!Cs.free&&!clSlotOpts(m,sp.l).length){Cs.err="No spell slot available.";clCastDraw();return}
+ if(!aoe&&Cs.mode!=="util"){if(!sels.length){Cs.err="Pick a target.";clCastDraw();return}if(isNaN(amt)||amt<1){Cs.err="Enter or roll an amount first.";clCastDraw();return}}
+ var what=sp.n+(sp.l>0?" (level "+lv+")":""),v=null;
+ if(sp.l>0&&!Cs.free){var so=clSlotOpts(m,sp.l),o=so.filter(function(x){return x.v===Cs.slot})[0]||so[0];v=o.v;clUseSlot(m,v)}
+ if(aoe){clAdd({k:"cast",srcId:c.id,what:what});clHide("castov");save();render();clAoeOpen(c,m,sp,lv,what);return}
+ if(Cs.mode==="util"){clAdd({k:"cast",srcId:c.id,what:what})}
+ else if(Cs.mode==="dmg"){sels.forEach(function(id){var tg=clCmb(id),fx=dt?tgFactor(tg,dt,true):{f:1,w:""},d=Math.floor(amt*fx.f);ui.cl={src:c.id,what:what+(fx.w?" ["+fx.w+"]":"")};dmgTo(tg,d);ui.cl=null})}
+ else{sels.forEach(function(id){clHeal(clCmb(id),amt,{src:c.id,what:what})})}
+ clHide("castov");save();render()}
+function clShGo(v){var Cs=ui.cs,c=Cs&&clCmb(Cs.cid),m=c&&tgMemb(c);if(!m||!c.wsOn)return;var o=clSlotOpts(m,1).filter(function(x){return x.v===v})[0];if(!o)return;
+ var rs=[],t=0,i;for(i=0;i<o.l;i++){var r=1+Math.floor(Math.random()*8);rs.push(r);t+=r}
+ clUseSlot(m,v);var h0=clTot(c),mx=parseInt(c.wsMax,10),w=parseInt(c.wsHp,10)||0;c.wsHp=String(isNaN(mx)?w+t:Math.min(mx,w+t));pcFromCombat(c);var h1=clTot(c);
+ clAdd({k:"heal",srcId:c.id,tgtId:c.id,amt:h1-h0,what:"Combat Wild Shape ("+o.lbl.replace(/ \(\d+ left\)/,"")+")",h0:h0,h1:h1});
+ Cs.result='Rolled '+o.l+'d8 ['+rs.join(", ")+'] = <b>'+t+'</b>. Beast form is now at <b>'+esc(c.wsHp)+' / '+esc(c.wsMax)+'</b> HP.';save();render();clCastDraw()}
+/* review and report */
+function clStats(){var P={},ord=[],dead={},g=function(id,nm){if(!P[id]){P[id]={name:nm,dd:0,hd:0,dt:0,hr:0};ord.push(id)}return P[id]};
+ S.combatants.forEach(function(c){if(c.kind==="pc")g(c.id,c.name)});
+ (S.clog||[]).forEach(function(e){if(e.k==="dmg"){if(e.srcPc)g(e.srcId||e.src,e.src).dd+=e.amt;if(e.tgtPc)g(e.tgtId||e.tgt,e.tgt).dt+=e.amt;if(e.dead&&!e.tgtPc)dead[e.tgtId||e.tgt]=1}
+  else if(e.k==="heal"){if(e.srcPc)g(e.srcId||e.src,e.src).hd+=e.amt;if(e.tgtPc)g(e.tgtId||e.tgt,e.tgt).hr+=e.amt}});
+ var rows=ord.map(function(id){return P[id]});
+ function top(f){var mx=0,w=[];rows.forEach(function(r){if(r[f]>mx){mx=r[f];w=[r.name]}else if(r[f]===mx&&mx>0)w.push(r.name)});return{n:w.join(" and "),v:mx}}
+ return{rows:rows,dd:top("dd"),hd:top("hd"),dt:top("dt"),kills:Object.keys(dead).length}}
+function clLine(e){var s=e.src?'<b>'+esc(e.src)+'</b>':'<b>Someone</b>',t=e.tgt?'<b>'+esc(e.tgt)+'</b>':'';
+ var hp=(e.h0!==undefined&&e.h1!==undefined)?' <span class="mute">&middot; HP '+e.h0+' &rarr; '+e.h1+'</span>':'';
+ if(e.k==="dmg")return s+' hit '+t+' for <b>'+e.amt+'</b>'+(e.what?' <span class="mute">('+esc(e.what)+')</span>':'')+hp+(e.dead?(e.tgtPc?' <span class="pill dn">Down</span>':' <span class="pill dn">Defeated</span>'):'');
+ if(e.k==="heal")return s+' healed '+t+' for <b>'+e.amt+'</b>'+(e.what?' <span class="mute">('+esc(e.what)+')</span>':'')+hp;
+ if(e.k==="miss")return s+' missed '+t+(e.what?' <span class="mute">('+esc(e.what)+')</span>':'');
+ return s+' cast <b>'+esc(e.what)+'</b>'}
+function clReport(){var st=clStats(),rows=st.rows;
+ var tb='<table class="sptb"><thead><tr><th>Party member</th><th>Damage dealt</th><th>Healing done</th><th>Damage taken</th><th>Healing received</th></tr></thead><tbody>'+rows.map(function(r){return'<tr><td><b>'+esc(r.name)+'</b></td><td>'+r.dd+'</td><td>'+r.hd+'</td><td>'+r.dt+'</td><td>'+r.hr+'</td></tr>'}).join("")+'</tbody></table>';
+ var nt=[];nt.push(st.dd.v?'Most damage dealt: <b>'+esc(st.dd.n)+'</b> ('+st.dd.v+')':'No damage was recorded from the party.');
+ nt.push(st.hd.v?'Most healing done: <b>'+esc(st.hd.n)+'</b> ('+st.hd.v+')':'No healing was recorded.');
+ if(st.dt.v)nt.push('Most damage taken: <b>'+esc(st.dt.n)+'</b> ('+st.dt.v+')');
+ if(st.kills)nt.push('Enemies defeated: <b>'+st.kills+'</b>');
+ return rows.length?tb+'<div class="clnotes">'+nt.map(function(x){return'<div>'+x+'</div>'}).join("")+'</div>':'<div class="mute">No party members in this fight yet.</div>'}
+function clReportText(){var st=clStats(),t="Combat report (round "+S.round+"). "+st.rows.map(function(r){return r.name+": dealt "+r.dd+", healed "+r.hd+", took "+r.dt+", received "+r.hr}).join("; ")+".";
+ if(st.dd.v)t+=" Most damage: "+st.dd.n+" ("+st.dd.v+").";if(st.hd.v)t+=" Most healing: "+st.hd.n+" ("+st.hd.v+").";if(st.kills)t+=" Enemies defeated: "+st.kills+".";return t}
+function clReview(end){ui.clv={tab:end?"report":(ui.clv&&ui.clv.tab)||"log",end:!!end};clRevDraw()}
+function clRevDraw(){var V=ui.clv;if(!V)return;var el=clOv("clov"),lg=S.clog||[],h='';
+ h+='<div class="atkh"><b>'+(V.end?"End of combat":"Combat review")+'</b></div><div class="sprow2"><button class="'+(V.tab==="log"?"pri":"")+'" data-clc="tab" data-v="log">Log ('+lg.length+')</button><button class="'+(V.tab==="report"?"pri":"")+'" data-clc="tab" data-v="report">Report</button></div>';
+ if(V.tab==="log"){var last=0;h+=lg.length?'<div class="cllog">'+lg.map(function(e){var hd=e.r!==last?'<div class="clrnd">Round '+e.r+'</div>':'';last=e.r;return hd+'<div class="clent"><span>'+clLine(e)+'</span><button class="del" data-clc="del" data-id="'+e.id+'" title="Removes this entry only. HP is not changed." aria-label="Remove entry">&times;</button></div>'}).join("")+'</div>':'<div class="mute">Nothing has been recorded yet. Use Hit and Spell on a party member, group damage, or the monster attack buttons.</div>'}
+ else h+=clReport();
+ h+='<div style="display:flex;gap:8px;flex-wrap:wrap">'+(V.end?'<button class="pri" data-clc="finish">Finish combat</button><button data-clc="keep">Keep fighting</button>':'<button data-clc="save">Add report to session log</button><button class="pri" data-clc="x">Close</button>')+'</div>';
+ el.innerHTML='<div class="clbox wide">'+h+'</div>';el.style.display="flex"}
+function clFinish(){var t=clReportText();try{if(SS&&SS.log)SS.log.unshift({t:"Day "+S.day+" "+tvClock(S.hour||0),x:t})}catch(e){}S.clog=[];S.round=1;S.turnId="";ui.turnAtk=null;clHide("clov");ui.clv=null;save();render()}
+/* events */
+document.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest("[data-cl]");if(b){var a=b.dataset.cl;
+ if(a==="hit")clHitOpen(b.dataset.id);else if(a==="spell")clCastOpen(b.dataset.id);else if(a==="slotheal"){ui.cs={cid:b.dataset.id,mode:"sh",sel:{}};clCastDraw()}
+ else if(a==="review")clReview(false);else if(a==="end")clReview(true);return}
+ if(e.target.closest&&e.target.closest("#hdcmb")){clReview(false);return}
+ b=e.target.closest&&e.target.closest("[data-clc]");if(!b)return;var k=b.dataset.clc,T=ui.ht,Cs=ui.cs,V=ui.clv;
+ if(k==="ht-go")clHitGo();else if(k==="ht-x")clHide("hitov");
+ else if(k==="ht-miss"&&T){var c=clCmb(T.cid),tg=clCmb(T.tgt);if(c&&tg){clAdd({k:"miss",srcId:c.id,tgtId:tg.id,what:T.what.trim()||"Attack"});clHide("hitov");save();render()}}
+ else if(k==="ht-roll"&&T){var r=spDiceRoll(T.dice||"");if(T.dice){T.amt=String(r.total);clHitDraw()}}
+ else if(k==="pick"&&Cs){Cs.spk=b.dataset.k;Cs.mode="";Cs.amt="";Cs.dice="";Cs.roll="";Cs.sel={};Cs.err="";clCastDraw()}
+ else if(k==="pickq"&&Cs){var q=document.getElementById("clspq"),sp=pcSpFindName(q&&q.value);if(sp){Cs.spk=sp.k;Cs.mode="";Cs.sel={};Cs.err="";clCastDraw()}}
+ else if(k==="back"&&Cs){Cs.spk="";clCastDraw()}
+ else if(k==="mode"&&Cs){Cs.mode=b.dataset.v;Cs.sel={};Cs.amt="";Cs.roll="";Cs.err="";Cs.dice="";clCastDraw()}
+ else if(k==="roll"&&Cs){var sp2=spFind(Cs.spk),c2=clCmb(Cs.cid),m2=c2&&tgMemb(c2);if(!sp2||!m2)return;
+  if(Cs.mode==="dmg"){if(sp2.dm){var rr=spRollSpell(sp2,clCastLvl(m2,sp2,Cs));Cs.amt=String(rr.total);Cs.roll=rr.lines.join("; ")}else Cs.err="No dice saved for this spell. Type the damage."}
+  else{var r3=spDiceRoll(Cs.dice||"");if(Cs.dice){Cs.amt=String(r3.total);Cs.roll=Cs.dice+": "+r3.txt+" = "+r3.total}}
+  clCastDraw()}
+ else if(k==="go")clCastGo();
+ else if(k==="x"){if(e.target.closest("#clov")){ui.clv=null;clHide("clov")}else clHide("castov")}
+ else if(k==="sh-go")clShGo(b.dataset.v);
+ else if(k==="tab"&&V){V.tab=b.dataset.v;clRevDraw()}
+ else if(k==="del"){clDel(b.dataset.id);save();clRevDraw()}
+ else if(k==="save"){try{SS.log.unshift({t:"Day "+S.day+" "+tvClock(S.hour||0),x:clReportText()});save();render()}catch(e2){}b.textContent="Added";}
+ else if(k==="finish")clFinish();else if(k==="keep"){ui.clv=null;clHide("clov")}
+});
+document.addEventListener("change",function(e){var el=e.target,k=el.dataset&&el.dataset.clc;if(!k)return;var T=ui.ht,Cs=ui.cs;
+ if(k==="tgt"){if(Cs&&Cs.spk){if(el.type==="radio")Cs.sel={};Cs.sel[el.dataset.id]=!!el.checked;clCastDraw()}else if(T){T.tgt=el.dataset.id;clHitDraw()}}
+ else if(k==="ht-type"&&T){T.type=el.value;clHitDraw()}
+ else if(k==="ht-magic"&&T){T.magic=!!el.checked;clHitDraw()}
+ else if(k==="slot"&&Cs){Cs.slot=el.value;Cs.roll="";Cs.dice="";clCastDraw()}
+ else if(k==="free"&&Cs){Cs.free=!!el.checked;clCastDraw()}});
+document.addEventListener("input",function(e){var el=e.target,k=el.dataset&&el.dataset.clc;if(!k)return;var T=ui.ht,Cs=ui.cs;
+ if(k==="ht-amt"&&T)T.amt=el.value;else if(k==="ht-dice"&&T)T.dice=el.value;else if(k==="ht-what"&&T)T.what=el.value;
+ else if(k==="amt"&&Cs)Cs.amt=el.value;else if(k==="dice"&&Cs)Cs.dice=el.value});
+var _rCl=render;render=function(){var r=_rCl.apply(this,arguments);try{var hb=document.getElementById("hdcmb");if(hb)hb.hidden=!((S.clog&&S.clog.length)||(S.turnId&&S.combatants.length))}catch(e){}return r};
+/*CL-END*/
 function restCard(){return'<div class="card"><h3>Rests</h3><div class="mute">Applies to everyone in the party tab: hit points, hit dice and spell slots.</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button data-a="restshort">Short rest</button><button class="pri" data-a="restlong">Long rest</button></div></div>'}
 function restOv(){var el=document.getElementById("restov");if(!el){el=document.createElement("div");el.id="restov";document.body.appendChild(el);
  el.addEventListener("click",function(e){var b=e.target.closest("[data-rs]");if(e.target===el){el.style.display="none";return}if(!b)return;var a=b.dataset.rs;if(a==="close")el.style.display="none";else if(a==="longgo")restLong();else if(a==="shortgo")restShort();else if(a==="goenc")restGoEnc(b)})}
@@ -1581,7 +1756,7 @@ document.addEventListener("click",function(e){
  else if(a==="encroll"){S.combatants.forEach(function(c){if(c.kind==="mon")c.init=String(d20()+(parseInt(c.dex,10)||0))});save();render()}
  else if(a==="encsort"||a==="initdone"){ui.initq=null;render();startAsk()}
  else if(a==="encreset"){S.round=1;S.turnId="";save();render()}
- else if(a==="encclear"){if(ui.clr){ui.clr=false;S.combatants=[];S.round=1;S.turnId="";save()}else ui.clr=true;render()}
+ else if(a==="encclear"){if(ui.clr){ui.clr=false;S.combatants=[];S.clog=[];S.round=1;S.turnId="";save()}else ui.clr=true;render()}
  else if(a==="nextturn"){advanceTurn()}
  else if(a==="nextfrom"){if(b.dataset.id&&S.combatants.some(function(c){return c.id===b.dataset.id}))S.turnId=b.dataset.id;advanceTurn()}
  else if(a==="dmg"||a==="heal"){
@@ -1848,7 +2023,7 @@ function tvRun(){var T=S.trv,a=tvStart(),b=tvDest(),leg=tvLeg(a,b,T.roads);if(!l
 function tvEnemy(name){var k=cmKey(name),en=S.enemies.filter(function(e){return cmKey(e.name)===k||cmKey(e.name)===k+"s"})[0];if(en)return en;if(MONS[k])return lbAdd(k);var r=cmFind(name);if(r)return lbAdd(cmKey(r.n));return null}
 function tvGo(i){var T=S.trv,e=T.res&&T.res.enc&&T.res.enc[i];if(!e||!e.mons.length)return;
  ui.tvc=null;tvLoad(e)}
-function tvLoad(e){S.combatants=[];ui.initq=null;S.round=1;S.turnId="";var miss=[];
+function tvLoad(e){S.combatants=[];S.clog=[];ui.initq=null;S.round=1;S.turnId="";var miss=[];
  e.mons.forEach(function(m){var en=tvEnemy(m.m);if(!en){miss.push(m.m);return}addEnemies(en,Math.max(1,Math.min(20,m.n)))});
  save();ui.tab="Encounter";saveUi();ui.msg=miss.length?"No statblock saved for: "+miss.join(", ")+". Add them on the Enemies tab.":"";render();
  var mn=document.getElementById("main");if(mn)mn.scrollTop=0;}
