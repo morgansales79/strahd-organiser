@@ -202,7 +202,7 @@ header{min-height:104px;padding:12px 18px!important;background:linear-gradient(9
 .mnr{padding:1px 4px;margin:1px 0}.mnr button{padding:2px 9px;min-height:30px}.mnr b{min-width:1.4em;text-align:center}.mnchips{display:flex;flex-wrap:wrap;gap:4px;margin:3px 0}.mnchip{border:1px solid var(--line);border-radius:999px;padding:1px 9px;font-size:.9rem}.mnm{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;align-items:center}#mnsel{flex:1;min-width:140px;width:auto}
 @media (max-width:760px){.nzg{grid-template-columns:1fr;grid-template-rows:55% 1fr}}
 .empty{color:var(--mute);padding:24px;border:1px dashed var(--line);border-radius:10px;text-align:center}
-.legp{margin-top:8px;border-top:1px dashed var(--line);padding-top:6px}.svr{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;border-top:1px solid var(--line);padding:8px 0}.svn{min-width:150px}.svc{font-size:.82rem;border-radius:8px;padding:2px 8px;border:1px solid var(--line)}.svc.warn{border-color:#c9a227;color:#e2c15a}.svc.bad{border-color:var(--acc);color:#e8798d}.svb{display:inline-flex;gap:6px;margin-left:auto}.cdrow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px}.cdchip{display:inline-flex;flex-wrap:wrap;gap:4px;align-items:center;border:1px solid var(--acc);border-radius:12px;padding:2px 4px 2px 9px;font-size:.8rem;max-width:100%}.cdchip button{padding:2px 8px;font-size:.75rem;min-height:30px}.cdadd{font-size:.78rem;padding:3px 10px;min-height:32px}
+.legp{margin-top:8px;border-top:1px dashed var(--line);padding-top:6px}.svctl{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px 18px;margin-top:10px}.svg1 .tl{display:block;font-size:.72rem;text-transform:uppercase;letter-spacing:.04em;color:var(--mute)}.clbox .sprow2{align-items:flex-end}.clbox .sprow2>button{min-height:44px;height:44px;box-sizing:border-box}.clbox .hpf input{min-height:44px;height:44px;box-sizing:border-box}.svr{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;border-top:1px solid var(--line);padding:8px 0}.svn{min-width:150px}.svc{font-size:.82rem;border-radius:8px;padding:2px 8px;border:1px solid var(--line)}.svc.warn{border-color:#c9a227;color:#e2c15a}.svc.bad{border-color:var(--acc);color:#e8798d}.svb{display:inline-flex;gap:6px;margin-left:auto}.cdrow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px}.cdchip{display:inline-flex;flex-wrap:wrap;gap:4px;align-items:center;border:1px solid var(--acc);border-radius:12px;padding:2px 4px 2px 9px;font-size:.8rem;max-width:100%}.cdchip button{padding:2px 8px;font-size:.75rem;min-height:30px}.cdadd{font-size:.78rem;padding:3px 10px;min-height:32px}
 .pill{font-size:.75rem;border:1px solid var(--line);border-radius:99px;padding:1px 9px;color:var(--mute)}
 .pill.v{border-color:var(--acc2);color:var(--acc2)}
 @media (max-width:760px){.g2{grid-template-columns:1fr}}
@@ -497,7 +497,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=149;var APPLABEL="1.460";
+var APPV=150;var APPLABEL="1.461";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -1633,7 +1633,7 @@ function clHitDraw(){var T=ui.ht;if(!T)return;var c=clCmb(T.cid);if(!c){clHide("
  '<div class="sprow2"><label class="hpf"><span class="tl">Damage</span><input id="clhamt" data-clc="ht-amt" inputmode="numeric" value="'+esc(T.amt)+'" placeholder="8 or 5+3" style="width:110px"></label><label class="hpf"><span class="tl">Or roll dice</span><input data-clc="ht-dice" value="'+esc(T.dice)+'" placeholder="1d8+3" style="width:110px"></label><button data-clc="ht-roll">Roll</button></div>'+
  '<div class="sprow2"><input data-clc="ht-what" value="'+esc(T.what)+'" placeholder="Weapon or attack (optional)" style="flex:1"><select data-clc="ht-type" aria-label="Damage type">'+CL_TYPES.map(function(t){return'<option value="'+t+'"'+(T.type===t?" selected":"")+'>'+(t||"Damage type (optional)")+'</option>'}).join("")+'</select></div>'+
  (/^(bludgeoning|piercing|slashing)$/.test(T.type)?'<label class="chk"><input type="checkbox" class="yn" data-clc="ht-magic"'+(T.magic?" checked":"")+'><span>Magical weapon</span></label>':'')+
- (fx.w?'<div class="mute">'+esc(tg.name)+' is '+fx.w+' to '+esc(T.type)+', so the damage is adjusted automatically.</div>':'')+(T.err?'<div style="color:#c0334d">'+esc(T.err)+'</div>':'')+
+ (fx.w?'<div class="mute">'+esc(tg.name)+' is '+fx.w+' to '+esc(T.type)+', so the damage is adjusted automatically.</div>':'')+(T.rtxt?'<div class="mute">'+esc(T.rtxt)+'</div>':'')+(T.err?'<div style="color:#c0334d">'+esc(T.err)+'</div>':'')+
  '<div style="display:flex;gap:8px"><button class="pri" data-clc="ht-go" style="flex:1">Apply hit</button><button data-clc="ht-miss">Miss</button><button data-clc="ht-x">Cancel</button></div></div>';el.style.display="flex"}
 function clHitGo(){var T=ui.ht,c=T&&clCmb(T.cid),tg=T&&clCmb(T.tgt);if(!c||!tg){return}
  var amt=parseExpr(T.amt);if(isNaN(amt)||amt<1){T.err="Enter the damage first.";clHitDraw();return}
@@ -1751,7 +1751,7 @@ document.addEventListener("click",function(e){var b=e.target.closest&&e.target.c
  if(k==="ht-go")clHitGo();else if(k==="ht-x")clHide("hitov");
  else if(k==="ht-miss"&&T){var c=clCmb(T.cid),tg=clCmb(T.tgt);if(c&&tg){clAdd({k:"miss",srcId:c.id,tgtId:tg.id,what:T.what.trim()||"Attack"});S.cpend=(S.cpend||[]).filter(function(e){return!(e.cid===c.id&&e.endsMiss&&!(T.off&&T.off[e.id]))});clHide("hitov");save();render();clActDone(c,"atk")}}
  else if(k==="pe-end"){S.cpend=(S.cpend||[]).filter(function(e){return e.id!==b.dataset.id});save();if(T)clHitDraw()}
- else if(k==="ht-roll"&&T){var r=spDiceRoll(T.dice||"");if(T.dice){T.amt=String(r.total);clHitDraw()}}
+ else if(k==="ht-roll"&&T){var di=document.querySelector('[data-clc="ht-dice"]'),da=document.getElementById("clhamt");if(di)T.dice=di.value;if(da)T.amt=da.value;var ex=String(T.dice||"").trim()||((String(T.hint||"").match(/\d*d\d+(?:\s*[+\u2212-]\s*\d+)?/)||[""])[0]).replace(/\u2212/g,"-");if(!ex){T.err="Type dice such as 1d8+3, or type the damage.";clHitDraw();return}T.dice=ex;var rr0=spDiceRoll(ex);T.amt=String(rr0.total);T.err="";T.rtxt=ex+": "+rr0.txt+" = "+rr0.total;clHitDraw()}
  else if(k==="pick"&&Cs){Cs.spk=b.dataset.k;Cs.mode="";Cs.amt="";Cs.dice="";Cs.roll="";Cs.sel={};Cs.err="";clCastDraw()}
  else if(k==="pickq"&&Cs){var q=document.getElementById("clspq"),sp=pcSpFindName(q&&q.value);if(sp){Cs.spk=sp.k;Cs.mode="";Cs.sel={};Cs.err="";clCastDraw()}}
  else if(k==="allm"&&Cs){Cs.allm=true;clCastDraw()}
@@ -1759,7 +1759,7 @@ document.addEventListener("click",function(e){var b=e.target.closest&&e.target.c
  else if(k==="mode"&&Cs){Cs.mode=b.dataset.v;Cs.sel={};Cs.uinit=false;Cs.amt="";Cs.roll="";Cs.err="";Cs.dice="";clCastDraw()}
  else if(k==="roll"&&Cs){var sp2=spFind(Cs.spk),c2=clCmb(Cs.cid),m2=c2&&tgMemb(c2);if(!sp2||!m2)return;
   if(Cs.mode==="dmg"){if(sp2.dm){var rr=spRollSpell(sp2,clCastLvl(m2,sp2,Cs));Cs.amt=String(rr.total);Cs.roll=rr.lines.join("; ")}else Cs.err="No dice saved for this spell. Type the damage."}
-  else{var r3=spDiceRoll(Cs.dice||"");if(Cs.dice){Cs.amt=String(r3.total);Cs.roll=Cs.dice+": "+r3.txt+" = "+r3.total}}
+  else{var dd=document.querySelector('[data-clc="dice"]');if(dd)Cs.dice=dd.value;if(!String(Cs.dice||"").trim()){Cs.err="Type dice such as 2d8+4 first, or type the amount.";clCastDraw();return}Cs.err="";var r3=spDiceRoll(Cs.dice);Cs.amt=String(r3.total);Cs.roll=Cs.dice+": "+r3.txt+" = "+r3.total}
   clCastDraw()}
  else if(k==="go")clCastGo();
  else if(k==="x"){if(e.target.closest("#clov")){ui.clv=null;clHide("clov")}else clHide("castov")}
@@ -2551,21 +2551,6 @@ restLong=function(){var ids=S.party.filter(function(m){var cb=document.querySele
  save();render();var bx=document.querySelector(".restbox");if(bx&&lines.length){var cb2=bx.querySelector('[data-rs="close"]');var html='<div style="margin:8px 0">'+lines.join("<br>")+'</div>';if(cb2)cb2.insertAdjacentHTML("beforebegin",html);else bx.insertAdjacentHTML("beforeend",html)}
  survCheck()};
 /* dashboard */
-function survCard(){var Sv=sv(),now=absH(),h='<div class="card" style="grid-column:1/-1"><h3>Survival and exhaustion</h3>';
- var tg=function(k,l){return'<button data-sv="t'+k+'" class="'+(Sv[k]?"pri":"")+'">'+l+': '+(Sv[k]?"on":"off")+'</button>'};
- h+='<div class="cdrow">'+tg("on","Tracking")+tg("food","Food")+tg("water","Water")+tg("sleep","Sleep")+'</div>';
- if(!S.party.length)return h+'<div class="mute" style="margin-top:6px">Add party members to track their food, water, sleep and exhaustion.</div></div>';
- var ctr=function(k,l){return'<span class="slg"><span class="mute">'+l+'</span><button data-sv="'+k+'-" aria-label="Fewer">&minus;</button><b>'+(Sv[k]||0)+'</b><button data-sv="'+k+'+" aria-label="More">+</button></span>'};
- h+='<div class="cdrow" style="margin-top:8px">'+ctr("rat","Rations (person-days)")+ctr("wat","Water (person-days)")+'<button data-sv="allfed">Everyone eats and drinks</button></div>';
- h+='<div style="margin-top:10px">'+S.party.map(function(m){survEnsure(m);var f=now-m.fedAt,w=now-m.drAt,a=now-m.restAt,g=survGrace(m),
-  fc=f>=24*g?"bad":f>=24?"warn":"ok",wc=w>=24?"bad":w>=18?"warn":"ok",ac=a>=24?"bad":a>=16?"warn":"ok";
-  var cell=function(cls,l,t){return'<span class="svc '+cls+'"><span class="mute">'+l+'</span> '+t+'</span>'};
-  return'<div class="svr"><b class="svn">'+esc(m.name||"Adventurer")+'</b>'+
-   '<span class="slg"><span class="mute">Exhaustion</span><button data-sv="exh-" data-id="'+m.id+'" aria-label="Lower exhaustion">&minus;</button><b title="'+esc(m.exh?EXH.slice(1,m.exh+1).join("; "):"None")+'">'+m.exh+'</b><button data-sv="exh+" data-id="'+m.id+'" aria-label="Raise exhaustion">+</button></span>'+
-   (Sv.food?cell(fc,"Ate",survHrs(m.fedAt)+(f>=24?" ago":" ago")+(f>=24&&fc!=="bad"?" (hungry)":"")):'')+(Sv.water?cell(wc,"Drank",survHrs(m.drAt)+" ago"):'')+(Sv.sleep?cell(ac,"Awake",survHrs(m.restAt)):'')+
-   '<span class="svb">'+(Sv.food?'<button data-sv="eat" data-id="'+m.id+'">Eat</button>':'')+(Sv.water?'<button data-sv="drink" data-id="'+m.id+'">Drink</button>':'')+'</span></div>'}).join("")+'</div>';
- h+='<details style="margin-top:8px"><summary class="mute">How it works</summary><div class="mute" style="margin-top:6px">Food: one meal a day. A character can go 3 plus their Constitution modifier days (at least 1) without food, then gains a level of exhaustion each further day. Water: one gallon a day. A full day with none gives a level of exhaustion. Sleep (optional rule): a warning after 16 hours awake, and after 24 hours without a long rest a Constitution save (DC 10, plus 5 for each extra day) or a level of exhaustion. A long rest removes one level if the character has eaten and drunk that day. Popups appear when the clock passes these points.</div><div style="margin-top:6px"><b>Exhaustion levels</b></div><ol class="mute" style="margin:4px 0 0 18px;padding:0">'+EXH.slice(1).map(function(t){return'<li>'+esc(t)+'</li>'}).join("")+'</ol></details></div>';
- return h}
 var _dashS=dash;dash=function(){var h=_dashS.apply(this,arguments),i=h.indexOf('<div class="card"><h3>Rests</h3>');return i>-1?h.slice(0,i)+survCard()+h.slice(i):h+survCard()};
 /* popups */
 var _cnDrawSv=cnDraw;
@@ -2593,6 +2578,44 @@ document.addEventListener("click",function(e){var b=e.target.closest&&e.target.c
   if(x==="sa"){var inp=document.getElementById("svin"+i3),v=parseInt(inp&&inp.value,10);if(isNaN(v)){if(inp)inp.focus();return}ok=v>=r2.dc;r2.res=(ok?"Passed":"Failed")+" with "+v}else{ok=x==="sp";r2.res=ok?"Passed":"Failed"}
   r2.ok=ok;if(!ok){survSetExh(m2,(m2.exh||0)+1);r2.res+=", now exhaustion level "+m2.exh}save();render();cnDraw()}});
 /*SURV-END*/
+/*SURV2-START*/
+function survCard(){var Sv=sv(),now=absH(),h='<div class="card" style="grid-column:1/-1"><h3>Survival and exhaustion</h3>';
+ var tg=function(k,l){return'<button data-sv="t'+k+'" class="'+(Sv[k]?"pri":"")+'">'+l+': '+(Sv[k]?"on":"off")+'</button>'};
+ h+='<div class="cdrow">'+tg("on","Tracking")+tg("food","Food")+tg("water","Water")+tg("sleep","Sleep")+'</div>';
+ if(!S.party.length)return h+'<div class="mute" style="margin-top:6px">Add party members to track their food, water, sleep and exhaustion.</div></div>';
+ var num=function(k,l){return'<label class="hpf"><span class="tl">'+l+'</span><input data-svn="'+k+'" inputmode="numeric" value="'+(Sv[k]||0)+'" style="width:84px" aria-label="'+l+'"></label>'};
+ h+='<div class="svctl"><div class="svg1"><span class="tl">Supplies (person-days)</span><div class="sprow2">'+num("rat","Rations")+num("wat","Water")+'</div></div>'+
+  '<div class="svg1"><span class="tl">Whole party</span><div class="sprow2"><button class="pri" data-sv="allfed">Everyone eats and drinks</button><button data-sv="allfood">Everyone eats</button><button data-sv="alldrink">Everyone drinks</button><button data-sv="allrest">Everyone has just woken up</button></div></div>'+
+  '<div class="svg1"><span class="tl">Exhaustion, whole party</span><div class="sprow2"><button data-sv="allexh-">&minus;1 level</button><button data-sv="allexh+">+1 level</button><button data-sv="allexh0">Clear all</button></div></div></div>';
+ h+='<div style="margin-top:6px">'+S.party.map(function(m){survEnsure(m);var f=now-m.fedAt,w=now-m.drAt,a=now-m.restAt,g=survGrace(m),
+  fc=f>=24*g?"bad":f>=24?"warn":"ok",wc=w>=24?"bad":w>=18?"warn":"ok",ac=a>=24?"bad":a>=16?"warn":"ok",xc=m.exh>=3?"bad":m.exh>0?"warn":"ok";
+  var cell=function(cls,l,t){return'<span class="svc '+cls+'"><span class="mute">'+l+'</span> '+t+'</span>'};
+  return'<div class="svr"><b class="svn">'+esc(m.name||"Adventurer")+'</b>'+cell(xc,"Exhaustion",m.exh)+(Sv.food?cell(fc,"Ate",survHrs(m.fedAt)+" ago"):'')+(Sv.water?cell(wc,"Drank",survHrs(m.drAt)+" ago"):'')+(Sv.sleep?cell(ac,"Awake",survHrs(m.restAt)):'')+
+   '<span class="svb"><button data-sv="mem" data-id="'+m.id+'">Manage</button></span></div>'}).join("")+'</div>';
+ h+='<details style="margin-top:8px"><summary class="mute">How it works</summary><div class="mute" style="margin-top:6px">Food: one meal a day. A character can go 3 plus their Constitution modifier days (at least 1) without food, then gains a level of exhaustion each further day. Water: one gallon a day. A full day with none gives a level of exhaustion. Sleep (optional rule): a warning after 16 hours awake, and after 24 hours without a long rest a Constitution save (DC 10, plus 5 for each extra day) or a level of exhaustion. A long rest removes one level if the character has eaten and drunk that day. Popups appear when the clock passes these points.</div><div style="margin-top:6px"><b>Exhaustion levels</b></div><ol class="mute" style="margin:4px 0 0 18px;padding:0">'+EXH.slice(1).map(function(t){return'<li>'+esc(t)+'</li>'}).join("")+'</ol></details></div>';
+ return h}
+var _cnDrawSv2=cnDraw;
+cnDraw=function(){var q=ui.cn||[],it=q[0];if(!it||it.t!=="svmem")return _cnDrawSv2();var m=survMem(it.id);if(!m){q.shift();cnDraw();return}survEnsure(m);var Sv=sv(),now=absH(),el=cnOv(),h='';
+ h+='<div class="atkh"><b>'+esc(m.name||"Adventurer")+': survival</b></div>';
+ h+='<div class="tgrow"><div class="sprow2"><b>Exhaustion</b><button data-sv="exh-" data-id="'+m.id+'" aria-label="Lower exhaustion">&minus;</button><b style="font-size:1.3rem;min-width:24px;text-align:center">'+m.exh+'</b><button data-sv="exh+" data-id="'+m.id+'" aria-label="Raise exhaustion">+</button><button data-sv="exh0" data-id="'+m.id+'">Clear</button></div>'+(m.exh?'<div class="mute">Level '+m.exh+': '+esc(EXH.slice(1,m.exh+1).join("; "))+'</div>':'<div class="mute">No exhaustion.</div>')+'</div>';
+ h+='<div class="tgrow"><div class="sprow2"><span>Last ate <b>'+survHrs(m.fedAt)+'</b> ago</span><button class="pri" data-sv="eat" data-id="'+m.id+'">Eats a meal</button></div><div class="mute">Can go '+survGrace(m)+' days without food before exhaustion starts.</div></div>';
+ h+='<div class="tgrow"><div class="sprow2"><span>Last drank <b>'+survHrs(m.drAt)+'</b> ago</span><button class="pri" data-sv="drink" data-id="'+m.id+'">Drinks</button></div></div>';
+ h+='<div class="tgrow"><div class="sprow2"><span>Awake for <b>'+survHrs(m.restAt)+'</b></span><button class="pri" data-sv="mrest" data-id="'+m.id+'">Has just woken up</button></div></div>';
+ h+='<div class="tgrow"><div class="mute">Set the times by hand (hours ago)</div><div class="sprow2"><label class="hpf"><span class="tl">Ate</span><input id="svhf" inputmode="numeric" value="'+Math.floor(now-m.fedAt)+'" style="width:70px"></label><label class="hpf"><span class="tl">Drank</span><input id="svhd" inputmode="numeric" value="'+Math.floor(now-m.drAt)+'" style="width:70px"></label><label class="hpf"><span class="tl">Awake</span><input id="svhr" inputmode="numeric" value="'+Math.floor(now-m.restAt)+'" style="width:70px"></label><button data-sv="mset" data-id="'+m.id+'">Set</button></div></div>';
+ h+='<button class="pri" data-sv="pclose">Done</button>';
+ el.innerHTML='<div class="clbox cnbox"><div style="max-height:72vh;overflow:auto">'+h+'</div></div>';el.style.display="flex"};
+document.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest("[data-sv]");if(!b||b.tagName==="INPUT"||b.tagName==="SELECT")return;var x=b.dataset.sv,id=b.dataset.id,m=id?survMem(id):null,Sv=sv(),n=absH(),it=(ui.cn||[])[0];
+ if(x==="mem"&&m){cnPush({t:"svmem",id:m.id});return}
+ if(x==="allfood"){S.party.forEach(function(p){survEat(p,"food")});save();render()}
+ else if(x==="alldrink"){S.party.forEach(function(p){survEat(p,"water")});save();render()}
+ else if(x==="allrest"){S.party.forEach(function(p){survEnsure(p);p.restAt=n});save();render()}
+ else if(x==="allexh+"||x==="allexh-"||x==="allexh0"){S.party.forEach(function(p){survSetExh(p,x==="allexh0"?0:(p.exh||0)+(x==="allexh+"?1:-1))});save();render()}
+ else if(x==="exh0"&&m){survSetExh(m,0);save();render()}
+ else if(x==="mrest"&&m){survEnsure(m);m.restAt=n;save();render()}
+ else if(x==="mset"&&m){var g=function(i){var v=parseFloat((document.getElementById(i)||{}).value);return isNaN(v)?null:Math.max(0,v)},f=g("svhf"),d=g("svhd"),r=g("svhr");if(f!==null)m.fedAt=n-f;if(d!==null)m.drAt=n-d;if(r!==null)m.restAt=n-r;m.starv=0;m.thirstLv=0;save();render()}
+ if(it&&it.t==="svmem"&&x!=="pclose"&&x!=="mem")setTimeout(function(){cnDraw()},0)});
+document.addEventListener("change",function(e){var t=e.target;if(!t||!t.dataset||!t.dataset.svn)return;var k=t.dataset.svn,Sv=sv();Sv[k]=Math.max(0,parseInt(t.value,10)||0);save();render()});
+/*SURV2-END*/
 function restCard(){return'<div class="card"><h3>Rests</h3><div class="mute">Applies to everyone in the party tab: hit points, hit dice and spell slots.</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button data-a="restshort">Short rest</button><button class="pri" data-a="restlong">Long rest</button></div></div>'}
 function restOv(){var el=document.getElementById("restov");if(!el){el=document.createElement("div");el.id="restov";document.body.appendChild(el);
  el.addEventListener("click",function(e){var b=e.target.closest("[data-rs]");if(e.target===el){el.style.display="none";return}if(!b)return;var a=b.dataset.rs;if(a==="close")el.style.display="none";else if(a==="longgo")restLong();else if(a==="shortgo")restShort();else if(a==="goenc")restGoEnc(b)})}
