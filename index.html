@@ -477,7 +477,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=117;var APPLABEL="1.280";
+var APPV=118;var APPLABEL="1.290";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -1869,6 +1869,34 @@ function eqImport(file){var f=eqS();f.imp={busy:true,msg:"Opening the file..."};
    var pt=p.pdfText||"";if(pt.replace(/[^A-Za-z0-9]/g,"").length>=60){text+="\n"+pt;return}
    return eqOcr(p).then(function(t){text+="\n"+t})}).then(function(){if(pg<tot){pg++;return step()}})}
  step().then(function(){var items=eqParse(text);if(!items.length){f.imp={err:"No items could be found in that file. Try a clearer photo, or a page that lists names with costs, weights or damage."};}else f.imp={items:items};render()},function(er){f.imp={err:(er&&er.message==="engine"?"The text reader could not load. Check you are using the installed app and try again.":er&&er.message)||"That file could not be read."};render()})}
+/* import: pull equipment and spells out of sheet text */
+function impSections(text){var out={eq:[],sp:[],all:[]},cur="",HD=/^(equipment|inventory|attacks?(?: (?:&|and) spellcasting)?|weapons|armou?r|spells?|cantrips|spellcasting|spellbook|prepared spells|known spells|spell list|features(?: (?:&|and) traits)?|traits|proficiencies|languages|background|personality traits|ideals|bonds|flaws|backstory|notes|allies|organizations|treasure|appearance|otherholdings|personalpossessions|other holdings|personal possessions)\s*:?$/i;
+ String(text||"").split(/\r?\n/).forEach(function(raw){var l=raw.replace(/\s+/g," ").trim();if(!l)return;out.all.push(l);
+  if(l.length<=36&&HD.test(l)){var k=l.toLowerCase();cur=/equip|inventor|attack|weapon|armou?r|possessions|holdings|treasure/.test(k)?"eq":/spell|cantrip/.test(k)?"sp":"x";return}
+  if(cur==="eq")out.eq.push(l);else if(cur==="sp")out.sp.push(l)});return out}
+function impMatch(lines,names){var found=[],pool=names.slice().sort(function(a,b){return b.k.length-a.k.length});
+ lines.forEach(function(L,li){var low=" "+L.toLowerCase().replace(/[^a-z0-9'+\- ]/g," ")+" ";pool.forEach(function(nm){var key=" "+nm.k+" ",ix=low.indexOf(key);if(ix<0)return;low=low.slice(0,ix)+" ".repeat(key.length)+low.slice(ix+key.length);found.push({it:nm.it,line:L,li:li})})});return found}
+function impNames(list){var out=[];list.forEach(function(it){var n=it.n.toLowerCase().replace(/[^a-z0-9' ]/g," ").replace(/\s+/g," ").trim();out.push({k:n,it:it});if(/ armor$/.test(n))out.push({k:n.replace(/ armor$/,""),it:it})});return out}
+function impFinish(m){if(!m)return;var T=String(m.sheet||"");if(!T.trim())return;var sec=impSections(T),notes=[];
+ /* equipment */
+ var eqL=sec.eq.length?sec.eq:sec.all.filter(function(l){return/\d+d\d+|armou?r|mail|plate|shield|\+\d/i.test(l)}),pool=eqAll(),
+ weap=impNames(pool.filter(function(x){return eqIsWeapon(x)&&!/^Magic/.test(x.c)&&!/^Net$/.test(x.n)})),arm=impNames(pool.filter(function(x){return/Armor/.test(x.c)&&!/^Magic/.test(x.c)})),shl=impNames(pool.filter(function(x){return x.n==="Shield"})),mag=impNames(pool.filter(function(x){return/^Magic/.test(x.c)&&!/Potion|Scroll|Weapon|Armor/.test(x.c)}));
+ var pref=function(arr2){var t=arr2.filter(function(f){return/\((equipped|attuned)\)/i.test(f.line)});return t.length?t:arr2},e=pcEq(m),n=0;
+ var w=pref(impMatch(eqL,weap)),seen={};w=w.filter(function(f){if(seen[f.it.n])return false;seen[f.it.n]=1;return true}).slice(0,3);
+ if(w.length){e.w=["","",""];e.b=[0,0,0];e.dual=w.length>2||/dual wielder/i.test(T)&&w.length>2;w.forEach(function(f,i){e.w[i]=f.it.n;var nmx=f.it.n.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g,"\\$&"),b=f.line.toLowerCase().match(new RegExp("\\+([123])(?!\\d)\\s+"+nmx+"|"+nmx+"s?[ ,]*\\+([123])(?![\\d]|\\s*(?:to hit|\\d))"));e.b[i]=b?+(b[1]||b[2]):0;n++})}
+ var a=pref(impMatch(eqL,arm))[0];if(a){e.armor=a.it.n;var ab=a.line.match(/\+(\d)\s*(?:armou?r|mail|plate|leather)|(?:armou?r|mail|plate|leather)[^+]{0,12}\+(\d)/i);e.ab=ab?Math.min(3,+(ab[1]||ab[2])):0;n++}
+ var sh=impMatch(eqL,shl)[0];if(sh){e.shield="Shield";var sb=sh.line.match(/\+(\d)/);e.sb=sb?Math.min(3,+sb[1]):0;n++}
+ var mg=pref(impMatch(eqL,mag)),sm={};mg=mg.filter(function(f){if(sm[f.it.n])return false;sm[f.it.n]=1;return true}).slice(0,3);if(mg.length){e.att=["","",""];mg.forEach(function(f,i){e.att[i]=f.it.n;n++})}
+ if(n){notes.push(n+" equipment slot"+(n===1?"":"s"));if(!String(m.ac||"").trim())eqApply(m)}
+ /* spells */
+ var spL=sec.sp,c=pcSpC(m),ns=0;
+ if(spL.length&&c){var all=spAll(),names=impNames(all.map(function(sp){return{n:sp.n,sp:sp,c:"",k:sp.k}})).map(function(x){return{k:x.k,it:x.it.sp}}),hit=impMatch(spL,names),have={};
+  m.kn=sarr(m.kn);m.pr=sarr(m.pr);hit.forEach(function(f){var sp=f.it;if(have[sp.k])return;have[sp.k]=1;
+   if(sp.l===0){if(m.kn.indexOf(sp.k)<0){m.kn.push(sp.k);ns++}}
+   else if(c.learn){if(m.kn.indexOf(sp.k)<0){m.kn.push(sp.k);ns++}if(m.pr.indexOf(sp.k)<0)m.pr.push(sp.k)}
+   else if(m.pr.indexOf(sp.k)<0){m.pr.push(sp.k);ns++}});
+  if(ns)notes.push(ns+" spell"+(ns===1?"":"s"))}
+ if(notes.length)try{clTurnToast("Imported from the sheet: "+notes.join(" and ")+".")}catch(x){}}
 /*EQ-END*/
 
 function restCard(){return'<div class="card"><h3>Rests</h3><div class="mute">Applies to everyone in the party tab: hit points, hit dice and spell slots.</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button data-a="restshort">Short rest</button><button class="pri" data-a="restlong">Long rest</button></div></div>'}
@@ -2023,7 +2051,7 @@ document.addEventListener("click",function(e){
  render()}
  else if(a==="closebk"){ui.bk="";render()}
  else if(a==="copy"){var box=document.getElementById("bkt");box.focus();box.select();try{navigator.clipboard.writeText(ui.bk).then(function(){alert("Backup copied to the clipboard.")},function(){alert("Copying was blocked. The text is selected, so copy it manually.")})}catch(x){alert("Copying was blocked. The text is selected, so copy it manually.")}}
- else if(a==="pvadd"){if(ui.pv){var pm=ui.pv;pm.id=uid();S.party.unshift(pm);save()}ui.pv=null;ui.msg="";render()}
+ else if(a==="pvadd"){if(ui.pv){var pm=ui.pv;pm.id=uid();S.party.unshift(pm);try{impFinish(pm)}catch(x){}save()}ui.pv=null;ui.msg="";render()}
  else if(a==="pvcancel"){ui.pv=null;ui.msg="";render()}
  else if(a==="theme"){var r=document.documentElement,dark=getComputedStyle(r).getPropertyValue("--bg").trim()==="#16121a";r.setAttribute("data-theme",dark?"light":"dark")}});
 document.addEventListener("toggle",function(e){var d=e.target;if(d&&d.classList&&d.classList.contains("unmet")){ui.openUn[d.dataset.loc]=d.open}},true);
@@ -2882,7 +2910,8 @@ function scSavePC(){
  var f=ui.scan.form,K=["name","className","level","race","background","ac","maxHp","passivePerception","speed","init","str","dex","con","int","wis","cha"],m=null;
  if(ui.scan.target)m=S.party.find(function(x){return x.id===ui.scan.target});
  if(m){K.forEach(function(k){if(String(f[k]||"").trim())m[k]=f[k]});if(f.sp&&Object.keys(f.sp).length)m.sp=JSON.parse(JSON.stringify(f.sp));if(String(f.sheet||"").trim())m.sheet=f.sheet;if(!m.notes&&f.notes)m.notes=f.notes}
- else{var n={id:uid(),notes:f.notes||"",sheet:f.sheet||"",sp:f.sp?JSON.parse(JSON.stringify(f.sp)):{}};K.forEach(function(k){n[k]=f[k]||""});S.party.unshift(n)}
+ else{var n={id:uid(),notes:f.notes||"",sheet:f.sheet||"",sp:f.sp?JSON.parse(JSON.stringify(f.sp)):{}};K.forEach(function(k){n[k]=f[k]||""});S.party.unshift(n);m=n}
+ try{impFinish(m)}catch(x){}
  save()}
 /*SCAN-PC-END*/
 
@@ -3217,7 +3246,7 @@ function fromJSON(j){
  var lines=[];
  var race=d.race&&(d.race.fullName||d.race.baseRaceName)||"",bg=d.background&&d.background.definition&&d.background.definition.name||"";
  if(d.alignmentId)lines.push("Alignment id: "+d.alignmentId);
- var inv=arr(d.inventory).map(function(x){return(x.quantity>1?x.quantity+" x ":"")+(x.definition&&x.definition.name||"")}).filter(Boolean);
+ var inv=arr(d.inventory).map(function(x){var nm=x.definition&&x.definition.name||"";return nm?(x.quantity>1?x.quantity+" x ":"")+nm+(x.equipped?" (equipped)":"")+(x.isAttuned?" (attuned)":""):""}).filter(Boolean);
  if(inv.length)lines.push("EQUIPMENT\n"+inv.join("\n"));
  var sp=[];Object.keys(d.spells||{}).forEach(function(k){arr(d.spells[k]).forEach(function(s){if(s&&s.definition&&s.definition.name)sp.push(s.definition.name+(s.definition.level?" (level "+s.definition.level+")":" (cantrip)"))})});
  arr(d.classSpells).forEach(function(c){arr(c.spells).forEach(function(s){if(s&&s.definition&&s.definition.name)sp.push(s.definition.name+(s.definition.level?" (level "+s.definition.level+")":" (cantrip)"))})});
