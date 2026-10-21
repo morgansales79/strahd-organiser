@@ -477,7 +477,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=118;var APPLABEL="1.290";
+var APPV=119;var APPLABEL="1.291";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -1757,8 +1757,8 @@ function eqIsWeapon(x){return!!x&&(/Simple|Martial|Weapon/.test(x.c)||(!!x.dmg&&
 function eqNorm(e){e=(e&&typeof e==="object")?e:{};var a3=function(v){var o=Array.isArray(v)?v.slice(0,3):[];while(o.length<3)o.push("");return o.map(function(x){return str(x)})};
  var b=Array.isArray(e.b)?e.b.slice(0,3):[];while(b.length<3)b.push(0);return{w:a3(e.w),b:b.map(function(x){return Math.max(0,Math.min(3,parseInt(x,10)||0))}),dual:!!e.dual,armor:str(e.armor),shield:str(e.shield),att:a3(e.att),ab:Math.max(0,Math.min(3,parseInt(e.ab,10)||0)),sb:Math.max(0,Math.min(3,parseInt(e.sb,10)||0))}}
 function pcEq(m){m.eq=eqNorm(m.eq);return m.eq}
-function eqHint(m,w,bonus){var it=eqFind(w);if(!it)return{dice:"",t:"",txt:""};var pr=it.pr||"",ranged=/Ranged/.test(it.c)||(/Ammunition/.test(pr)),fin=/Finesse/.test(pr),sm=pcMod(m,"str"),dx=pcMod(m,"dex"),md=ranged?dx:fin?Math.max(sm,dx):sm,tot=md+(bonus||0);
- var d=it.dmg||"";return{dice:d,t:it.dt,txt:d?d+(tot?(tot>0?"+":"")+tot:"")+(it.dt?" "+it.dt:"")+(/Versatile \(([^)]+)\)/.exec(pr)?" (two-handed "+/Versatile \(([^)]+)\)/.exec(pr)[1]+(tot?(tot>0?"+":"")+tot:"")+")":""):""}}
+function eqHint(m,w,bonus,two){var it=eqFind(w);if(!it)return{dice:"",t:"",txt:""};var pr=it.pr||"",ranged=/Ranged/.test(it.c)||(/Ammunition/.test(pr)),fin=/Finesse/.test(pr),sm=pcMod(m,"str"),dx=pcMod(m,"dex"),md=ranged?dx:fin?Math.max(sm,dx):sm,tot=md+(bonus||0);
+ var d=it.dmg||"",vm=/Versatile \(([^)]+)\)/.exec(pr);if(two&&vm)d=vm[1];return{dice:d,t:it.dt,txt:d?d+(tot?(tot>0?"+":"")+tot:"")+(it.dt?" "+it.dt:""):""}}
 /* party equipment slots */
 function eqPool(f){var all=eqAll();if(/^w\d$/.test(f))return all.filter(eqIsWeapon);if(f==="armor")return all.filter(function(x){return/Armor/.test(x.c)&&!/^Shield/.test(x.n)&&!/Shield/.test(x.c)&&(!/^Magic/.test(x.c)||/Armor|mail|plate|leather|chain|robe|Demon|Dwarven|Elven|Glamoured|Mithral|Adamantine/i.test(x.n))});
  if(f==="shield")return all.filter(function(x){return/Shield/.test(x.c)||/shield/i.test(x.n)});return all.filter(function(x){return/^Magic/.test(x.c)&&!/Potion|Scroll/.test(x.c)})}
@@ -1812,7 +1812,8 @@ document.addEventListener("change",function(e){var el=e.target,d=el&&el.dataset;
 /* attack buttons for the encounter */
 function clAtks(c){var out=[],m=tgMemb(c);
  if(c.wsOn){var en=wsEnOf(c);if(en)atkParse(en.statblock).forEach(function(a){if(/two-handed/.test(a.name))return;var p=a.parts[0];out.push({n:a.name,t:p?p.t:"",mg:false,hint:p&&p.d?p.n+"d"+p.d+(p.k?(p.k>0?"+":"")+p.k:"")+(p.t?" "+p.t:""):(p&&p.k?p.k+" "+p.t:"")})});return out}
- if(!m)return out;var e=pcEq(m);for(var i=0;i<(e.dual?3:2);i++){var w=e.w[i];if(!w)continue;var h=eqHint(m,w,e.b[i]),it=eqFind(w);out.push({n:w+(e.b[i]?" +"+e.b[i]:""),t:h.t,mg:e.b[i]>0||(it&&it.mg),hint:h.txt+(it&&it.pr?" ("+it.pr+")":"")})}
+ if(!m)return out;var e=pcEq(m);for(var i=0;i<(e.dual?3:2);i++){var w=e.w[i];if(!w)continue;var h=eqHint(m,w,e.b[i]),it=eqFind(w);var nm=w+(e.b[i]?" +"+e.b[i]:""),mgc=e.b[i]>0||(it&&it.mg);out.push({n:nm,t:h.t,mg:mgc,hint:h.txt+(it&&it.pr?" ("+it.pr+")":"")});
+  if(it&&/Versatile \(/.test(it.pr||"")&&!e.shield){var h2=eqHint(m,w,e.b[i],true);out.push({n:nm+" (2H)",t:h2.t,mg:mgc,hint:h2.txt+" two-handed, needs a free hand"})}}
  return out}
 /* equipment tab */
 function eqS(){ui.eq=ui.eq||{q:"",cat:"",form:null,imp:null,n:60};return ui.eq}
