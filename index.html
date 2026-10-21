@@ -477,7 +477,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=125;var APPLABEL="1.321";
+var APPV=126;var APPLABEL="1.330";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -527,6 +527,7 @@ function pcRead(m){var L=String(m.sheet||"").replace(/\u2212/g,"-").split(/\r?\n
  return n}
 /*PCX-END*/
 function abm(v){var n=parseInt(v,10);if(isNaN(n))return"";var m=Math.floor((n-10)/2);return(m>=0?"+":"")+m}
+function tileRO(k,id,f,label,val){return'<label class="tile" title="Calculated from ability scores, class, level and equipment"><span class="tl">'+label+'</span><input readonly data-k="'+k+'" data-id="'+id+'" value="'+esc(val||"")+'" aria-label="'+label+' (calculated)"></label>'}
 function tile(k,id,f,label,val){return'<label class="tile"><span class="tl">'+label+'</span><input data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val||"")+'" aria-label="'+label+'"></label>'}
 function pcTab(m){var t=(ui.pt&&ui.pt[m.id])||"stats";if(t==="spells"&&!pcSpC(m))t="stats";return t}
 function pcTabBar(m){var t=pcTab(m),l=[["stats","Stats"]];if(pcSpC(m))l.push(["spells","Spells"]);l.push(["equip","Equipment"],["notes","Notes"]);return'<div class="ptabs">'+l.map(function(x){return'<button class="'+(t===x[0]?"on":"")+'" data-pt="'+x[0]+'" data-id="'+m.id+'">'+x[1]+'</button>'}).join("")+'</div>'}
@@ -535,7 +536,7 @@ function party(){
  return'<div class="row"><h2>Party</h2><div style="display:flex;gap:8px;flex-wrap:wrap"><label class="btn" tabindex="0">Take photo of sheet<input type="file" id="scpk" accept="image/*" capture="environment" hidden></label><label class="btn" tabindex="0">Scan character sheet<input type="file" id="scpc" accept="image/*" hidden></label><label class="btn" tabindex="0">Import PDF<input type="file" id="scpp" accept="application/pdf,.pdf" multiple hidden></label><button class="pri" data-a="add" data-k="party">Add member</button></div></div>'+importUI()+(S.party.length?'<div class="grid pgrid">'+S.party.map(function(m){
   var k="party",id=m.id;
   return'<div class="card pc"><div class="phead"><input class="pname" data-k="party" data-id="'+id+'" data-f="name" value="'+esc(m.name)+'" placeholder="Character name" aria-label="Character name"><div class="psub"><input data-k="party" data-id="'+id+'" data-f="race" value="'+esc(m.race)+'" placeholder="Race" aria-label="Race"><input data-k="party" data-id="'+id+'" data-f="className" value="'+esc(m.className)+'" placeholder="Class / subclass" aria-label="Class and subclass"><input class="lvl" data-k="party" data-id="'+id+'" data-f="level" value="'+esc(m.level)+'" placeholder="Lvl" aria-label="Level"></div><input class="pbg" data-k="party" data-id="'+id+'" data-f="background" value="'+esc(m.background)+'" placeholder="Background" aria-label="Background"></div>'+
-  '<div class="tiles" style="grid-template-columns:repeat('+(5+pcCast(m).length)+',1fr)">'+tile(k,id,"ac","AC",m.ac)+tile(k,id,"maxHp","Max HP",m.maxHp)+tile(k,id,"curHp","Current HP",(m.maxHp||m.curHp)?String(pcCur(m)):"")+tile(k,id,"speed","Speed",m.speed)+tile(k,id,"init","Initiative",m.init)+pcCast(m).map(function(c,i,all){return'<div class="tile"><span class="tl">Spell DC'+(all.length>1?' ('+c.ab+')':'')+'</span><b class="pv sdc">'+c.dc+'</b><span class="mute" style="font-size:11px">Atk '+sgn(c.at)+'</span></div>'}).join("")+'</div>'+
+  '<div class="tiles" style="grid-template-columns:repeat('+(5+pcCast(m).length)+',1fr)">'+tileRO(k,id,"ac","AC",m.ac)+tileRO(k,id,"maxHp","Max HP",m.maxHp)+tile(k,id,"curHp","Current HP",(m.maxHp||m.curHp)?String(pcCur(m)):"")+tile(k,id,"speed","Speed",m.speed)+tile(k,id,"init","Initiative",m.init)+pcCast(m).map(function(c,i,all){return'<div class="tile"><span class="tl">Spell DC'+(all.length>1?' ('+c.ab+')':'')+'</span><b class="pv sdc">'+c.dc+'</b><span class="mute" style="font-size:11px">Atk '+sgn(c.at)+'</span></div>'}).join("")+'</div>'+
   pcTabBar(m)+(function(){var tb=pcTab(m);
    if(tb==="spells")return pcSpellsUI(m);
    if(tb==="equip")return pcEqUI(m);
@@ -1792,7 +1793,7 @@ function eqAC(m){var e=pcEq(m),dx=pcMod(m,"dex"),lines=[],ar=eqFind(e.armor),sh=
  if(ar&&ar.ac){var x=ar.ac.match(/AC (\d+)(?: \+ Dex(?: \(max (\d)\))?)?/i);if(x){var cap=x[2]?parseInt(x[2],10):(/Dex/.test(ar.ac)?99:0);base=parseInt(x[1],10)+(cap?Math.min(dx,cap):0);desc=ar.n+" "+ar.ac.replace("AC ","")}else base=10+dx}
  else if(/^Armor, \+\d/.test(e.armor||"")){base=10+dx;desc="No base armor"}
  else if(hasRobe){base=15+dx;desc="Robe of the archmagi"}
- else{base=10+dx;desc="Unarmored 10 + Dex";if(/barbarian/.test(cls)){base+=pcMod(m,"con");desc+=" + Con"}else if(/monk/.test(cls)&&!sh){base+=pcMod(m,"wis");desc+=" + Wis"}else if(m.ma){base=Math.max(base,13+dx);desc="Mage armor 13 + Dex"}}
+ else{base=10+dx;desc="Unarmored 10 + Dex";if(/barbarian/.test(cls)){base+=pcMod(m,"con");desc+=" + Con"}else if(/monk/.test(cls)&&!sh){base+=pcMod(m,"wis");desc+=" + Wis"}else if(/draconic/.test(cls)){base=13+dx;desc="Draconic resilience 13 + Dex"}if(m.ma){base=Math.max(base,13+dx);desc="Mage armor 13 + Dex"}}
  var bon=0;if(ar&&e.ab){bon+=e.ab;lines.push("armor +"+e.ab)}if(/^Armor, \+(\d)/.test(e.armor||"")){var q=eqNum(e.armor);bon+=q;lines.push("armor +"+q)}
  if(sh){var sb=2;if(/^Shield, \+(\d)/.test(sh))sb+=eqNum(sh);sb+=e.sb||0;bon+=sb;lines.push("shield +"+sb)}
  att.forEach(function(nm){if(/cloak of protection|ring of protection/i.test(nm)){bon+=1;prot++;lines.push(nm+" +1 AC and saves")}else if(/bracers of defense/i.test(nm)&&!ar&&!sh){bon+=2;lines.push(nm+" +2 AC")}});
@@ -1927,7 +1928,11 @@ function eqProfOf(m,name){if(!m||!name)return null;var it=pfItem(name);if(!it)re
  if(/^Simple/.test(c))return!!(P.s||P.n[k]);if(/^Martial/.test(c))return!!(P.m||P.n[k]);
  if(/^Light Armor/.test(c))return!!P.a.light;if(/^Medium Armor/.test(c))return!!P.a.medium;if(/^Heavy Armor/.test(c))return!!P.a.heavy;if(c==="Shield"||/^Shield$/i.test(it.n))return!!P.a.shield;return null}
 function eqNpHtml(m,name){return eqProfOf(m,name)===false?' <span class="nprof-t">not proficient</span>':''}
-var _renderPF=render;render=function(){var ch=false;(S.party||[]).forEach(function(m){if(!m||!m.eq)return;var e=m.eq;if(!(e.armor||e.shield||(e.att||[]).some(function(x){return/protection|bracers of defense|robe of the archmagi/i.test(x||"")}))){if(eqRestoreAc(m))ch=true;return}var v=String(eqAC(m).ac);if(m.ac!==v){m.ac=v;S.combatants.forEach(function(c){if(c.kind==="pc"&&c.ref===m.id)c.ac=v});ch=true}});if(ch)save();return _renderPF.apply(this,arguments)};
+function pcMaxHp(m){var cl=[];try{cl=pcClasses(m)}catch(x){}cl=cl.filter(function(c){return HDIE[c.k]&&c.lv>0});if(!cl.length)return null;var con=pcMod(m,"con"),tot=0,first=true,hill=/hill dwarf/i.test(String(m.race||""));
+ cl.forEach(function(c){var d=HDIE[c.k];for(var i=0;i<c.lv;i++){var base=first?d:Math.floor(d/2)+1;first=false;tot+=Math.max(1,base+con+(hill?1:0))}});return tot}
+function pcAutoStats(m){if(!m||String(m.dex||"").trim()==="")return false;var ch=false,ac=String(eqAC(m).ac);if(m.ac!==ac){m.ac=ac;ch=true;S.combatants.forEach(function(c){if(c.kind==="pc"&&c.ref===m.id)c.ac=ac})}
+ var hp=pcMaxHp(m);if(hp!==null&&String(m.con||"").trim()!==""){var hs=String(hp);if(m.maxHp!==hs){m.maxHp=hs;ch=true;if(String(m.curHp||"")!==""&&(parseInt(m.curHp,10)||0)>hp)m.curHp=hs;S.combatants.forEach(function(c){if(c.kind==="pc"&&c.ref===m.id){c.max=hs;if((parseInt(c.hp,10)||0)>hp)c.hp=hs}})}}return ch}
+var _renderPF=render;render=function(){var ch=false;(S.party||[]).forEach(function(m){if(pcAutoStats(m))ch=true});if(ch)save();return _renderPF.apply(this,arguments)};
 /*PF-END*/
 
 function restCard(){return'<div class="card"><h3>Rests</h3><div class="mute">Applies to everyone in the party tab: hit points, hit dice and spell slots.</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button data-a="restshort">Short rest</button><button class="pri" data-a="restlong">Long rest</button></div></div>'}
