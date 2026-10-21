@@ -216,8 +216,7 @@ button{transition:background-color .3s ease,border-color .3s ease,color .3s ease
 <header>
   <div><h1>Curse of Strahd Organiser</h1><p>Campaign notes for the 2016 edition</p></div>
   <div id="hdclk" class="hdclk" title="Barovian clock"></div>
-  <button id="hdcmb" class="pill" hidden title="Review the fight so far">Combat log</button>
-  <button id="syncdot" class="pill" hidden title="Tap to sync">Not synced</button>
+    <button id="syncdot" class="pill" hidden title="Tap to sync">Not synced</button>
 </header>
 <div id="bk"></div>
 <div id="nzov" hidden role="dialog" aria-modal="true" aria-label="Location notes"></div>
@@ -473,7 +472,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=111;var APPLABEL="1.231";
+var APPV=112;var APPLABEL="1.232";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -956,7 +955,7 @@ function atkParse(sb){var out=[],ls=String(sb||"").split(/\n/),i,L,m,txt,j,nx;
    if(!parts.length){var fl=sent.match(/(\d+)\s+([a-z]+)\s+damage/i);if(fl)parts.push({n:0,d:0,k:+fl[1],t:fl[2]})}
    out.push({name:m[1].trim()+(ai?" (two-handed)":""),bonus:bonus,parts:parts})})}
  return out}
-function atkRoll(c,idx){var en=S.enemies.find(function(e){return e.id===c.ref}),at=en?atkParse(en.statblock)[idx]:null;if(!at)return"";
+function atkRoll(c,idx){var en=wsEnOf(c),at=en?atkParse(en.statblock)[idx]:null;if(!at)return"";
  var r1=d20(),r2=d20(),mode=ui.atkMode,nat=mode==="a"?Math.max(r1,r2):mode==="d"?Math.min(r1,r2):r1,
   tot=nat+at.bonus,ac=parseInt(ui.atkAc,10),crit=nat===20,fum=nat===1,hit=crit||(!fum&&(isNaN(ac)||tot>=ac)),
   rl=mode==="n"?""+nat:(mode==="a"?"adv ":"dis ")+r1+"/"+r2+" \u2192 "+nat,
@@ -987,8 +986,10 @@ function svParse(sb){var out=[],ls=String(sb||"").split(/\n/),i,L,txt,j,nx,m;
 function actList(en){var a=atkParse(en.statblock).map(function(x){x.kind="atk";return x});return a.concat(svParse(en.statblock))}
 function tgLabel(x){return x.kind==="sv"?x.name+" DC "+x.dc+" "+x.ab.toUpperCase():x.name+" "+(x.bonus>=0?"+":"−")+Math.abs(x.bonus)}
 function tgMemb(c){var id=String(c.ref||"");if(c.kind!=="pc"||id.slice(-4)==="#pet")return null;return S.party.find(function(x){return x.id===id})||null}
-function tgEn(c){return c.kind==="mon"?S.enemies.find(function(e){return e.id===c.ref}):null}
-function tgTargets(mid){return S.combatants.filter(function(c){if(c.id===mid)return false;if(c.kind==="pc")return true;return isNpcEn(tgEn(c))})}
+function wsEnOf(c){if(!c)return null;if(c.kind==="mon")return S.enemies.find(function(e){return e.id===c.ref})||null;
+ if(c.kind==="pc"&&c.wsOn&&c.wsName){var k=cmKey(c.wsName),en=S.enemies.find(function(e){return cmKey(e.name)===k});if(en)return en;var mo=cmFind(c.wsName);if(mo)return{id:"ws-"+c.id,name:mo.n,quick:mo.q,statblock:mo.sb}}return null}
+function tgEn(c){return c.kind==="mon"?wsEnOf(c):null}
+function tgTargets(mid){var me=S.combatants.find(function(x){return x.id===mid}),pcA=me&&me.kind==="pc";return S.combatants.filter(function(c){if(c.id===mid)return false;if(pcA)return c.kind==="mon"&&!isNpcEn(tgEn(c));if(c.kind==="pc")return true;return isNpcEn(tgEn(c))})}
 function tgMaOk(m){return!!m&&(/wizard|sorcerer/i.test(m.className||"")||/mage armou?r/i.test((m.notes||"")+" "+(m.sheet||"")))}
 function tgMaOn(m){return!ui.tgMa||ui.tgMa[m.id]!==false}
 function tgAc(c){var m=tgMemb(c);if(c.wsOn&&c.wsAc)return parseInt(c.wsAc,10);var base=m&&m.ac!==""&&m.ac!==undefined?parseInt(m.ac,10):parseInt(c.ac,10);if(m&&tgMaOk(m)&&!m.ma&&tgMaOn(m))return 13+pcMod(m,"dex");return base}
@@ -1005,10 +1006,10 @@ function tgDmg(row,at){if(!row.parts)return{tot:0,bits:[]};var tot=0,bits=[];row
  var fx=tgFactor(row.c,p.t,at.magic);if(fx.f!==1){v=Math.floor(v*fx.f);note=" ("+fx.w+")"}
  tot+=v;bits.push(v+(p.t?" "+p.t:"")+note)});return{tot:tot,bits:bits}}
 function tgIsAoe(at){return at.kind==="sv"&&at.aoe}
-function tgOpen(mid,i){var mc=S.combatants.find(function(x){return x.id===mid}),en=mc&&S.enemies.find(function(e){return e.id===mc.ref}),at=en&&actList(en)[i];if(!at)return;
+function tgOpen(mid,i){var mc=S.combatants.find(function(x){return x.id===mid}),en=mc&&wsEnOf(mc),at=en&&actList(en)[i];if(!at)return;
  var tg=tgTargets(mid),sel={};if(tgIsAoe(at))tg.forEach(function(c){sel[c.id]=true});else if(tg.length===1)sel[tg[0].id]=true;
  ui.tg={mid:mid,i:i,sel:sel,half:at.kind==="sv"?at.half:false,res:null};tgDraw()}
-function tgCur(){var T=ui.tg;if(!T)return null;var mc=S.combatants.find(function(x){return x.id===T.mid}),en=mc&&S.enemies.find(function(e){return e.id===mc.ref}),at=en&&actList(en)[T.i];return at?{mc:mc,at:at}:null}
+function tgCur(){var T=ui.tg;if(!T)return null;var mc=S.combatants.find(function(x){return x.id===T.mid}),en=mc&&wsEnOf(mc),at=en&&actList(en)[T.i];return at?{mc:mc,at:at}:null}
 function tgRestore(row){if(!row.snap)return;var c=row.c;c.hp=row.snap.hp;c.wsHp=row.snap.wsHp;c.wsOn=row.snap.wsOn;pcFromCombat(c);row.snap=null}
 function tgUndoAll(){var T=ui.tg;if(T&&T.res){T.res.rows.forEach(tgRestore);save()}}
 function tgApplyRow(row,at){tgRestore(row);var tg=row.c,amt=tgDmg(row,at).tot;row.snap={hp:tg.hp,wsHp:tg.wsHp,wsOn:tg.wsOn};if(amt<1)return;
@@ -1031,7 +1032,7 @@ function tgRowHtml(row,at,i){var c=row.c,h='<div class="tgrow"><b>'+esc(c.name)+
  return h+'</div>'}
 function tgDraw(){var T=ui.tg,el=document.getElementById("tgpop");if(!el){el=document.createElement("div");el.id="tgpop";document.body.appendChild(el);el.addEventListener("click",tgClick);el.addEventListener("change",tgChange)}
  var k=tgCur();if(!T||!k){el.style.display="none";return}var at=k.at,mc=k.mc,pcs=tgTargets(mc.id),h='',aoe=tgIsAoe(at);
- h+='<div class="atkbox tgbox"><div class="atkh"><b>'+esc(mc.name)+'</b>: '+esc(tgLabel(at))+'</div>'+(S.turnId===mc.id?'<div class="mute">'+(function(){var en2=S.enemies.find(function(e){return e.id===mc.ref}),nn=multiN(en2),cc=ui.turnAtk&&ui.turnAtk.id===mc.id?ui.turnAtk.n:0;var ml2=multiLim(en2),by=ui.turnAtk&&ui.turnAtk.id===mc.id?(ui.turnAtk.by||{}):{},ks=Object.keys(ml2.lim);return"This turn: "+Math.min(cc,nn)+" of "+nn+" attack"+(nn>1?"s":"")+" made"+(nn>1?" (Multiattack)":"")+(ks.length?" ("+ks.map(function(k){return k+" "+Math.min(by[k]||0,ml2.lim[k])+"/"+ml2.lim[k]}).join(", ")+")":"")+". The turn moves on when they are all used and you close this."})()+'</div>':'');
+ h+='<div class="atkbox tgbox"><div class="atkh"><b>'+esc(mc.name)+'</b>: '+esc(tgLabel(at))+'</div>'+(S.turnId===mc.id?'<div class="mute">'+(function(){var en2=wsEnOf(mc),nn=multiN(en2),cc=ui.turnAtk&&ui.turnAtk.id===mc.id?ui.turnAtk.n:0;var ml2=multiLim(en2),by=ui.turnAtk&&ui.turnAtk.id===mc.id?(ui.turnAtk.by||{}):{},ks=Object.keys(ml2.lim);return"This turn: "+Math.min(cc,nn)+" of "+nn+" attack"+(nn>1?"s":"")+" made"+(nn>1?" (Multiattack)":"")+(ks.length?" ("+ks.map(function(k){return k+" "+Math.min(by[k]||0,ml2.lim[k])+"/"+ml2.lim[k]}).join(", ")+")":"")+". The turn moves on when they are all used and you close this."})()+'</div>':'');
  if(!pcs.length)h+='<div class="mute">There are no party members or NPCs in this encounter. Close this and use Add party first, or make a quick roll without a target.</div>';
  else{h+='<div class="mute">'+(aoe?"Tick everyone caught in the area. The damage is rolled once for all of them.":"Choose the target.")+' Damage is taken off automatically.</div><div class="tgsel">'+pcs.map(function(c){var m=tgMemb(c),ac=tgAc(c),isn=c.kind==="mon";return'<label class="chk tgp"><input type="'+(aoe?"checkbox":"radio")+'"'+(aoe?' class="yn"':' name="tgsel"')+' data-tg="sel" data-id="'+c.id+'"'+(T.sel[c.id]?" checked":"")+'><span><b>'+esc(c.name)+'</b>'+(isn?' <span class="pill">NPC</span>':'')+' <span class="mute">'+(at.kind==="atk"?'AC '+(isNaN(ac)?'?':ac):'HP '+esc(c.hp||"?"))+'</span></span></label>'+(m&&tgMaOk(m)&&at.kind==="atk"?(m.ma?'<span class="mute tgma">Mage Armor already in AC</span>':'<label class="chk tgma"><input type="checkbox" class="yn" data-tg="ma" data-id="'+m.id+'"'+(tgMaOn(m)?" checked":"")+'><span>Mage Armor</span></label>'):'')}).join("")+'</div>';
   if(at.kind==="atk")h+='<label class="f">Roll<select data-tg="mode"><option value="n"'+(ui.atkMode==="n"?" selected":"")+'>Normal</option><option value="a"'+(ui.atkMode==="a"?" selected":"")+'>Advantage</option><option value="d"'+(ui.atkMode==="d"?" selected":"")+'>Disadvantage</option></select></label>';
@@ -1065,10 +1066,10 @@ function multiLim(en){var t=multiText(en),out={N:multiN(en),lim:{},has:!!t};if(!
  var W={one:1,two:2,three:3,four:4,five:5,six:6},names=actList(en).map(function(a){return a.name.toLowerCase().replace(/\s*\(.*$/,"")}),y,re1=/\b(one|two|three|four|five|six|\d)\s+with\s+(?:its|his|her|their|the|a|an)?\s*([a-z'][a-z' -]*?)(?=\s+(?:and|or|attacks?)\b|[,.;:(]|$)/gi,re2=/\b(one|two|three|four|five|six|\d)\s+([a-z'][a-z' -]*?)\s+attacks?\b/gi,re3=/\b(one|two|three|four|five|six)\s+of\s+which\s+(?:can|may)\s+be\s+(?:a|an|with)?\s*(?:its\s+|his\s+|her\s+)?([a-z][a-z -]*?)(?=\s+attack|[,.;:(]|$)/gi;
  function add(cnt,w){var c=W[String(cnt).toLowerCase()]||parseInt(cnt,10)||0,k=String(w).toLowerCase().trim().replace(/(es|s)$/,"");if(!c||!k||/^(melee|ranged|weapon|spell)$/.test(k))return;names.forEach(function(nm){var base=nm.replace(/(es|s)$/,"");if(nm.indexOf(k)>-1||(base.length>2&&k.indexOf(base)>-1)){out.lim[nm]=Math.max(out.lim[nm]||0,c)}})}
  while((y=re1.exec(t)))add(y[1],y[2]);while((y=re2.exec(t)))add(y[1],y[2]);while((y=re3.exec(t)))add(y[1],y[2]);return out}
-function atkOff(c,x){if(S.turnId!==c.id)return"";var en=S.enemies.find(function(e){return e.id===c.ref}),ml=multiLim(en),T=ui.turnAtk&&ui.turnAtk.id===c.id?ui.turnAtk:{n:0,by:{}},nm=String(x.name).toLowerCase().replace(/\s*\(.*$/,"");
+function atkOff(c,x){if(S.turnId!==c.id)return"";var en=wsEnOf(c),ml=multiLim(en),T=ui.turnAtk&&ui.turnAtk.id===c.id?ui.turnAtk:{n:0,by:{}},nm=String(x.name).toLowerCase().replace(/\s*\(.*$/,"");
  if(T.n>=ml.N)return"All "+ml.N+" attack"+(ml.N>1?"s":"")+" used this turn";var l=ml.lim[nm];if(l&&((T.by||{})[nm]||0)>=l)return x.name+" limit ("+l+") reached";return""}
 function tgCount(add){var k=tgCur(),T=ui.tg;if(!k||!T)return;var cur=ui.turnAtk&&ui.turnAtk.id===S.turnId?ui.turnAtk:{id:S.turnId,n:0};if(S.turnId!==k.mc.id)return;ui.turnAtk=cur;cur.by=cur.by||{};var nmk=String(k.at.name).toLowerCase().replace(/\s*\(.*$/,"");if(T.base===undefined){T.base=cur.n;T.baseBy=cur.by[nmk]||0}cur.n=T.base+add;cur.by[nmk]=T.baseBy+add}
-function tgTurnDone(){var k=tgCur();if(!k||S.turnId!==k.mc.id)return false;var en=S.enemies.find(function(e){return e.id===k.mc.ref}),n=multiN(en),c=ui.turnAtk&&ui.turnAtk.id===k.mc.id?ui.turnAtk.n:0;return c>=n}
+function tgTurnDone(){var k=tgCur();if(!k||S.turnId!==k.mc.id)return false;var en=wsEnOf(k.mc),n=multiN(en),c=ui.turnAtk&&ui.turnAtk.id===k.mc.id?ui.turnAtk.n:0;return c>=n}
 
 function downCheck(){var first=!ui.down;ui.down=ui.down||{};var now=[];S.combatants.forEach(function(c){var h=parseInt(c.hp,10),dead=c.hp!==""&&!isNaN(h)&&h<=0;if(dead){if(!ui.down[c.id]){ui.down[c.id]=1;if(!first)now.push(c)}}else if(ui.down[c.id])delete ui.down[c.id]});
  Object.keys(ui.down).forEach(function(id){if(!S.combatants.some(function(c){return c.id===id}))delete ui.down[id]});
@@ -1138,7 +1139,7 @@ function wsBlock(c){if(c.kind!=="pc"||c.pet)return'';var m=S.party.find(function
  if(c.wsOn)return'<div class="wsb on"><b>Wild Shape: '+esc(c.wsName||"Beast")+'</b><label class="hpf"><span class="tl">Beast HP</span><input '+k+' data-f="wsHp" value="'+esc(c.wsHp)+'" inputmode="numeric" style="width:60px"></label><span class="mute">/ '+esc(c.wsMax)+' &middot; AC '+esc(c.wsAc||"-")+'</span><button class="pri" data-a="calcopen" data-id="'+c.id+'">Beast damage / heal</button><button data-a="wsoff" data-id="'+c.id+'">Revert</button>'+clSlotBtn(c)+'</div>';
  return'<div class="wsb"><span class="mute">Wild Shape</span>'+wsSel(c)+'<input '+k+' data-f="wsName" value="'+esc(c.wsName)+'" placeholder="Beast" aria-label="Beast form" style="width:120px"><input '+k+' data-f="wsMax" value="'+esc(c.wsMax)+'" placeholder="HP" inputmode="numeric" aria-label="Beast HP" style="width:60px"><input '+k+' data-f="wsAc" value="'+esc(c.wsAc)+'" placeholder="AC" inputmode="numeric" aria-label="Beast AC" style="width:60px"><button data-cl="wspick" data-id="'+c.id+'">Wild Shape</button></div>'}
 function encCard(c,cur){
- var en=c.kind==="mon"?S.enemies.find(function(e){return e.id===c.ref}):null;
+ var en=wsEnOf(c);
  var hp=parseInt(c.hp,10),mx=parseInt(c.max,10),down=!isNaN(hp)&&hp<=0;
  var pct=(!isNaN(hp)&&mx>0)?Math.max(0,Math.min(100,Math.round(hp/mx*100))):0;
  var col=pct>50?"#3f9f6a":pct>25?"#d4a02f":"#c0334d";
