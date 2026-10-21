@@ -477,7 +477,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=121;var APPLABEL="1.310";
+var APPV=122;var APPLABEL="1.311";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -1888,7 +1888,8 @@ function impMatch(lines,names){var found=[],pool=names.slice().sort(function(a,b
 function impNames(list){var out=[];list.forEach(function(it){var n=it.n.toLowerCase().replace(/[^a-z0-9' ]/g," ").replace(/\s+/g," ").trim();out.push({k:n,it:it});if(/ armor$/.test(n))out.push({k:n.replace(/ armor$/,""),it:it})});return out}
 function impFinish(m){if(!m)return;var T=String(m.sheet||"");if(!T.trim())return;var sec=impSections(T),notes=[];
  /* equipment */
- var eqL=sec.eq.length?sec.eq:sec.all.filter(function(l){return/\d+d\d+|armou?r|mail|plate|shield|\+\d/i.test(l)}),pool=eqAll(),
+ var FW=[],FQ=[],FS=[];T.split(/\r?\n/).forEach(function(l){var x=l.match(/^(Wpn Name(?: \d+)?|Eq Name\d+|spellName\d+)\s*:\s*(.+)$/);if(!x)return;var v=x[2].replace(/\s*\[[A-Z]\]/g,"").trim();if(/^staff$/i.test(v))v="Quarterstaff";if(/^Wpn/.test(x[1]))FW.push(v);else if(/^Eq/.test(x[1]))FQ.push(v);else FS.push(v)});
+ var eqL=FW.length||FQ.length?FW.concat(FQ):sec.eq.length?sec.eq:sec.all.filter(function(l){return/\d+d\d+|armou?r|mail|plate|shield|\+\d/i.test(l)}),pool=eqAll(),
  weap=impNames(pool.filter(function(x){return eqIsWeapon(x)&&!/^Magic/.test(x.c)&&!/^Net$/.test(x.n)})),arm=impNames(pool.filter(function(x){return/Armor/.test(x.c)&&!/^Magic/.test(x.c)})),shl=impNames(pool.filter(function(x){return x.n==="Shield"})),mag=impNames(pool.filter(function(x){return/^Magic/.test(x.c)&&!/Potion|Scroll|Weapon|Armor/.test(x.c)}));
  var pref=function(arr2){var t=arr2.filter(function(f){return/\((equipped|attuned)\)/i.test(f.line)});return t.length?t:arr2},e=pcEq(m),n=0;
  var w=pref(impMatch(eqL,weap)),seen={};w=w.filter(function(f){if(seen[f.it.n])return false;seen[f.it.n]=1;return true}).slice(0,3);
@@ -1898,7 +1899,7 @@ function impFinish(m){if(!m)return;var T=String(m.sheet||"");if(!T.trim())return
  var mg=pref(impMatch(eqL,mag)),sm={};mg=mg.filter(function(f){if(sm[f.it.n])return false;sm[f.it.n]=1;return true}).slice(0,3);if(mg.length){e.att=["","",""];mg.forEach(function(f,i){e.att[i]=f.it.n;n++})}
  if(n){notes.push(n+" equipment slot"+(n===1?"":"s"));if(!String(m.ac||"").trim())eqApply(m)}
  /* spells */
- var spL=sec.sp,c=pcSpC(m),ns=0;
+ var spL=FS.length?FS:sec.sp,c=pcSpC(m),ns=0;
  if(spL.length&&c){var all=spAll(),names=impNames(all.map(function(sp){return{n:sp.n,sp:sp,c:"",k:sp.k}})).map(function(x){return{k:x.k,it:x.it.sp}}),hit=impMatch(spL,names),have={};
   m.kn=sarr(m.kn);m.pr=sarr(m.pr);hit.forEach(function(f){var sp=f.it;if(have[sp.k])return;have[sp.k]=1;
    if(sp.l===0){if(m.kn.indexOf(sp.k)<0){m.kn.push(sp.k);ns++}}
