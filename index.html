@@ -471,7 +471,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=106;var APPLABEL="1.210";
+var APPV=107;var APPLABEL="1.211";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -481,7 +481,7 @@ function dash(){
  var tkRows=[["Tome of Strahd",tk.tome],["Holy Symbol of Ravenkind",tk.symbol],["Sunsword",tk.sword],["Strahd's location",tk.strahdAt],["Motivation",tk.motivation]];
  var tkCard='<div class="card"><h3>Tarokka reading</h3>'+tkRows.map(function(r){return'<div><span class="mute">'+r[0]+':</span> '+esc(r[1]||"not set")+'</div>'}).join("")+'</div>';
  var lb="";try{lb=localStorage.getItem("cos-lastbackup")||""}catch(e){}
- var bkCard='<div class="card"><h3>Options</h3><div class="mute">'+(gdirty()?"This device has changes that are not synced. ":"")+(lb?"Last backup: "+esc(new Date(lb).toLocaleDateString()):"No backup made yet. Your data is saved only in this browser.")+' <span style="white-space:nowrap">App version v'+APPLABEL+'</span></div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button id="syncbtn">'+(gdirty()?"Sync \u2022":"Sync")+'</button><button id="syncopt">Sync options</button><button data-a="backup">Create backup</button><label class="btn" tabindex="0">Restore file<input type="file" id="rf" accept="application/json,.json" hidden></label><button data-a="theme" aria-label="Toggle light or dark theme">Theme</button></div></div>';
+ var bkCard='<div class="card"><h3>Options</h3><div class="mute">'+(gdirty()?"This device has changes that are not synced. ":"")+(lb?"Last backup: "+esc(new Date(lb).toLocaleDateString()):"No backup made yet. Your data is saved only in this browser.")+' <span style="white-space:nowrap">App version v'+APPLABEL+'</span></div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button id="syncbtn">'+(gdirty()?"Sync \u2022":"Sync")+'</button><button id="syncopt">Sync options</button><button data-a="backup">Create backup</button><button data-a="testparty">Add 4 test characters</button><label class="btn" tabindex="0">Restore file<input type="file" id="rf" accept="application/json,.json" hidden></label><button data-a="theme" aria-label="Toggle light or dark theme">Theme</button></div></div>';
  return'<h2 class="row">Campaign dashboard</h2><div class="grid">'+box(S.party.length,"party members")+box(met+" / "+S.npcs.length,"NPCs met")+box(act+" active, "+done+" done","of "+S.quests.length+" quests")+box(vis+" / "+S.locations.length,"locations visited")+box(S.sessions.length,"sessions logged")+
  '<div class="card"><h3>Barovian day and time</h3>'+clkHtml()+'</div>'+
  '<div class="card"><h3>Strahd</h3><div>Attitude: '+esc(S.strahd.attitude)+'</div><div class="mute">Final confrontation: '+esc(tk.strahdAt||"not set")+'</div></div>'+restCard()+actCard+tkCard+bkCard+'</div>'}
@@ -1408,6 +1408,17 @@ function pcRestExtra(m){var hd=pcHD(m),used=Math.min(hd.n,m.hdUsed||0),h='';
  return h}
 
 /*SPL-START*/
+
+/*TP-START*/
+function tpMake(){var P=function(id,n,cls,ab,hp,ac,sv,sk,kn,pr,extra){var m={id:id,name:n,className:cls,level:"8",race:"Human",background:"",ac:String(ac),maxHp:String(hp),curHp:"",speed:"30 ft.",init:"",passivePerception:"",notes:"Test character (sample).",str:String(ab[0]),dex:String(ab[1]),con:String(ab[2]),int:String(ab[3]),wis:String(ab[4]),cha:String(ab[5]),sheet:"",sp:{},hdUsed:0,su:{},arcUsed:false,wsFav:[],wsCur:"",moon:false,wsOn:false,wsName:"",wsHp:"",wsAc:"",petName:"",petType:"",petHp:"",petCur:"",petAc:"",petSpeed:"",petNotes:"",ma:false,acBase:"",res:"",imm:"",vul:"",tl:null,kn:kn.map(function(x){return"s:"+x}),pr:pr.map(function(x){return"s:"+x})};
+  sv.forEach(function(k){m.sp["sv_"+k]=1});Object.keys(sk).forEach(function(k){m.sp[k]=sk[k]});if(extra)extra(m);return m};
+ return[
+  P("tp-druid","Test Druid 8","Druid (Circle of the Land) 8",[10,14,14,12,18,10],58,15,["int","wis"],{med:1,nat:1,prc:1,sur:1},["Druidcraft","Produce Flame","Shillelagh"],["Entangle","Cure Wounds","Moonbeam","Call Lightning","Conjure Animals","Dispel Magic","Ice Storm","Healing Word"].filter(function(x){return true}),null),
+  P("tp-wizard","Test Wizard 8","Wizard (Evocation) 8",[8,14,14,18,12,10],49,12,["int","wis"],{arc:1,his:1,inv:1},["Fire Bolt","Mage Hand","Prestidigitation","Ray of Frost","Magic Missile","Shield","Mage Armor","Detect Magic","Misty Step","Hold Person","Scorching Ray","Fireball","Counterspell","Fly","Lightning Bolt","Greater Invisibility","Ice Storm","Dimension Door","Identify"],["Magic Missile","Shield","Mage Armor","Misty Step","Hold Person","Scorching Ray","Fireball","Counterspell","Fly","Greater Invisibility","Ice Storm","Detect Magic"],null),
+  P("tp-rogue","Test Rogue 8","Rogue (Thief) 8",[10,18,14,12,13,10],52,15,["dex","int"],{acr:1,ath:0,dec:1,ins:1,itm:0,inv:1,prc:2,prf:0,prs:1,sle:2,ste:2},[],[],null),
+  P("tp-ranger","Test Ranger 8","Ranger (Hunter) 8",[12,16,14,10,16,8],64,16,["str","dex"],{ani:1,ath:1,ins:1,nat:1,prc:1,ste:1,sur:1},["Hunter's Mark","Cure Wounds","Barkskin","Lightning Arrow","Conjure Barrage","Spike Growth"],["Hunter's Mark","Cure Wounds","Barkskin","Lightning Arrow","Conjure Barrage","Spike Growth"],null)]}
+document.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest('[data-a="testparty"]');if(!b)return;var add=tpMake().filter(function(m){return!S.party.some(function(x){return x.id===m.id})});add.forEach(function(m){S.party.push(m)});save();render()});
+/*TP-END*/
 function pcSpC(m){var c=String(m.className||"").toLowerCase();
  if(/eldritch knight|arcane trickster/.test(c))return{list:"Wizard",learn:true,cant:true,cls:/eldritch/.test(c)?"Eldritch Knight":"Arcane Trickster"};
  if(/wizard/.test(c))return{list:"Wizard",learn:true,cant:true,cls:"Wizard",prep:"int",half:false,book:true};
