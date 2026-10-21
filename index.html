@@ -477,7 +477,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=132;var APPLABEL="1.362";
+var APPV=133;var APPLABEL="1.363";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -2997,7 +2997,7 @@ function scMatchMember(name){
  if(!m){var fw=n.split(/\s+/)[0];if(fw.length>2)m=S.party.find(function(x){return String(x.name||"").toLowerCase().split(/\s+/)[0]===fw})}
  return m?m.id:""}
 function scReviewPC(s){
- var f=s.form,notes=[],F=[["name","Character name"],["className","Class / subclass"],["level","Level"],["race","Race"],["background","Background"],["ac","AC"],["maxHp","Max HP"],["passivePerception","Passive Perception"],["speed","Speed"],["init","Initiative"],["str","STR"],["dex","DEX"],["con","CON"],["int","INT"],["wis","WIS"],["cha","CHA"]];
+ var f=s.form,notes=[],F=[["name","Character name"],["className","Class / subclass"],["level","Level"],["race","Race"],["ac","AC"],["maxHp","Max HP"],["passivePerception","Passive Perception"],["speed","Speed"],["init","Initiative"],["str","STR"],["dex","DEX"],["con","CON"],["int","INT"],["wis","WIS"],["cha","CHA"]];
  if(s.miss.length)notes.push("Not found in the photo: "+s.miss.join(", ")+". Fill these in below.");
  s.warn.forEach(function(x){notes.push(x)});
  var upd=!!s.target;
@@ -3312,7 +3312,7 @@ function scDraw(){
 function importUI(){
  var h='<div class="card" style="margin-bottom:14px"><h3>Import from D&amp;D Beyond</h3><p class="mute" style="margin:0">Choose a saved character sheet page (.html) or the character data (.json). The file is read in your browser and goes nowhere else.</p><label class="btn" tabindex="0" style="width:fit-content">Choose file<input type="file" id="dbf" accept=".html,.htm,.json,text/html,application/json" hidden></label>'+(ui.msg?'<div class="mute">'+esc(ui.msg)+'</div>':'')+'<details class="mute"><summary>How to get the file</summary><p>JSON (most reliable): set the character to public, copy the number at the end of its sheet URL, and open character-service.dndbeyond.com/character/v5/character/ followed by that number. Save the page as a .json file.</p><p>HTML: open the character sheet, then use your browser\'s Save page as, choosing the complete page option. A plain view-source copy has no sheet data.</p></details></div>';
  if(ui.pv){
-  var F=[["name","Character name"],["className","Class / subclass"],["level","Level"],["ac","AC"],["maxHp","Max HP"],["passivePerception","Passive Perception"],["race","Race"],["background","Background"],["speed","Speed"],["init","Initiative"],["str","STR"],["dex","DEX"],["con","CON"],["int","INT"],["wis","WIS"],["cha","CHA"]];
+  var F=[["name","Character name"],["className","Class / subclass"],["level","Level"],["ac","AC"],["maxHp","Max HP"],["passivePerception","Passive Perception"],["race","Race"],["speed","Speed"],["init","Initiative"],["str","STR"],["dex","DEX"],["con","CON"],["int","INT"],["wis","WIS"],["cha","CHA"]];
   h+='<div class="card" style="margin-bottom:14px"><h3>Import preview</h3><div class="g2">'+F.map(function(p){return'<label class="f">'+p[1]+'<input data-ui="pv" data-f="'+p[0]+'" value="'+esc(ui.pv[p[0]])+'"></label>'}).join("")+'</div><label class="f">Notes<textarea data-ui="pv" data-f="notes">'+esc(ui.pv.notes)+'</textarea></label><label class="f">Full character sheet text<textarea style="min-height:160px" data-ui="pv" data-f="sheet">'+esc(ui.pv.sheet||"")+'</textarea></label><div style="display:flex;gap:8px"><button class="pri" data-a="pvadd">Add to party</button><button data-a="pvcancel">Cancel</button></div></div>'}
  return h}
 function pageText(doc){
