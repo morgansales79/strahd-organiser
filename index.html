@@ -202,6 +202,7 @@ header{min-height:104px;padding:12px 18px!important;background:linear-gradient(9
 .mnr{padding:1px 4px;margin:1px 0}.mnr button{padding:2px 9px;min-height:30px}.mnr b{min-width:1.4em;text-align:center}.mnchips{display:flex;flex-wrap:wrap;gap:4px;margin:3px 0}.mnchip{border:1px solid var(--line);border-radius:999px;padding:1px 9px;font-size:.9rem}.mnm{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;align-items:center}#mnsel{flex:1;min-width:140px;width:auto}
 @media (max-width:760px){.nzg{grid-template-columns:1fr;grid-template-rows:55% 1fr}}
 .empty{color:var(--mute);padding:24px;border:1px dashed var(--line);border-radius:10px;text-align:center}
+.cdrow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px}.cdchip{display:inline-flex;flex-wrap:wrap;gap:4px;align-items:center;border:1px solid var(--acc);border-radius:12px;padding:2px 4px 2px 9px;font-size:.8rem;max-width:100%}.cdchip button{padding:2px 8px;font-size:.75rem;min-height:30px}.cdadd{font-size:.78rem;padding:3px 10px;min-height:32px}
 .pill{font-size:.75rem;border:1px solid var(--line);border-radius:99px;padding:1px 9px;color:var(--mute)}
 .pill.v{border-color:var(--acc2);color:var(--acc2)}
 @media (max-width:760px){.g2{grid-template-columns:1fr}}
@@ -456,7 +457,7 @@ function norm(raw){
  var s={v:6,day:Math.max(1,parseInt(b.day,10)||1),hour:isNaN(parseFloat(b.hour))?8:Math.max(0,Math.min(23.99,Math.round(parseFloat(b.hour)*60)/60))};
  s.party=arr(b.party).map(function(m){return{id:str(m.id)||uid(),name:str(m.name),className:str(m.className),level:str(m.level),ac:str(m.ac),maxHp:str(m.maxHp),passivePerception:str(m.passivePerception),notes:str(m.notes),race:str(m.race),background:str(m.background),speed:str(m.speed),init:str(m.init),str:str(m.str),dex:str(m.dex),con:str(m.con),int:str(m.int),wis:str(m.wis),cha:str(m.cha),sheet:str(m.sheet),sp:(m.sp&&typeof m.sp==="object")?m.sp:{},curHp:str(m.curHp),hdUsed:Math.max(0,parseInt(m.hdUsed,10)||0),su:(m.su&&typeof m.su==="object")?m.su:{},arcUsed:!!m.arcUsed,acAuto:!!m.acAuto,rage:!!m.rage,acBase:m.acBase===undefined?undefined:str(m.acBase),wsFav:arr(m.wsFav).map(function(f){return{id:str(f.id)||uid(),name:str(f.name),hp:str(f.hp),ac:str(f.ac),cr:str(f.cr),note:str(f.note)}}),wsCur:str(m.wsCur),moon:!!m.moon,wsOn:!!m.wsOn,wsName:str(m.wsName),wsHp:str(m.wsHp),wsAc:str(m.wsAc),petName:str(m.petName),petType:str(m.petType),petHp:str(m.petHp),petCur:str(m.petCur),petAc:str(m.petAc),petSpeed:str(m.petSpeed),petNotes:str(m.petNotes),ma:!!m.ma,acBase:str(m.acBase),res:str(m.res),imm:str(m.imm),vul:str(m.vul),cimm:str(m.cimm),sadv:str(m.sadv),tl:(m.tl===0||m.tl===1||m.tl===2)?m.tl:null,kn:sarr(m.kn),pr:sarr(m.pr),eq:eqNorm(m.eq)}});s.items=arr(b.items).map(function(i){return{id:str(i.id)||uid(),n:str(i.n),c:str(i.c),cost:str(i.cost),wt:str(i.wt),dmg:str(i.dmg),dt:str(i.dt),ac:str(i.ac),pr:str(i.pr)}});
  s.cpend=arr(b.cpend).map(function(e){return{id:str(e.id)||uid(),cid:str(e.cid),n:str(e.n),dice:str(e.dice),type:str(e.type),once:!!e.once,endsMiss:!!e.endsMiss,note:str(e.note)}});s.noauto=!!b.noauto;s.fx=arr(b.fx).map(function(f){return{id:str(f.id)||uid(),cid:str(f.cid),spk:str(f.spk),n:str(f.n),lvl:parseInt(f.lvl,10)||1,cc:!!f.cc,start:parseInt(f.start,10)||1,dur:f.dur===null?null:(parseInt(f.dur,10)||1),who:sarr(f.who),hp:f.hp===null||f.hp===undefined?null:(parseInt(f.hp,10)||0),alert:!!f.alert}});s.clog=arr(b.clog).map(function(e){return{id:str(e.id)||uid(),k:["dmg","heal","miss","cast"].indexOf(e.k)>-1?e.k:"dmg",r:Math.max(1,parseInt(e.r,10)||1),src:str(e.src),srcId:str(e.srcId),srcPc:!!e.srcPc,tgt:str(e.tgt),tgtId:str(e.tgtId),tgtPc:!!e.tgtPc,amt:Math.max(0,parseInt(e.amt,10)||0),what:str(e.what),h0:e.h0===undefined?undefined:parseInt(e.h0,10)||0,h1:e.h1===undefined?undefined:parseInt(e.h1,10)||0,dead:!!e.dead}}).slice(-600);s.round=Math.max(1,parseInt(b.round,10)||1);s.turnId=str(b.turnId);
- s.combatants=arr(b.combatants).map(function(c){return{id:str(c.id)||uid(),kind:c.kind==="pc"?"pc":"mon",ref:str(c.ref),name:str(c.name),init:str(c.init),dex:str(c.dex),hp:str(c.hp),max:str(c.max),ac:str(c.ac),wsName:str(c.wsName),wsHp:str(c.wsHp),wsMax:str(c.wsMax),wsAc:str(c.wsAc),wsOn:!!c.wsOn,pet:!!c.pet,ds:(c.ds&&typeof c.ds==="object")?{s:Math.min(3,parseInt(c.ds.s,10)||0),f:Math.min(3,parseInt(c.ds.f,10)||0)}:null}});
+ s.combatants=arr(b.combatants).map(function(c){return{id:str(c.id)||uid(),kind:c.kind==="pc"?"pc":"mon",ref:str(c.ref),name:str(c.name),init:str(c.init),dex:str(c.dex),hp:str(c.hp),max:str(c.max),ac:str(c.ac),wsName:str(c.wsName),wsHp:str(c.wsHp),wsMax:str(c.wsMax),wsAc:str(c.wsAc),wsOn:!!c.wsOn,pet:!!c.pet,ds:(c.ds&&typeof c.ds==="object")?{s:Math.min(3,parseInt(c.ds.s,10)||0),f:Math.min(3,parseInt(c.ds.f,10)||0)}:null,conds:arr(c.conds).map(function(x){return{id:str(x.id)||uid(),n:str(x.n),src:str(x.src),dc:parseInt(x.dc,10)||0,ab:str(x.ab),end:!!x.end,dur:str(x.dur)}}).filter(function(x){return x.n})}});
  s.sess=(b.sess&&typeof b.sess==="object")?b.sess:null;s.trv=tvNorm(b.trv);s.enSeedV=parseInt(b.enSeedV,10)||0;
  s.encSets=arr(b.encSets).map(function(x){return{id:str(x.id)||uid(),name:str(x.name),notes:str(x.notes),items:arr(x.items).map(function(i){return{id:str(i.id)||uid(),ref:str(i.ref),qty:Math.max(1,Math.min(20,parseInt(i.qty,10)||1))}})}});
  s.spells=arr(b.spells).map(function(x){return{id:str(x.id)||uid(),name:str(x.name),level:Math.max(0,Math.min(9,parseInt(x.level,10)||0)),dice:str(x.dice),up:str(x.up),type:str(x.type),save:str(x.save),succ:x.succ==="none"?"none":"half",time:str(x.time),range:str(x.range),dur:str(x.dur),conc:!!x.conc,desc:str(x.desc),school:str(x.school)||"Custom"}});
@@ -496,7 +497,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=145;var APPLABEL="1.422";
+var APPV=146;var APPLABEL="1.430";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -1008,10 +1009,10 @@ function isNpcEn(e){if(!e)return false;if(e.npc===true||e.npc===false)return e.n
 function svParse(sb){var out=[],ls=String(sb||"").split(/\n/),i,L,txt,j,nx,m;
  for(i=0;i<ls.length;i++){L=ls[i];var h=L.match(/^\s*([A-Z][^.:]{1,45}?)\.\s+\S/);if(!h||/Attack(?: Roll)?:/i.test(L))continue;
   txt=L;for(j=i+1;j<ls.length;j++){nx=ls[j];if(!nx.trim()||/^[A-Z][A-Z ]+$/.test(nx.trim())||/^\s*[A-Z][^.:]{1,45}\.\s/.test(nx))break;txt+=" "+nx.trim()}
-  m=txt.match(/DC\s*(\d+)\s+(Strength|Dexterity|Constitution|Intelligence|Wisdom|Charisma)\s+saving throw/i);if(!m)continue;
+  m=txt.match(/DC\s*(\d+)\s+(Strength|Dexterity|Constitution|Intelligence|Wisdom|Charisma|STR|DEX|CON|INT|WIS|CHA)\s+(?:saving throw|save)\b/i);if(!m)continue;
   var tail=txt.slice(m.index),parts=[],re=/(\d+)?\s*\((\d+)d(\d+)(?:\s*([+−-])\s*(\d+))?\)\s*([a-z]+)?\s*damage/gi,mm;
   while((mm=re.exec(tail))){parts.push({n:+mm[2],d:+mm[3],k:mm[4]?(mm[4]==="+"?1:-1)*(+mm[5]):0,t:mm[6]||""})}
-  if(!parts.length)continue;
+  if(!parts.length){if(!cndFindFail(tail.replace(/^DC\s*\d+\s+\w+\s+(?:saving throw|save)/i,"")).length)continue}
   out.push({kind:"sv",name:h[1].trim(),dc:+m[1],ab:m[2].slice(0,3).toLowerCase(),parts:parts,half:/half as much/i.test(tail),aoe:/(cone|line|radius|sphere|cube|each creature)/i.test(txt),magic:true})}
  return out}
 /*ESP-START*/
@@ -1070,7 +1071,7 @@ function tgHas(txt,t,phys,magic){return String(txt||"").toLowerCase().split(";")
 function tgFactor(c,t,magic){var m=tgRes(c);if(!t)return{f:1,w:""};t=t.toLowerCase();var phys=/^(bludgeoning|piercing|slashing)$/.test(t),im=tgHas(m.imm,t,phys,magic),r=tgHas(m.res,t,phys,magic),v=tgHas(m.vul,t,phys,magic);
  if(im)return{f:0,w:"immune"};if(r&&!v)return{f:0.5,w:"resistant"};if(v&&!r)return{f:2,w:"vulnerable"};return{f:1,w:""}}
 function tgRollParts(parts,crit){return parts.map(function(p){var n=p.n*(crit?2:1),t=p.k,rs=[],i;for(i=0;i<n;i++){var v=1+Math.floor(Math.random()*p.d);rs.push(v);t+=v}return{t:p.t,v:Math.max(0,t)}})}
-function tgDmg(row,at){if(!row.parts)return{tot:0,bits:[]};var tot=0,bits=[];row.parts.forEach(function(p){var v=p.v,note="";
+function tgDmg(row,at){if(!row.parts||row.pend)return{tot:0,bits:[]};var tot=0,bits=[];row.parts.forEach(function(p){var v=p.v,note="";
  if(at.kind==="sv"&&row.passed){if(ui.tg&&ui.tg.half)v=Math.floor(v/2);else v=0}
  var fx=tgFactor(row.c,p.t,at.magic);if(fx.f!==1){v=Math.floor(v*fx.f);note=" ("+fx.w+")"}
  tot+=v;bits.push(v+(p.t?" "+p.t:"")+note)});return{tot:tot,bits:bits}}
@@ -1080,25 +1081,29 @@ function tgOpen(mid,i,act,opts){var mc=S.combatants.find(function(x){return x.id
  var tg=tgTargets(mid),sel={};if(tgIsAoe(at))tg.forEach(function(c){sel[c.id]=true});else if(tg.length===1)sel[tg[0].id]=true;
  ui.tg={mid:mid,i:i,sel:sel,half:at.kind==="sv"?at.half:false,res:null,act:act||null,fxd:!!(opts&&opts.nofx)};tgDraw()}
 function tgCur(){var T=ui.tg;if(!T)return null;var mc=S.combatants.find(function(x){return x.id===T.mid}),en=mc&&wsEnOf(mc),at=T.act||(en&&actList(en)[T.i]);return at?{mc:mc,at:at}:null}
-function tgRestore(row){if(!row.snap)return;var c=row.c;c.hp=row.snap.hp;c.wsHp=row.snap.wsHp;c.wsOn=row.snap.wsOn;pcFromCombat(c);row.snap=null}
+function tgRestore(row){if(row.cids){row.cids.forEach(function(id){cndRemove(row.c,id)});row.cids=[]}if(!row.snap)return;var c=row.c;c.hp=row.snap.hp;c.wsHp=row.snap.wsHp;c.wsOn=row.snap.wsOn;pcFromCombat(c);row.snap=null}
 function tgUndoAll(){var T=ui.tg;if(T&&T.res){T.res.rows.forEach(tgRestore);save()}}
-function tgApplyRow(row,at){tgRestore(row);var tg=row.c,amt=tgDmg(row,at).tot;row.snap={hp:tg.hp,wsHp:tg.wsHp,wsOn:tg.wsOn};if(amt<1)return;
+function tgApplyRow(row,at){tgRestore(row);var tg=row.c,amt=tgDmg(row,at).tot;row.snap={hp:tg.hp,wsHp:tg.wsHp,wsOn:tg.wsOn};if(amt<1){tgCondSync(row,at);return}
  if(tg.wsOn){var wh=parseInt(tg.wsHp,10)||0,left=amt-wh;if(left>=0){tg.wsHp="0";tg.wsOn=false;if(left>0)tg.hp=String(Math.max(0,(parseInt(tg.hp,10)||0)-left))}else tg.wsHp=String(wh-amt)}
  else tg.hp=String(Math.max(0,(parseInt(tg.hp,10)||0)-amt));
- pcFromCombat(tg)}
+ pcFromCombat(tg);tgCondSync(row,at)}
 function tgRoll(){var T=ui.tg,k=tgCur();if(!T||!k)return;var at=k.at,rows=[],shared=null;tgUndoAll();
- if(at.kind==="sv")shared=tgRollParts(at.parts,false);
+ T.rd=cndRider(k.mc,at);if(at.kind==="sv")shared=tgRollParts(at.parts,false);
  tgTargets(T.mid).filter(function(c){return T.sel[c.id]}).forEach(function(c){var row={c:c,id:c.id};
   if(at.kind==="atk"){var r1=d20(),r2=d20(),md=ui.atkMode,nat=md==="a"?Math.max(r1,r2):md==="d"?Math.min(r1,r2):r1,tot=nat+at.bonus,ac=tgAc(c),crit=nat===20,fum=nat===1;
-   row.nat=nat;row.r=md==="n"?""+nat:(md==="a"?"adv ":"dis ")+r1+"/"+r2+" → "+nat;row.tot=tot;row.ac=ac;row.crit=crit;row.hit=crit||(!fum&&(isNaN(ac)||tot>=ac));row.fum=fum;if(at.auto){row.hit=true;row.crit=false;row.fum=false}row.parts=row.hit?tgRollParts(at.parts,crit):null}
+   row.nat=nat;row.r=md==="n"?""+nat:(md==="a"?"adv ":"dis ")+r1+"/"+r2+" → "+nat;row.tot=tot;row.ac=ac;row.crit=crit;row.hit=crit||(!fum&&(isNaN(ac)||tot>=ac));row.fum=fum;if(at.auto){row.hit=true;row.crit=false;row.fum=false}row.parts=row.hit?tgRollParts(at.parts,crit):null;if(row.hit&&T.rd)tgRiderRoll(row)}
+  else if(tgMemb(c)){row.pend=true;row.passed=false;row.parts=shared}
   else{var b=tgSvBon(c,at.ab),n=d20(),t=n+b;row.nat=n;row.bon=b;row.tot=t;row.passed=t>=at.dc;row.parts=shared}
   rows.push(row)});
  T.res={rows:rows};rows.forEach(function(r){tgApplyRow(r,at)});save();tgCount(at.sp?multiN(wsEnOf(k.mc)):at.kind==="atk"?rows.length:(rows.length?1:0))}
 function tgRowHtml(row,at,i){var c=row.c,h='<div class="tgrow"><b>'+esc(c.name)+'</b> ',d=tgDmg(row,at);
  if(at.kind==="atk"&&at.auto){h+='<b class="ok">Hits automatically</b>'}
  else if(at.kind==="atk"){h+='<span class="mute">d20 '+row.r+(at.bonus>=0?" + ":" − ")+Math.abs(at.bonus)+' = '+row.tot+(isNaN(row.ac)?'':' vs AC '+row.ac)+'</span> '+(row.crit?'<b class="ok">CRITICAL HIT</b>':row.fum?'<b class="bad">Natural 1, miss</b>':row.hit?'<b class="ok">Hit</b>':'<b class="bad">Miss</b>')}
- else{h+='<span class="mute">'+at.ab.toUpperCase()+' save d20 '+row.nat+(row.bon>=0?" + ":" − ")+Math.abs(row.bon)+' = '+row.tot+' vs DC '+at.dc+'</span> <select data-tg="pass" data-i="'+i+'" aria-label="Save result"><option value="0"'+(row.passed?"":" selected")+'>Failed save</option><option value="1"'+(row.passed?" selected":"")+'>Saved'+(ui.tg.half?" (half damage)":" (no damage)")+'</option></select>'}
- if(row.parts)h+='<div>Damage: <b>'+d.tot+'</b> <span class="mute">'+(d.bits.length?d.bits.join(" + "):"")+'</span></div>';
+ else{var abU=at.ab.toUpperCase();if(row.pend)h+='<span class="mute">'+abU+' save vs DC '+at.dc+'. Ask the player for the total:</span> <input id="tgin'+i+'" inputmode="numeric" style="width:70px" placeholder="total" aria-label="Save total"> <button data-tg="pv" data-i="'+i+'">Apply</button> ';
+  else h+='<span class="mute">'+abU+' save '+(row.typed?'rolled by player: '+row.tot:'d20 '+row.nat+(row.bon>=0?" + ":" − ")+Math.abs(row.bon)+' = '+row.tot)+' vs DC '+at.dc+'</span> ';
+  h+='<select data-tg="pass" data-i="'+i+'" aria-label="Save result">'+(row.pend?'<option value="x" selected>Awaiting result</option>':'')+'<option value="0"'+(!row.pend&&!row.passed?" selected":"")+'>Failed save</option><option value="1"'+(!row.pend&&row.passed?" selected":"")+'>Saved'+(ui.tg.half?" (half damage)":" (no damage)")+'</option></select>'}
+ h+=tgRiderHtml(row,at,i);
+ if(row.parts&&row.parts.length)h+='<div>Damage: <b>'+d.tot+'</b> <span class="mute">'+(d.bits.length?d.bits.join(" + "):"")+'</span></div>';
  h+='<div class="mute">'+(d.tot>0?'Taken off: ':'No damage. ')+esc(c.name)+' now '+esc(c.hp||"?")+'/'+esc(c.max||"?")+' HP</div>';
  return h+'</div>'}
 function tgDraw(){var T=ui.tg,el=document.getElementById("tgpop");if(!el){el=document.createElement("div");el.id="tgpop";document.body.appendChild(el);el.addEventListener("click",tgClick);el.addEventListener("change",tgChange)}
@@ -1107,7 +1112,8 @@ function tgDraw(){var T=ui.tg,el=document.getElementById("tgpop");if(!el){el=doc
  if(!pcs.length)h+='<div class="mute">There are no party members or NPCs in this encounter. Close this and use Add party first, or make a quick roll without a target.</div>';
  else{h+='<div class="mute">'+(aoe?"Tick everyone caught in the area. The damage is rolled once for all of them.":"Choose the target.")+' Damage is taken off automatically.</div><div class="tgsel">'+pcs.map(function(c){var m=tgMemb(c),ac=tgAc(c),isn=c.kind==="mon";return'<label class="chk tgp"><input type="'+(aoe?"checkbox":"radio")+'"'+(aoe?' class="yn"':' name="tgsel"')+' data-tg="sel" data-id="'+c.id+'"'+(T.sel[c.id]?" checked":"")+'><span><b>'+esc(c.name)+'</b>'+(isn?' <span class="pill">NPC</span>':'')+' <span class="mute">'+(at.kind==="atk"?'AC '+(isNaN(ac)?'?':ac):'HP '+esc(c.hp||"?"))+'</span></span></label>'+(m&&tgMaOk(m)&&at.kind==="atk"?(m.ma?'<span class="mute tgma">Mage Armor already in AC</span>':'<label class="chk tgma"><input type="checkbox" class="yn" data-tg="ma" data-id="'+m.id+'"'+(tgMaOn(m)?" checked":"")+'><span>Mage Armor</span></label>'):'')}).join("")+'</div>';
   if(at.kind==="atk")h+='<label class="f">Roll<select data-tg="mode"><option value="n"'+(ui.atkMode==="n"?" selected":"")+'>Normal</option><option value="a"'+(ui.atkMode==="a"?" selected":"")+'>Advantage</option><option value="d"'+(ui.atkMode==="d"?" selected":"")+'>Disadvantage</option></select></label>';
-  else h+='<label class="chk"><input type="checkbox" class="yn" data-tg="half"'+(T.half?" checked":"")+'><span>Half damage on a successful save</span></label>';
+  else if(!at.parts||at.parts.length)h+='<label class="chk"><input type="checkbox" class="yn" data-tg="half"'+(T.half?" checked":"")+'><span>Half damage on a successful save</span></label>';
+  h+=cndHint(mc,at);
   h+='<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="pri" data-tg="roll">'+(T.res?"Roll again":"Roll")+'</button><button data-tg="quick">Quick roll, no target</button></div>';
   if(T.res)h+=T.res.rows.length?T.res.rows.map(function(r,i){return tgRowHtml(r,at,i)}).join(""):'<div class="mute">Nobody is selected.</div>'}
  h+='<button data-tg="close">Close</button></div>';el.innerHTML=h;el.style.display="flex"}
@@ -1116,11 +1122,15 @@ function tgChange(e){var el=e.target,d=el.dataset,T=ui.tg;if(!d||!d.tg||!T)retur
  else if(g==="ma"){tgUndoAll();ui.tgMa=ui.tgMa||{};ui.tgMa[d.id]=!!el.checked;T.res=null;tgDraw()}
  else if(g==="mode"){ui.atkMode=el.value;saveUi()}
  else if(g==="half"){T.half=!!el.checked;var k=tgCur();if(T.res&&k){T.res.rows.forEach(function(r){tgApplyRow(r,k.at)});save();render()}tgDraw()}
- else if(g==="pass"&&T.res){var r=T.res.rows[+d.i],k2=tgCur();if(r&&k2){r.passed=el.value==="1";tgApplyRow(r,k2.at);save();render();tgDraw()}}}
+ else if(g==="rpass"&&T.res){var r3=T.res.rows[+d.i],k3=tgCur();if(r3&&k3&&el.value!=="x"){r3.rsv=r3.rsv||{nat:0,bon:0,tot:0,typed:true};r3.rsv.passed=el.value==="1";r3.rpend=false;tgApplyRow(r3,k3.at);save();render();tgDraw()}}
+ else if(g==="pass"&&T.res){var r=T.res.rows[+d.i],k2=tgCur();if(r&&k2&&el.value!=="x"){r.pend=false;r.passed=el.value==="1";tgApplyRow(r,k2.at);save();render();tgDraw()}}}
 function tgClose(){var el=document.getElementById("tgpop");if(el)el.style.display="none";var done=tgTurnDone();ui.tg=null;if(done)advanceTurn();else render()}
 function tgClick(e){var T=ui.tg,el=document.getElementById("tgpop"),b=e.target.closest("[data-tg]");if(e.target===el){tgClose();return}if(!b||!T||b.tagName==="INPUT"||b.tagName==="SELECT")return;var g=b.dataset.tg,k=tgCur();
  if(g==="close"){tgClose()}
  else if(g==="roll"){tgRoll();render();tgDraw()}
+ else if((g==="pv"||g==="rpv")&&k&&T.res){var ii=+b.dataset.i,rw=T.res.rows[ii],inp=document.getElementById((g==="pv"?"tgin":"tgrin")+ii),vv=parseInt(inp&&inp.value,10);if(!rw)return;if(isNaN(vv)){if(inp)inp.focus();return}
+  if(g==="pv"){rw.pend=false;rw.typed=true;rw.tot=vv;rw.passed=vv>=k.at.dc}else{rw.rpend=false;rw.rsv={nat:vv,bon:0,tot:vv,typed:true,passed:T.rd&&vv>=T.rd.dc}}
+  tgApplyRow(rw,k.at);save();render();tgDraw()}
  else if(g==="quick"&&k){var hh=atkRoll(k.mc,T.i);tgCount(1);el.style.display="none";atkPop(k.mc,hh);if(tgTurnDone()){ui.tg=null;advanceTurn()}else render()}}
 document.addEventListener("keydown",function(e){if(e.key==="Escape"){var el=document.getElementById("tgpop");if(el&&el.style.display!=="none")tgClose()}});
 
@@ -1224,7 +1234,7 @@ function encCard(c,cur){
  '<div class="cbody"><div class="cl1"><input class="cname" '+k+' data-f="name" value="'+esc(c.name)+'" aria-label="Name">'+tag+(cur?'<span class="pill now">Turn</span>':'')+(down?'<span class="pill dn">'+(c.kind==="pc"?"Down":"Defeated")+'</span>':'')+'<span class="ntw"><button class="'+(cur?"pri":"")+'" data-a="nextfrom" data-id="'+c.id+'">Next turn &rarr;</button></span>'+delBtn("combatants",c.id,c.name)+'</div>'+
  '<div class="bar"><div style="width:'+pct+'%;background:'+col+'"></div></div>'+
  '<div class="cl2"><label class="hpf"><span class="tl">HP</span><input '+k+' data-f="hp" value="'+esc(c.hp)+'" inputmode="numeric" aria-label="Current HP"></label><span class="mute">/</span><label class="hpf"><span class="tl">Max</span><input '+k+' data-f="max" value="'+esc(c.max)+'" inputmode="numeric" aria-label="Max HP"></label><label class="hpf"><span class="tl">AC</span><input '+k+' data-f="ac" value="'+esc(c.ac)+'" inputmode="numeric" aria-label="AC"></label><button data-a="calcopen" data-id="'+c.id+'">Damage / Heal</button>'+clBtns(c)+'</div>'+
- (dsDown(c)?'<div class="sprow2">&#9760; <b>Death saves</b> <span style="font-size:1.1rem">'+dsPips(c)+'</span>'+(dsState(c)==="down"?'<button data-ds="1" data-id="'+c.id+'">Enter death save</button>':'<span class="pill">'+(dsState(c)==="dead"?"Dead":"Stable")+'</span>')+'</div>':'')+(ui.atk&&c.kind==="mon"&&en&&en.statblock?atkBtns(c,en):'')+wsBlock(c)+cbSlots(c)+(en&&en.statblock?'<details><summary>Statblock</summary><pre class="sbx">'+esc(en.statblock)+'</pre></details>':'')+'</div></div>'}
+ (dsDown(c)?'<div class="sprow2">&#9760; <b>Death saves</b> <span style="font-size:1.1rem">'+dsPips(c)+'</span>'+(dsState(c)==="down"?'<button data-ds="1" data-id="'+c.id+'">Enter death save</button>':'<span class="pill">'+(dsState(c)==="dead"?"Dead":"Stable")+'</span>')+'</div>':'')+(ui.atk&&c.kind==="mon"&&en&&en.statblock?atkBtns(c,en):'')+cndRow(c)+wsBlock(c)+cbSlots(c)+(en&&en.statblock?'<details><summary>Statblock</summary><pre class="sbx">'+esc(en.statblock)+'</pre></details>':'')+'</div></div>'}
 var XPT=[[25,50,75,100],[50,100,150,200],[75,150,225,400],[125,250,375,500],[250,500,750,1100],[300,600,900,1400],[350,750,1100,1700],[450,900,1400,2100],[550,1100,1600,2400],[600,1200,1900,2800],[800,1600,2400,3600],[1000,2000,3000,4500],[1100,2200,3400,5100],[1250,2500,3800,5700],[1400,2800,4300,6400],[1600,3200,4800,7200],[2000,3900,5900,8800],[2100,4200,6300,9500],[2400,4900,7300,10900],[2800,5700,8500,12700]];
 var CRXP={"0":10,"0.125":25,"0.25":50,"0.5":100,"1":200,"2":450,"3":700,"4":1100,"5":1800,"6":2300,"7":2900,"8":3900,"9":5000,"10":5900,"11":7200,"12":8400,"13":10000,"14":11500,"15":13000,"16":15000,"17":18000,"18":20000,"19":22000,"20":25000,"21":33000,"22":41000,"23":50000,"24":62000,"25":75000,"26":90000,"27":105000,"28":120000,"29":135000,"30":155000};
 function encLv(){if(ui.encLv)return ui.encLv;var ls=S.party.map(function(m){return Math.max(1,Math.min(20,parseInt(m.level,10)||1))});return ls.length?Math.max(1,Math.min(20,Math.round(ls.reduce(function(a,b){return a+b},0)/ls.length))):1}
@@ -1689,10 +1699,11 @@ function clCastGo(){var Cs=ui.cs,c=Cs&&clCmb(Cs.cid),m=c&&tgMemb(c),sp=Cs&&Cs.sp
  else if(Cs.mode==="dmg"){var svn=[],cm0=pcCast(m)[0];sels.forEach(function(id){var tg=clCmb(id),fx=dt?tgFactor(tg,dt,true):{f:1,w:""},d=Math.floor(amt*fx.f),sn="";
    if(sp.dc&&tg.kind==="mon"&&cm0){var ab=sp.dc[0],mod=spSvMod(tg,ab),r=d20(),t2=r+mod,ok=t2>=cm0.dc;sn=SPABIL[ab]+" save "+t2+" vs DC "+cm0.dc+": "+(ok?"saved":"failed");
     if(ok){if(sp.dc[1]==="half"){d=Math.floor(d/2);sn+=", half damage"}else if(sp.dc[1]==="none"){d=0;sn+=", no damage"}else sn+=" (check the spell text)"}
-    svn.push("<b>"+esc(tg.name)+"</b>: "+esc(sn))}
+    if(!ok)cndSpellFail(tg,sp,cm0.dc,c.name);svn.push("<b>"+esc(tg.name)+"</b>: "+esc(sn))}
    ui.cl={src:c.id,what:what+(fx.w?" ["+fx.w+"]":"")+(sn?" ["+sn+"]":"")};dmgTo(tg,d);ui.cl=null});
   if(svn.length)clTurnToast(svn.join("<br>"))}
  else{sels.forEach(function(id){clHeal(clCmb(id),amt,{src:c.id,what:what})})}
+ if(Cs.mode==="util")cndPcCast(c,m,sp,sels);
  clHide("castov");save();render();if(clActKind(sp)==="action")clActDone(c,"act")}
 function clShGo(v){var Cs=ui.cs,c=Cs&&clCmb(Cs.cid),m=c&&tgMemb(c);if(!m||!c.wsOn)return;var o=clSlotOpts(m,1).filter(function(x){return x.v===v})[0];if(!o)return;
  var rs=[],t=0,i;for(i=0;i<o.l;i++){var r=1+Math.floor(Math.random()*8);rs.push(r);t+=r}
@@ -2207,7 +2218,7 @@ function cnClick(e){var b=e.target.closest("[data-cn]");if(!b)return;var q=ui.cn
  if(g==="offgo"){var oc2=clCmb(it.cid);cnShift();if(oc2)clOffGo(oc2.id,+b.dataset.i);return}
  if(g==="offno"){var oc3=clCmb(it.cid);cnShift();if(oc3){var pq=ui.pa;if(pq)pq.offDone=1;clTurnToast("<b>"+esc(oc3.name)+"</b>'s action is used, so the turn has ended.");advanceTurn()}return}
  if(g==="ecgo"){var cc=clCmb(it.cid),sp2=it.act.spk?spFind(it.act.spk):null;var who=Object.keys(it.sel||{}).filter(function(k){return it.sel[k]&&clCmb(k)});cnShift();
-  if(cc&&sp2){fxStart(cc,sp2,it.act.lvl,who.length?who:[cc.id]);if(clActKind(sp2)==="action")fxUseAction(cc,"action")}return}}
+  if(cc&&sp2){fxStart(cc,sp2,it.act.lvl,who.length?who:[cc.id]);if(clActKind(sp2)==="action")fxUseAction(cc,"action");cndEcast(cc,it.act,who)}return}}
 document.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest("[data-fx]");if(!b)return;var g=b.dataset.fx,id=b.dataset.id;
  if(g==="go")fxGo(id,+b.dataset.i);
  else if(g==="end"){fxRemove(id);render()}
@@ -2234,6 +2245,86 @@ var _tgRollFX=tgRoll;tgRoll=function(){var k=tgCur(),T=ui.tg,had=T&&T.fxd;_tgRol
  if(k&&T&&k.at.sp&&!had&&T.res){T.fxd=1;var sp=spFind(k.at.spk);if(sp)fxStart(k.mc,sp,k.at.lvl,Object.keys(T.sel||{}).filter(function(id){return T.sel[id]}))}};
 /*FX-END*/
 
+/*CND-START*/
+var CNDS=["Blinded","Charmed","Deafened","Exhaustion","Frightened","Grappled","Incapacitated","Invisible","Paralyzed","Petrified","Poisoned","Prone","Restrained","Stunned","Unconscious"];
+function cndFind(t){var out=[];String(t).replace(/\b(blinded|charmed|deafened|frightened|grappled|incapacitated|paralyzed|petrified|poisoned|prone|restrained|stunned|unconscious)\b/gi,function(m){var n=m.charAt(0).toUpperCase()+m.slice(1).toLowerCase();if(out.indexOf(n)<0)out.push(n);return m});return out}
+function cndFindFail(tail){var s=String(tail).split(/\.\s/)[0],o=cndFind(s);if(!o.length){var f=String(tail).match(/fail\w*[^.]*\./i);if(f)o=cndFind(f[0])}return o}
+function cndText(mc,at){
+ if(at.sp&&at.spk){var sp=spFind(at.spk);return sp?String(sp.x||""):""}
+ var en=wsEnOf(mc),ls=String(en&&en.statblock||"").split(/\n/),nm=String(at.name).replace(/\s*\(.*$/,"").toLowerCase(),i,j;
+ for(i=0;i<ls.length;i++){var h=ls[i].match(/^\s*([A-Z][^.:]{1,45}?)\.\s/);if(h&&h[1].trim().toLowerCase()===nm){var t=ls[i];for(j=i+1;j<ls.length;j++){var nx=ls[j];if(!nx.trim()||/^[A-Z][A-Z ]+$/.test(nx.trim())||/^\s*[A-Z][^.:]{1,45}\.\s/.test(nx))break;t+=" "+nx.trim()}return t}}
+ return""}
+function cndRiderTxt(t,dc0,ab0){t=String(t||"");var m=t.match(/DC\s*(\d+)\s+(Strength|Dexterity|Constitution|Intelligence|Wisdom|Charisma|STR|DEX|CON|INT|WIS|CHA)\s+(?:saving throw|save)\b/i),dc=dc0||(m?+m[1]:0),ab=ab0||(m?m[2].slice(0,3).toLowerCase():"");
+ var sm=m?{i:m.index+m[0].length}:null;if(!sm){var q=t.match(/saving throw/i);if(q)sm={i:q.index+q[0].length}}if(!sm||!dc||!ab)return null;var tail=t.slice(sm.i),conds=cndFindFail(tail);if(!conds.length)return null;
+ var end=/\b(?:saving throw|save)[^.]*\bend of each of (?:its|their|the target's|each target's) turns|\bend of each of (?:its|their|the target's|each target's) turns[^.]*\b(?:saving throw|save)\b|repeats? the (?:saving throw|save)|can make another [a-z]+ (?:saving throw|save)/i.test(tail);
+ var d=tail.match(/\bfor (\d+) (minute|hour|round)s?\b/i),dur=d?d[1]+" "+d[2]+(d[1]==="1"?"":"s"):/until the end of (?:the target's|its) next turn/i.test(tail)?"until end of next turn":/for the duration/i.test(tail)?"duration":"";
+ return{dc:dc,ab:ab,conds:conds,end:end,dur:dur}}
+function cndRider(mc,at){var sp=at.spk?spFind(at.spk):null;return cndRiderTxt(cndText(mc,at),at.kind==="sv"?at.dc:0,at.ab||(sp&&sp.dc?sp.dc[0]:""))}
+function cndImmune(c,n){var m=tgMemb(c),low=n.toLowerCase();
+ if(m){try{return pcDefs(m).some(function(d){return d.k==="ci"&&!d.note&&!d.cond&&String(d.t).toLowerCase().indexOf(low)>-1})}catch(e){return false}}
+ var en=tgEn(c),sb=en?String(en.statblock||""):"",x=sb.match(/Condition Immunities\s*:?\s*([^\n]*)/i);return !!x&&x[1].toLowerCase().indexOf(low)>-1}
+function cndAdd(c,o){c.conds=c.conds||[];var ex=c.conds.filter(function(x){return x.n===o.n&&x.src===(o.src||"")})[0];if(ex)return ex;
+ var r={id:uid(),n:o.n,src:o.src||"",dc:o.dc||0,ab:o.ab||"",end:!!o.end&&!!o.dc&&!!o.ab,dur:o.dur||""};c.conds.push(r);return r}
+function cndRemove(c,id){if(c&&c.conds)c.conds=c.conds.filter(function(x){return x.id!==id})}
+function cndHint(mc,at){var rd=cndRider(mc,at);if(!rd)return"";return'<div class="mute" style="margin-top:6px">'+(at.kind==="atk"?"On a hit the target also makes a":"On a failed")+' DC '+rd.dc+' '+rd.ab.toUpperCase()+' save'+(at.kind==="atk"?" or is":":")+' <b>'+esc(rd.conds.join(", "))+'</b>'+(rd.dur?' ('+esc(rd.dur)+')':'')+(rd.end?'; the save repeats at the end of its turns':'')+'. The condition is added automatically.</div>'}
+function tgRiderRoll(row){var rd=ui.tg.rd,c=row.c;if(tgMemb(c)){row.rpend=true;return}var n=d20(),b=tgSvBon(c,rd.ab);row.rsv={nat:n,bon:b,tot:n+b,passed:n+b>=rd.dc}}
+function tgCondSync(row,at){(row.cids||[]).forEach(function(id){cndRemove(row.c,id)});row.cids=[];row.cnote="";var T=ui.tg,rd=T&&T.rd;if(!rd)return;
+ var fail=at.kind==="sv"?(!row.pend&&!row.passed):!!(row.hit&&row.rsv&&!row.rpend&&!row.rsv.passed);if(!fail)return;
+ var k=tgCur(),src=(k?k.mc.name+": ":"")+at.name;
+ rd.conds.forEach(function(n){if(cndImmune(row.c,n)){row.cnote=(row.cnote?row.cnote+"; ":"")+row.c.name+" is immune to "+n;return}var o=cndAdd(row.c,{n:n,src:src,dc:rd.dc,ab:rd.ab,end:rd.end,dur:rd.dur});if(o)row.cids.push(o.id)})}
+function tgRiderHtml(row,at,i){var T=ui.tg,rd=T&&T.rd,h="";if(!rd)return"";
+ if(at.kind==="atk"&&row.hit){var ab=rd.ab.toUpperCase();
+  if(row.rpend)h+='<div class="sprow2"><span class="mute">'+ab+' save vs DC '+rd.dc+'. Ask the player for the total:</span><input id="tgrin'+i+'" inputmode="numeric" style="width:70px" placeholder="total" aria-label="Save total"><button data-tg="rpv" data-i="'+i+'">Apply</button></div>';
+  else if(row.rsv)h+='<div class="mute">'+ab+' save '+(row.rsv.typed?'rolled by player: '+row.rsv.tot:'d20 '+row.rsv.nat+(row.rsv.bon>=0?" + ":" − ")+Math.abs(row.rsv.bon)+' = '+row.rsv.tot)+' vs DC '+rd.dc+'</div>';
+  h+='<select data-tg="rpass" data-i="'+i+'" aria-label="Save result">'+(row.rpend?'<option value="x" selected>Awaiting result</option>':'')+'<option value="0"'+(row.rsv&&!row.rsv.passed?" selected":"")+'>Failed save</option><option value="1"'+(row.rsv&&row.rsv.passed?" selected":"")+'>Saved</option></select>'}
+ var L=(row.cids||[]).map(function(id){var x=(row.c.conds||[]).filter(function(y){return y.id===id})[0];return x?x.n:""}).filter(Boolean);
+ if(L.length)h+='<div><b class="bad">Now '+esc(L.join(", "))+'</b>'+(rd.end?' <span class="mute">(save to end it appears on their card)</span>':'')+'</div>';
+ if(row.cnote)h+='<div class="mute">'+esc(row.cnote)+'</div>';
+ return h}
+function cndRow(c){var L=c.conds||[];
+ return'<div class="cdrow">'+L.map(function(x){return'<span class="cdchip"><b>'+esc(x.n)+'</b>'+(x.src?'<span class="mute"> '+esc(x.src)+'</span>':'')+(x.dur?'<span class="mute"> &middot; '+esc(x.dur)+'</span>':'')+(x.end&&x.dc?'<button data-cd="sv" data-id="'+c.id+'" data-cid="'+x.id+'">Save to end (DC '+x.dc+' '+esc(x.ab.toUpperCase())+')</button>':'')+'<button class="cdx" data-cd="rm" data-id="'+c.id+'" data-cid="'+x.id+'" aria-label="Remove '+esc(x.n)+'">&times;</button></span>'}).join("")+'<button class="cdadd" data-cd="add" data-id="'+c.id+'">+ Condition</button></div>'}
+function cdRowsHtml(it){return(it.rows||[]).map(function(r,i){var c=clCmb(r.id);if(!c)return"";var pc=!!tgMemb(c),ab=r.ab.toUpperCase();
+ var head='<b>'+esc(c.name)+'</b>'+(pc?'':' <span class="pill">'+(c.kind==="mon"&&isNpcEn(tgEn(c))?"NPC":"Enemy")+'</span>')+' <span class="mute">'+(r.condName?esc(r.condName)+': ':'')+ab+' save, DC '+r.dc+'</span>';
+ if(r.done)return'<div class="tgrow">'+head+'<div class="mute">'+esc(r.txt)+'</div><div><b class="'+(r.ok?"ok":"bad")+'">'+esc(r.out)+'</b></div></div>';
+ var bon=pc?0:tgSvBon(c,r.ab);
+ return'<div class="tgrow">'+head+'<div class="sprow2">'+(pc?'<label class="hpf"><span class="tl">Total</span><input id="cdin'+i+'" inputmode="numeric" style="width:80px" placeholder="d20 + mods"></label><button class="pri" data-cd="ra" data-i="'+i+'">Apply</button>':'<button class="pri" data-cd="rr" data-i="'+i+'">Roll save ('+(bon>=0?"+":"−")+Math.abs(bon)+')</button>')+'<button data-cd="rp" data-i="'+i+'">Passed</button><button data-cd="rf" data-i="'+i+'">Failed</button></div></div>'}).join("")}
+function cdResolve(it,i,ok,txt){var r=it.rows[i],c=r&&clCmb(r.id);if(!r||r.done||!c)return;r.done=true;r.ok=ok;r.txt=txt;
+ if(it.t==="csend"){if(ok){cndRemove(c,r.condId);r.out="saved, "+r.condName+" ends"}else r.out="failed, still "+r.condName}
+ else{if(ok)r.out="saved, no effect";else{var ns=[];r.conds.forEach(function(n){if(cndImmune(c,n)){ns.push(n+" (immune)");return}cndAdd(c,{n:n,src:r.src,dc:r.dc,ab:r.ab,end:r.end,dur:r.dur});ns.push(n)});r.out="failed: "+ns.join(", ")}}
+ save();render();cnDraw()}
+function cdAppRows(ids,rd,src){return ids.map(function(id){return{id:id,dc:rd.dc,ab:rd.ab,conds:rd.conds,end:rd.end,dur:rd.dur,src:src}})}
+function cndEcast(cc,act,who){var sp=act.spk?spFind(act.spk):null;if(!sp||!spHostile(sp))return;var rd=cndRiderTxt(sp.x,act.dc,act.ab||(sp.dc&&sp.dc[0]));var tg=(who||[]).filter(function(id){return id!==cc.id&&clCmb(id)});if(!rd||!tg.length)return;
+ cnPush({t:"csapp",title:cc.name+" casts "+act.name,rows:cdAppRows(tg,rd,cc.name+": "+act.name)})}
+function cndPcCast(c,m,sp,sels){if(!spHostile(sp))return;var cm=pcCast(m)[0],rd=cndRiderTxt(sp.x,cm&&cm.dc,sp.dc&&sp.dc[0]);var tg=(sels||[]).filter(function(id){return id!==c.id&&clCmb(id)});if(!rd||!tg.length)return;
+ cnPush({t:"csapp",title:c.name+" casts "+sp.n,rows:cdAppRows(tg,rd,c.name+": "+sp.n)})}
+function cndSpellFail(tg,sp,dc,srcName){var rd=cndRiderTxt(sp.x,dc,sp.dc&&sp.dc[0]);if(!rd)return;rd.conds.forEach(function(n){if(!cndImmune(tg,n))cndAdd(tg,{n:n,src:srcName+": "+sp.n,dc:rd.dc,ab:rd.ab,end:rd.end,dur:rd.dur})})}
+var _cnDrawCd=cnDraw;
+cnDraw=function(){var q=ui.cn||[],it=q[0];if(!it||(it.t!=="cadd"&&it.t!=="csend"&&it.t!=="csapp"))return _cnDrawCd();
+ var el=cnOv(),h='',c=it.cid?clCmb(it.cid):null;
+ if(it.t==="cadd"){if(!c){q.shift();cnDraw();return}
+  h+='<div class="atkh"><b>Add a condition to '+esc(c.name)+'</b></div><div class="cllist"><label class="f">Condition<select id="cdn">'+CNDS.map(function(n){return'<option>'+n+'</option>'}).join("")+'</select></label>'+
+   '<label class="f">Source or note (optional)<input id="cdnote" placeholder="e.g. Hold Person"></label>'+
+   '<div class="sprow2"><label class="f">Repeat save to end it<select id="cdab"><option value="">None</option>'+["str","dex","con","int","wis","cha"].map(function(a){return'<option value="'+a+'">'+a.toUpperCase()+'</option>'}).join("")+'</select></label><label class="hpf"><span class="tl">DC</span><input id="cddc" inputmode="numeric" style="width:70px"></label></div></div>'+
+   '<div style="display:flex;gap:8px"><button class="pri" data-cd="addgo" style="flex:1">Add</button><button data-cd="close">Cancel</button></div>'}
+ else{h+='<div class="atkh"><b>'+esc(it.t==="csend"?"Save to end a condition":(it.title||"Saving throw"))+'</b></div><div class="cnbody">'+(it.t==="csend"?(c?esc(c.name)+' can repeat the saving throw.':''):'Roll for enemies and NPCs, or enter the total the player rolled. A failed save adds the condition.')+'</div><div class="cllist">'+cdRowsHtml(it)+'</div><button class="pri" data-cd="close">Done</button>'}
+ el.innerHTML='<div class="clbox cnbox">'+h+'</div>';el.style.display="flex"};
+document.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest("[data-cd]");if(!b||b.tagName==="INPUT"||b.tagName==="SELECT")return;var g=b.dataset.cd,id=b.dataset.id,c=id?clCmb(id):null,it=(ui.cn||[])[0];
+ if(g==="add"&&c){cnPush({t:"cadd",cid:c.id})}
+ else if(g==="rm"&&c){cndRemove(c,b.dataset.cid);save();render()}
+ else if(g==="sv"&&c){var x=(c.conds||[]).filter(function(y){return y.id===b.dataset.cid})[0];if(x)cnPush({t:"csend",cid:c.id,rows:[{id:c.id,condId:x.id,condName:x.n,dc:x.dc,ab:x.ab}]})}
+ else if(g==="close"){cnShift();render()}
+ else if(g==="addgo"&&it&&it.t==="cadd"){var cc=clCmb(it.cid),sel=document.getElementById("cdn"),nt=document.getElementById("cdnote"),ab=document.getElementById("cdab"),dc=document.getElementById("cddc"),dv=parseInt(dc&&dc.value,10)||0;
+  if(cc&&sel){cndAdd(cc,{n:sel.value,src:nt?nt.value.trim():"",dc:dv,ab:ab?ab.value:"",end:!!(dv&&ab&&ab.value)});save()}cnShift();render()}
+ else if(it&&(it.t==="csend"||it.t==="csapp")&&b.dataset.i!==undefined){var i=+b.dataset.i,r=it.rows[i],t=r&&clCmb(r.id);if(!r||!t)return;
+  if(g==="rr"){var bon=tgSvBon(t,r.ab),n=d20(),tot=n+bon;cdResolve(it,i,tot>=r.dc,"d20 "+n+(bon>=0?" + ":" − ")+Math.abs(bon)+" = "+tot+" vs DC "+r.dc)}
+  else if(g==="ra"){var inp=document.getElementById("cdin"+i),v=parseInt(inp&&inp.value,10);if(isNaN(v)){if(inp)inp.focus();return}cdResolve(it,i,v>=r.dc,"Player rolled "+v+" vs DC "+r.dc)}
+  else if(g==="rp")cdResolve(it,i,true,"Marked as passed");
+  else if(g==="rf")cdResolve(it,i,false,"Marked as failed")}});
+var _advCd=advanceTurn;
+advanceTurn=function(){var pid=S.turnId;_advCd.apply(this,arguments);var pc=pid&&clCmb(pid);
+ if(pc&&parseInt(pc.hp,10)!==0){var ce=(pc.conds||[]).filter(function(x){return x.end&&x.dc&&x.ab});
+  if(ce.length)cnPush({t:"csend",cid:pc.id,rows:ce.map(function(x){return{id:pc.id,condId:x.id,condName:x.n,dc:x.dc,ab:x.ab}})})}};
+/*CND-END*/
 function restCard(){return'<div class="card"><h3>Rests</h3><div class="mute">Applies to everyone in the party tab: hit points, hit dice and spell slots.</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button data-a="restshort">Short rest</button><button class="pri" data-a="restlong">Long rest</button></div></div>'}
 function restOv(){var el=document.getElementById("restov");if(!el){el=document.createElement("div");el.id="restov";document.body.appendChild(el);
  el.addEventListener("click",function(e){var b=e.target.closest("[data-rs]");if(e.target===el){el.style.display="none";return}if(!b)return;var a=b.dataset.rs;if(a==="close")el.style.display="none";else if(a==="longgo")restLong();else if(a==="shortgo")restShort();else if(a==="goenc")restGoEnc(b)})}
