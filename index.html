@@ -477,7 +477,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=119;var APPLABEL="1.291";
+var APPV=120;var APPLABEL="1.300";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -532,7 +532,7 @@ function pcTab(m){var t=(ui.pt&&ui.pt[m.id])||"stats";if(t==="spells"&&!pcSpC(m)
 function pcTabBar(m){var t=pcTab(m),l=[["stats","Stats"]];if(pcSpC(m))l.push(["spells","Spells"]);l.push(["equip","Equipment"],["notes","Notes"]);return'<div class="ptabs">'+l.map(function(x){return'<button class="'+(t===x[0]?"on":"")+'" data-pt="'+x[0]+'" data-id="'+m.id+'">'+x[1]+'</button>'}).join("")+'</div>'}
 document.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest("[data-pt]");if(!b)return;ui.pt=ui.pt||{};ui.pt[b.dataset.id]=b.dataset.pt;render()});
 function party(){
- return'<div class="row"><h2>Party</h2><div style="display:flex;gap:8px;flex-wrap:wrap"><label class="btn" tabindex="0">Take photo of sheet<input type="file" id="scpk" accept="image/*" capture="environment" hidden></label><label class="btn" tabindex="0">Scan character sheet<input type="file" id="scpc" accept="image/*" hidden></label><label class="btn" tabindex="0">Import PDF<input type="file" id="scpp" accept="application/pdf,.pdf" hidden></label><button class="pri" data-a="add" data-k="party">Add member</button></div></div>'+importUI()+(S.party.length?'<div class="grid pgrid">'+S.party.map(function(m){
+ return'<div class="row"><h2>Party</h2><div style="display:flex;gap:8px;flex-wrap:wrap"><label class="btn" tabindex="0">Take photo of sheet<input type="file" id="scpk" accept="image/*" capture="environment" hidden></label><label class="btn" tabindex="0">Scan character sheet<input type="file" id="scpc" accept="image/*" hidden></label><label class="btn" tabindex="0">Import PDF<input type="file" id="scpp" accept="application/pdf,.pdf" multiple hidden></label><button class="pri" data-a="add" data-k="party">Add member</button></div></div>'+importUI()+(S.party.length?'<div class="grid pgrid">'+S.party.map(function(m){
   var k="party",id=m.id;
   return'<div class="card pc"><div class="phead"><input class="pname" data-k="party" data-id="'+id+'" data-f="name" value="'+esc(m.name)+'" placeholder="Character name" aria-label="Character name"><div class="psub"><input data-k="party" data-id="'+id+'" data-f="race" value="'+esc(m.race)+'" placeholder="Race" aria-label="Race"><input data-k="party" data-id="'+id+'" data-f="className" value="'+esc(m.className)+'" placeholder="Class / subclass" aria-label="Class and subclass"><input class="lvl" data-k="party" data-id="'+id+'" data-f="level" value="'+esc(m.level)+'" placeholder="Lvl" aria-label="Level"></div><input class="pbg" data-k="party" data-id="'+id+'" data-f="background" value="'+esc(m.background)+'" placeholder="Background" aria-label="Background"></div>'+
   '<div class="tiles" style="grid-template-columns:repeat('+(5+pcCast(m).length)+',1fr)">'+tile(k,id,"ac","AC",m.ac)+tile(k,id,"maxHp","Max HP",m.maxHp)+tile(k,id,"curHp","Current HP",(m.maxHp||m.curHp)?String(pcCur(m)):"")+tile(k,id,"speed","Speed",m.speed)+tile(k,id,"init","Initiative",m.init)+pcCast(m).map(function(c,i,all){return'<div class="tile"><span class="tl">Spell DC'+(all.length>1?' ('+c.ab+')':'')+'</span><b class="pv sdc">'+c.dc+'</b><span class="mute" style="font-size:11px">Atk '+sgn(c.at)+'</span></div>'}).join("")+'</div>'+
@@ -2899,8 +2899,8 @@ function scReviewPC(s){
  if(s.miss.length)notes.push("Not found in the photo: "+s.miss.join(", ")+". Fill these in below.");
  s.warn.forEach(function(x){notes.push(x)});
  var upd=!!s.target;
- return'<div class="sch"><h3>Check the scan</h3><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="pri" data-sa="addpc">'+(upd?"Update character":"Add to party")+'</button><button data-sa="again">Scan another</button><button data-sa="close">Discard</button></div></div>'+
- '<div class="scrv"><div class="scleft">'+scStage(s,"done")+'<div class="mute" style="text-align:center;margin-top:6px">Average confidence '+s.conf+'%. Amber boxes are words the reader was unsure of.</div></div><div class="scf">'+
+ return'<div class="sch"><h3>Check the scan'+(s.fn>1?' (file '+s.fi+' of '+s.fn+')':'')+'</h3><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="pri" data-sa="addpc">'+(upd?"Update character":"Add to party")+'</button><button data-sa="again">Scan another</button><button data-sa="close">Discard</button></div></div>'+
+ '<div class="scrv"><div class="scleft">'+(s.extra||s.extraBusy?'<div class="mute" id="scextra" style="margin-bottom:6px">'+esc(s.extra||"")+'</div>':'')+scStage(s,"done")+'<div class="mute" style="text-align:center;margin-top:6px">Average confidence '+s.conf+'%. Amber boxes are words the reader was unsure of.</div></div><div class="scf">'+
  (notes.length?'<div class="card scwarn"><b>Check these</b><ul>'+notes.map(function(x){return'<li>'+esc(x)+'</li>'}).join("")+'</ul></div>':'<div class="card scwarn ok">Everything was found. Still worth a quick check of the numbers.</div>')+
  '<label class="f">Save as<select data-sf="__target"><option value="">Add as a new adventurer</option>'+abcBy(S.party,function(m){return m.name}).map(function(m){return'<option value="'+m.id+'"'+(m.id===s.target?" selected":"")+'>Update '+esc(m.name||"unnamed")+'</option>'}).join("")+'</select></label>'+
  (upd?'<div class="mute">Updating changes only the boxes below that have something in them. Blank boxes leave the existing value alone, and existing notes are kept.</div>':'')+
@@ -3083,13 +3083,21 @@ function scCloudDone(id,kind,p,d,key){
   scProg(85,"Reading the numbers...");
   return scAbilities(wk,p.gray,p.W,p.H,d.words||[],pr).then(fin,fin)}
  fin()}
+function scExtraPages(id,file,n){var k=2,acc=[],tries=0;
+ function begin(){if(id!==SC.run||!ui.scan)return;if(!ui.scan.form&&tries++<200)return setTimeout(begin,600);ui.scan.extraBusy=true;step().then(done,done)}
+ function step(){if(id!==SC.run||!ui.scan)return Promise.resolve();var el=document.getElementById("scextra");if(el)el.textContent="Reading page "+k+" of "+n+"...";ui.scan.extra="Reading page "+k+" of "+n+"...";
+  return scPrep(file,k).then(function(p){var t=p.pdfText||"";if(t.replace(/[^A-Za-z0-9]/g,"").length>=80)return t;return eqOcr(p)}).then(function(t){acc.push("--- page "+k+" ---\n"+t);k++;if(k<=n&&k<=15)return step()})}
+ function done(){if(id!==SC.run||!ui.scan)return;ui.scan.extraBusy=false;if(ui.scan.form&&acc.length)ui.scan.form.sheet=(ui.scan.form.sheet||"")+"\n\n"+acc.join("\n\n");ui.scan.extra="Read all "+(k-1)+" pages of the PDF into the sheet text.";scDraw()}
+ setTimeout(begin,900)}
+function scNext(){if(SC.queue&&SC.queue.length){var f=SC.queue.shift();SC.fi=(SC.fi||1)+1;setTimeout(function(){scRun(f,"pc")},520)}else{SC.fi=0;SC.fn=0}}
 function scRun(file,kind,page){kind=kind||"enemy";SC.file=file;
  scStop();var id=SC.run;
  ui.scan={kind:kind,phase:"read",pct:2,img:"",W:3,H:4,words:[],form:null,raw:"",miss:[],warn:[],conf:0,err:"",target:"",pages:1,page:1};
  scDraw();
  scPrep(file,page).then(function(p){
   if(id!==SC.run)return;
-  ui.scan.pages=p.pages;ui.scan.page=p.page;
+  ui.scan.pages=p.pages;ui.scan.page=p.page;ui.scan.fi=SC.fi||1;ui.scan.fn=SC.fn||1;
+  if(kind==="pc"&&p.pages>1&&!page)scExtraPages(id,file,p.pages);
   ui.scan.img=p.shown;ui.scan.W=p.W;ui.scan.H=p.H;scDraw();
   if(p.pdfText&&scTextDone(id,kind,p))return;
   var key=scKey();
@@ -3159,7 +3167,7 @@ function scDraw(){
   if(s.miss.length)notes.push("Not found in the photo: "+s.miss.join(", ")+". Fill these in below.");
   s.warn.forEach(function(x){notes.push(x)});
   h='<div class="sch"><h3>Check the scan</h3><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="pri" data-sa="add">Add to enemies</button><button data-sa="again">Scan another</button><button data-sa="close">Discard</button></div></div>'+
-  '<div class="scrv"><div class="scleft">'+scStage(s,"done")+'<div class="mute" style="text-align:center;margin-top:6px">Average confidence '+s.conf+'%. Amber boxes are words the reader was unsure of.</div></div><div class="scf">'+
+  '<div class="scrv"><div class="scleft">'+(s.extra||s.extraBusy?'<div class="mute" id="scextra" style="margin-bottom:6px">'+esc(s.extra||"")+'</div>':'')+scStage(s,"done")+'<div class="mute" style="text-align:center;margin-top:6px">Average confidence '+s.conf+'%. Amber boxes are words the reader was unsure of.</div></div><div class="scf">'+
   (notes.length?'<div class="card scwarn"><b>Check these</b><ul>'+notes.map(function(x){return'<li>'+esc(x)+'</li>'}).join("")+'</ul></div>':'<div class="card scwarn ok">Everything was found. Still worth a quick check of the numbers.</div>')+
   '<label class="f">Name<input data-sf="name" value="'+esc(f.name)+'"></label>'+
   '<label class="f">Quick stats<input data-sf="quick" value="'+esc(f.quick)+'"></label>'+
@@ -3173,7 +3181,7 @@ function scDraw(){
  var ov=document.getElementById("scanov");if(!ov)return;
  ov.addEventListener("click",function(e){
   var b=e.target.closest("[data-sa]");if(!b)return;var a=b.dataset.sa;
-  if(a==="close")scClose();
+  if(a==="close"){scClose();scNext()}
   else if(a==="askok"||a==="askskip"||a==="askall"){var s2=ui.scan;if(!s2||!s2.ask||!s2.ask.length)return;var q=s2.ask[0],inp=document.getElementById("askv");
    if(a==="askall"){s2.ask=[];scAskDone(s2);scDraw();return}
    if(a==="askok"){var v=(inp?inp.value:"").trim(),ok=true;
@@ -3187,7 +3195,7 @@ function scDraw(){
   else if((a==="pgprev"||a==="pgnext")&&ui.scan&&SC.file){scRun(SC.file,ui.scan.kind,ui.scan.page+(a==="pgnext"?1:-1))}
   else if(a==="skip"){clearTimeout(SC.timer);if(ui.scan){ui.scan.phase="review";scDraw()}}
   else if(a==="again"){var pcm=ui.scan&&ui.scan.kind==="pc";scClose();var i=document.getElementById(pcm?"scpk":"scfk");if(i)i.click()}
-  else if(a==="addpc"&&ui.scan&&ui.scan.form){scSavePC();scClose();ui.tab="Party";saveUi();render();var mn2=document.getElementById("main");if(mn2)mn2.scrollTop=0}
+  else if(a==="addpc"&&ui.scan&&ui.scan.form){if(ui.scan.extraBusy){var ex=document.getElementById("scextra");if(ex)ex.textContent="Still reading the other pages. Give it a moment, then press the button again.";return}scSavePC();scClose();ui.tab="Party";saveUi();render();var mn2=document.getElementById("main");if(mn2)mn2.scrollTop=0;scNext()}
   else if(a==="add"&&ui.scan&&ui.scan.form){var f=ui.scan.form;
    S.enemies.unshift({id:uid(),name:f.name||"Scanned enemy",location:f.location||"Roaming / Other",quick:f.quick,statblock:f.statblock,notes:f.notes});
    save();scClose();ui.tab="Enemies";ui.q="";saveUi();render();var mn=document.getElementById("main");if(mn)mn.scrollTop=0}});
@@ -3196,7 +3204,7 @@ function scDraw(){
  ov.addEventListener("change",function(e){var el=e.target;if(!el.dataset.sf||!ui.scan||!ui.scan.form)return;if(el.dataset.sf==="__target"){ui.scan.target=el.value;scDraw();return}ui.scan.form[el.dataset.sf]=el.value});
  document.addEventListener("change",function(e){var el=e.target;
   if(el.id!=="scfc"&&el.id!=="scfp"&&el.id!=="scpc"&&el.id!=="scpp"&&el.id!=="scfk"&&el.id!=="scpk")return;
-  var f=el.files&&el.files[0],pck=el.id==="scpc"||el.id==="scpp"||el.id==="scpk";el.value="";if(f)scRun(f,pck?"pc":"enemy")});
+  var all=[].slice.call(el.files||[]),f=all[0],pck=el.id==="scpc"||el.id==="scpp"||el.id==="scpk";el.value="";if(f){SC.queue=pck?all.slice(1):[];SC.fi=1;SC.fn=pck?all.length:1;scRun(f,pck?"pc":"enemy")}});
 })();
 /*SCAN-UI-END*/
 function importUI(){
