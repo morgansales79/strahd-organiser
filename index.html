@@ -456,8 +456,8 @@ function norm(raw){
  var f=fresh();
  var s={v:6,day:Math.max(1,parseInt(b.day,10)||1),hour:isNaN(parseFloat(b.hour))?8:Math.max(0,Math.min(23.99,Math.round(parseFloat(b.hour)*60)/60))};
  s.party=arr(b.party).map(function(m){return{id:str(m.id)||uid(),name:str(m.name),className:str(m.className),level:str(m.level),ac:str(m.ac),maxHp:str(m.maxHp),passivePerception:str(m.passivePerception),notes:str(m.notes),race:str(m.race),background:str(m.background),speed:str(m.speed),init:str(m.init),str:str(m.str),dex:str(m.dex),con:str(m.con),int:str(m.int),wis:str(m.wis),cha:str(m.cha),sheet:str(m.sheet),sp:(m.sp&&typeof m.sp==="object")?m.sp:{},curHp:str(m.curHp),hdUsed:Math.max(0,parseInt(m.hdUsed,10)||0),su:(m.su&&typeof m.su==="object")?m.su:{},arcUsed:!!m.arcUsed,acAuto:!!m.acAuto,rage:!!m.rage,acBase:m.acBase===undefined?undefined:str(m.acBase),wsFav:arr(m.wsFav).map(function(f){return{id:str(f.id)||uid(),name:str(f.name),hp:str(f.hp),ac:str(f.ac),cr:str(f.cr),note:str(f.note)}}),wsCur:str(m.wsCur),moon:!!m.moon,wsOn:!!m.wsOn,wsName:str(m.wsName),wsHp:str(m.wsHp),wsAc:str(m.wsAc),petName:str(m.petName),petType:str(m.petType),petHp:str(m.petHp),petCur:str(m.petCur),petAc:str(m.petAc),petSpeed:str(m.petSpeed),petNotes:str(m.petNotes),ma:!!m.ma,acBase:str(m.acBase),res:str(m.res),imm:str(m.imm),vul:str(m.vul),cimm:str(m.cimm),sadv:str(m.sadv),tl:(m.tl===0||m.tl===1||m.tl===2)?m.tl:null,kn:sarr(m.kn),pr:sarr(m.pr),eq:eqNorm(m.eq)}});s.items=arr(b.items).map(function(i){return{id:str(i.id)||uid(),n:str(i.n),c:str(i.c),cost:str(i.cost),wt:str(i.wt),dmg:str(i.dmg),dt:str(i.dt),ac:str(i.ac),pr:str(i.pr)}});
- s.cpend=arr(b.cpend).map(function(e){return{id:str(e.id)||uid(),cid:str(e.cid),n:str(e.n),dice:str(e.dice),type:str(e.type),once:!!e.once,endsMiss:!!e.endsMiss,note:str(e.note)}});s.noauto=!!b.noauto;s.fx=arr(b.fx).map(function(f){return{id:str(f.id)||uid(),cid:str(f.cid),spk:str(f.spk),n:str(f.n),lvl:parseInt(f.lvl,10)||1,cc:!!f.cc,start:parseInt(f.start,10)||1,dur:f.dur===null?null:(parseInt(f.dur,10)||1),who:sarr(f.who),hp:f.hp===null||f.hp===undefined?null:(parseInt(f.hp,10)||0),alert:!!f.alert}});s.clog=arr(b.clog).map(function(e){return{id:str(e.id)||uid(),k:["dmg","heal","miss","cast"].indexOf(e.k)>-1?e.k:"dmg",r:Math.max(1,parseInt(e.r,10)||1),src:str(e.src),srcId:str(e.srcId),srcPc:!!e.srcPc,tgt:str(e.tgt),tgtId:str(e.tgtId),tgtPc:!!e.tgtPc,amt:Math.max(0,parseInt(e.amt,10)||0),what:str(e.what),h0:e.h0===undefined?undefined:parseInt(e.h0,10)||0,h1:e.h1===undefined?undefined:parseInt(e.h1,10)||0,dead:!!e.dead}}).slice(-600);s.round=Math.max(1,parseInt(b.round,10)||1);s.turnId=str(b.turnId);
- s.combatants=arr(b.combatants).map(function(c){return{id:str(c.id)||uid(),kind:c.kind==="pc"?"pc":"mon",ref:str(c.ref),name:str(c.name),init:str(c.init),dex:str(c.dex),hp:str(c.hp),max:str(c.max),ac:str(c.ac),wsName:str(c.wsName),wsHp:str(c.wsHp),wsMax:str(c.wsMax),wsAc:str(c.wsAc),wsOn:!!c.wsOn,pet:!!c.pet,ds:(c.ds&&typeof c.ds==="object")?{s:Math.min(3,parseInt(c.ds.s,10)||0),f:Math.min(3,parseInt(c.ds.f,10)||0)}:null,use:(function(o){var r={};if(o&&typeof o==="object")Object.keys(o).forEach(function(k){var v=parseInt(o[k],10);if(v>0)r[k]=v});return r})(c.use),conds:arr(c.conds).map(function(x){return{id:str(x.id)||uid(),n:str(x.n),src:str(x.src),dc:parseInt(x.dc,10)||0,ab:str(x.ab),end:!!x.end,dur:str(x.dur)}}).filter(function(x){return x.n})}});
+ s.cpend=arr(b.cpend).map(function(e){return{id:str(e.id)||uid(),cid:str(e.cid),n:str(e.n),dice:str(e.dice),type:str(e.type),once:!!e.once,endsMiss:!!e.endsMiss,note:str(e.note)}});s.noauto=!!b.noauto;s.lair=!!b.lair;s.lairLast=(b.lairLast&&typeof b.lairLast==="object")?b.lairLast:{};s.heart={hp:Math.max(0,Math.min(50,(b.heart&&b.heart.hp!==undefined)?(parseInt(b.heart.hp,10)||0):50)),on:!b.heart||b.heart.on!==false};s.fx=arr(b.fx).map(function(f){return{id:str(f.id)||uid(),cid:str(f.cid),spk:str(f.spk),n:str(f.n),lvl:parseInt(f.lvl,10)||1,cc:!!f.cc,start:parseInt(f.start,10)||1,dur:f.dur===null?null:(parseInt(f.dur,10)||1),who:sarr(f.who),hp:f.hp===null||f.hp===undefined?null:(parseInt(f.hp,10)||0),alert:!!f.alert}});s.clog=arr(b.clog).map(function(e){return{id:str(e.id)||uid(),k:["dmg","heal","miss","cast"].indexOf(e.k)>-1?e.k:"dmg",r:Math.max(1,parseInt(e.r,10)||1),src:str(e.src),srcId:str(e.srcId),srcPc:!!e.srcPc,tgt:str(e.tgt),tgtId:str(e.tgtId),tgtPc:!!e.tgtPc,amt:Math.max(0,parseInt(e.amt,10)||0),what:str(e.what),h0:e.h0===undefined?undefined:parseInt(e.h0,10)||0,h1:e.h1===undefined?undefined:parseInt(e.h1,10)||0,dead:!!e.dead}}).slice(-600);s.round=Math.max(1,parseInt(b.round,10)||1);s.turnId=str(b.turnId);
+ s.combatants=arr(b.combatants).map(function(c){return{id:str(c.id)||uid(),kind:c.kind==="pc"?"pc":"mon",ref:str(c.ref),name:str(c.name),init:str(c.init),dex:str(c.dex),hp:str(c.hp),max:str(c.max),ac:str(c.ac),wsName:str(c.wsName),wsHp:str(c.wsHp),wsMax:str(c.wsMax),wsAc:str(c.wsAc),wsOn:!!c.wsOn,pet:!!c.pet,ds:(c.ds&&typeof c.ds==="object")?{s:Math.min(3,parseInt(c.ds.s,10)||0),f:Math.min(3,parseInt(c.ds.f,10)||0)}:null,use:(function(o){var r={};if(o&&typeof o==="object")Object.keys(o).forEach(function(k){var v=parseInt(o[k],10);if(v>0)r[k]=v});return r})(c.use),thp:str(c.thp),ra:!!c.ra,ba:!!c.ba,conds:arr(c.conds).map(function(x){return{id:str(x.id)||uid(),n:str(x.n),src:str(x.src),dc:parseInt(x.dc,10)||0,ab:str(x.ab),end:!!x.end,dur:str(x.dur),r0:parseInt(x.r0,10)||0,rl:parseInt(x.rl,10)||0,lvl:parseInt(x.lvl,10)||0,esc:parseInt(x.esc,10)||0}}).filter(function(x){return x.n})}});
  s.sess=(b.sess&&typeof b.sess==="object")?b.sess:null;s.trv=tvNorm(b.trv);s.enSeedV=parseInt(b.enSeedV,10)||0;
  s.encSets=arr(b.encSets).map(function(x){return{id:str(x.id)||uid(),name:str(x.name),notes:str(x.notes),items:arr(x.items).map(function(i){return{id:str(i.id)||uid(),ref:str(i.ref),qty:Math.max(1,Math.min(20,parseInt(i.qty,10)||1))}})}});
  s.spells=arr(b.spells).map(function(x){return{id:str(x.id)||uid(),name:str(x.name),level:Math.max(0,Math.min(9,parseInt(x.level,10)||0)),dice:str(x.dice),up:str(x.up),type:str(x.type),save:str(x.save),succ:x.succ==="none"?"none":"half",time:str(x.time),range:str(x.range),dur:str(x.dur),conc:!!x.conc,desc:str(x.desc),school:str(x.school)||"Custom"}});
@@ -497,7 +497,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=147;var APPLABEL="1.440";
+var APPV=148;var APPLABEL="1.450";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -1081,9 +1081,9 @@ function tgOpen(mid,i,act,opts){var mc=S.combatants.find(function(x){return x.id
  var tg=tgTargets(mid),sel={};if(tgIsAoe(at))tg.forEach(function(c){sel[c.id]=true});else if(tg.length===1)sel[tg[0].id]=true;
  ui.tg={mid:mid,i:i,sel:sel,half:at.kind==="sv"?at.half:false,res:null,act:act||null,fxd:!!(opts&&opts.nofx)};tgDraw()}
 function tgCur(){var T=ui.tg;if(!T)return null;var mc=S.combatants.find(function(x){return x.id===T.mid}),en=mc&&wsEnOf(mc),at=T.act||(en&&actList(en)[T.i]);return at?{mc:mc,at:at}:null}
-function tgRestore(row){if(row.cids){row.cids.forEach(function(id){cndRemove(row.c,id)});row.cids=[]}if(!row.snap)return;var c=row.c;c.hp=row.snap.hp;c.wsHp=row.snap.wsHp;c.wsOn=row.snap.wsOn;pcFromCombat(c);row.snap=null}
+function tgRestore(row){if(row.cids){row.cids.forEach(function(id){cndRemove(row.c,id)});row.cids=[]}if(!row.snap)return;var c=row.c;c.hp=row.snap.hp;c.wsHp=row.snap.wsHp;c.wsOn=row.snap.wsOn;if(row.snap.thp!==undefined)c.thp=row.snap.thp;pcFromCombat(c);row.snap=null}
 function tgUndoAll(){var T=ui.tg;if(T&&T.res){T.res.rows.forEach(tgRestore);save()}}
-function tgApplyRow(row,at){tgRestore(row);var tg=row.c,amt=tgDmg(row,at).tot;row.snap={hp:tg.hp,wsHp:tg.wsHp,wsOn:tg.wsOn};if(amt<1){tgCondSync(row,at);return}
+function tgApplyRow(row,at){tgRestore(row);var tg=row.c,amt=tgDmg(row,at).tot;row.snap={hp:tg.hp,wsHp:tg.wsHp,wsOn:tg.wsOn,thp:tg.thp};var t0=parseInt(tg.thp,10)||0;if(t0>0&&amt>0){var a0=Math.min(t0,amt);tg.thp=t0-a0>0?String(t0-a0):"";amt-=a0}if(amt<1){tgCondSync(row,at);return}
  if(tg.wsOn){var wh=parseInt(tg.wsHp,10)||0,left=amt-wh;if(left>=0){tg.wsHp="0";tg.wsOn=false;if(left>0)tg.hp=String(Math.max(0,(parseInt(tg.hp,10)||0)-left))}else tg.wsHp=String(wh-amt)}
  else tg.hp=String(Math.max(0,(parseInt(tg.hp,10)||0)-amt));
  pcFromCombat(tg);tgCondSync(row,at)}
@@ -1189,7 +1189,7 @@ function atkBtns(c,en){var a=actList(en);if(!a.length)return'';
   main=[],spl=[],groups=[],gi={};
  a.forEach(function(x,i){if(x.leg)return;if(x.sp){spl.push(x);if(gi[x.grp]===undefined){gi[x.grp]=groups.length;groups.push({g:x.grp,items:[]})}groups[gi[x.grp]].items.push(bt(x,i))}else main.push(bt(x,i))});
  var open=ui.enSp&&ui.enSp[c.id];
- return(main.length?'<div class="atkrow">'+main.join("")+'</div>':'')+(spl.length?'<div class="enspw"><button class="enspt" data-a="enspo" data-id="'+c.id+'" aria-expanded="'+(open?"true":"false")+'">'+(open?"\u25be":"\u25b8")+' Spells ('+spl.length+')</button>'+(open?groups.map(function(g){return'<div class="mute enspg">'+esc(g.g)+'</div><div class="atkrow">'+g.items.join("")+'</div>'}).join(""):'')+'</div>':'')+'<div class="atklog" id="atk-'+c.id+'">'+(ui.atkLog[c.id]||"")+'</div>'}
+ return(main.length?'<div class="atkrow">'+main.join("")+'</div>':'')+(spl.length?'<div class="enspw"><button class="enspt" data-a="enspo" data-id="'+c.id+'" aria-expanded="'+(open?"true":"false")+'">'+(open?"\u25be":"\u25b8")+' Spells ('+spl.length+')</button>'+(open?groups.map(function(g){return'<div class="mute enspg">'+esc(g.g)+spPips(c,g.g)+'</div><div class="atkrow">'+g.items.join("")+'</div>'}).join(""):'')+'</div>':'')+'<div class="atklog" id="atk-'+c.id+'">'+(ui.atkLog[c.id]||"")+'</div>'}
 function addEnemies(en,qn){var sbk=en.statblock||"",qk=en.quick||"";
   var hm=qk.match(/HP\s*(\d+)/i)||sbk.match(/HP\s*(\d+)/),am=qk.match(/AC\s*(\d+)/i)||sbk.match(/AC\s*(\d+)/),dm=sbk.match(/DEX\s*\d+\s*\(([+-]\d+)\)/),dx=dm?parseInt(dm[1],10):0;
   var have=S.combatants.filter(function(c){return c.ref===en.id}).length;
@@ -1234,8 +1234,8 @@ function encCard(c,cur){
  return'<div class="cb'+(cur?" cur":"")+(down?" down":"")+'"><div class="cinit"><span class="tl">Init</span><input '+k+' data-f="init" value="'+esc(c.init)+'" inputmode="numeric" aria-label="Initiative of '+esc(c.name)+'"></div>'+
  '<div class="cbody"><div class="cl1"><input class="cname" '+k+' data-f="name" value="'+esc(c.name)+'" aria-label="Name">'+tag+(cur?'<span class="pill now">Turn</span>':'')+(down?'<span class="pill dn">'+(c.kind==="pc"?"Down":"Defeated")+'</span>':'')+'<span class="ntw"><button class="'+(cur?"pri":"")+'" data-a="nextfrom" data-id="'+c.id+'">Next turn &rarr;</button></span>'+delBtn("combatants",c.id,c.name)+'</div>'+
  '<div class="bar"><div style="width:'+pct+'%;background:'+col+'"></div></div>'+
- '<div class="cl2"><label class="hpf"><span class="tl">HP</span><input '+k+' data-f="hp" value="'+esc(c.hp)+'" inputmode="numeric" aria-label="Current HP"></label><span class="mute">/</span><label class="hpf"><span class="tl">Max</span><input '+k+' data-f="max" value="'+esc(c.max)+'" inputmode="numeric" aria-label="Max HP"></label><label class="hpf"><span class="tl">AC</span><input '+k+' data-f="ac" value="'+esc(c.ac)+'" inputmode="numeric" aria-label="AC"></label><button data-a="calcopen" data-id="'+c.id+'">Damage / Heal</button>'+clBtns(c)+'</div>'+
- (dsDown(c)?'<div class="sprow2">&#9760; <b>Death saves</b> <span style="font-size:1.1rem">'+dsPips(c)+'</span>'+(dsState(c)==="down"?'<button data-ds="1" data-id="'+c.id+'">Enter death save</button>':'<span class="pill">'+(dsState(c)==="dead"?"Dead":"Stable")+'</span>')+'</div>':'')+(ui.atk&&c.kind==="mon"&&en&&en.statblock?atkBtns(c,en)+cndLegHtml(c,en)+cndLimHtml(c,en):'')+cndRow(c)+wsBlock(c)+cbSlots(c)+(en&&en.statblock?'<details><summary>Statblock</summary><pre class="sbx">'+esc(en.statblock)+'</pre></details>':'')+'</div></div>'}
+ '<div class="cl2"><label class="hpf"><span class="tl">HP</span><input '+k+' data-f="hp" value="'+esc(c.hp)+'" inputmode="numeric" aria-label="Current HP"></label><span class="mute">/</span><label class="hpf"><span class="tl">Max</span><input '+k+' data-f="max" value="'+esc(c.max)+'" inputmode="numeric" aria-label="Max HP"></label><label class="hpf"><span class="tl">AC</span><input '+k+' data-f="ac" value="'+esc(c.ac)+'" inputmode="numeric" aria-label="AC"></label><label class="hpf"><span class="tl">Temp</span><input '+k+' data-f="thp" value="'+esc(c.thp||"")+'" inputmode="numeric" aria-label="Temporary hit points" style="width:54px"></label><button data-a="calcopen" data-id="'+c.id+'">Damage / Heal</button>'+clBtns(c)+'</div>'+
+ (dsDown(c)?'<div class="sprow2">&#9760; <b>Death saves</b> <span style="font-size:1.1rem">'+dsPips(c)+'</span>'+(dsState(c)==="down"?'<button data-ds="1" data-id="'+c.id+'">Enter death save</button>':'<span class="pill">'+(dsState(c)==="dead"?"Dead":"Stable")+'</span>')+'</div>':'')+(ui.atk&&c.kind==="mon"&&en&&en.statblock?atkBtns(c,en)+cndLegHtml(c,en)+cndLimHtml(c,en):'')+cndRow(c)+exRow(c)+wsBlock(c)+cbSlots(c)+(en&&en.statblock?'<details><summary>Statblock</summary><pre class="sbx">'+esc(en.statblock)+'</pre></details>':'')+'</div></div>'}
 var XPT=[[25,50,75,100],[50,100,150,200],[75,150,225,400],[125,250,375,500],[250,500,750,1100],[300,600,900,1400],[350,750,1100,1700],[450,900,1400,2100],[550,1100,1600,2400],[600,1200,1900,2800],[800,1600,2400,3600],[1000,2000,3000,4500],[1100,2200,3400,5100],[1250,2500,3800,5700],[1400,2800,4300,6400],[1600,3200,4800,7200],[2000,3900,5900,8800],[2100,4200,6300,9500],[2400,4900,7300,10900],[2800,5700,8500,12700]];
 var CRXP={"0":10,"0.125":25,"0.25":50,"0.5":100,"1":200,"2":450,"3":700,"4":1100,"5":1800,"6":2300,"7":2900,"8":3900,"9":5000,"10":5900,"11":7200,"12":8400,"13":10000,"14":11500,"15":13000,"16":15000,"17":18000,"18":20000,"19":22000,"20":25000,"21":33000,"22":41000,"23":50000,"24":62000,"25":75000,"26":90000,"27":105000,"28":120000,"29":135000,"30":155000};
 function encLv(){if(ui.encLv)return ui.encLv;var ls=S.party.map(function(m){return Math.max(1,Math.min(20,parseInt(m.level,10)||1))});return ls.length?Math.max(1,Math.min(20,Math.round(ls.reduce(function(a,b){return a+b},0)/ls.length))):1}
@@ -2219,7 +2219,7 @@ function cnClick(e){var b=e.target.closest("[data-cn]");if(!b)return;var q=ui.cn
  if(g==="offgo"){var oc2=clCmb(it.cid);cnShift();if(oc2)clOffGo(oc2.id,+b.dataset.i);return}
  if(g==="offno"){var oc3=clCmb(it.cid);cnShift();if(oc3){var pq=ui.pa;if(pq)pq.offDone=1;clTurnToast("<b>"+esc(oc3.name)+"</b>'s action is used, so the turn has ended.");advanceTurn()}return}
  if(g==="ecgo"){var cc=clCmb(it.cid),sp2=it.act.spk?spFind(it.act.spk):null;var who=Object.keys(it.sel||{}).filter(function(k){return it.sel[k]&&clCmb(k)});cnShift();
-  if(cc&&sp2){fxStart(cc,sp2,it.act.lvl,who.length?who:[cc.id]);if(clActKind(sp2)==="action")fxUseAction(cc,"action");cndEcast(cc,it.act,who)}return}}
+  if(cc&&sp2){fxStart(cc,sp2,it.act.lvl,who.length?who:[cc.id]);if(clActKind(sp2)==="action")fxUseAction(cc,"action");spMark(cc,it.act);cndEcast(cc,it.act,who)}return}}
 document.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest("[data-fx]");if(!b)return;var g=b.dataset.fx,id=b.dataset.id;
  if(g==="go")fxGo(id,+b.dataset.i);
  else if(g==="end"){fxRemove(id);render()}
@@ -2247,7 +2247,7 @@ var _tgRollFX=tgRoll;tgRoll=function(){var k=tgCur(),T=ui.tg,had=T&&T.fxd;_tgRol
 /*FX-END*/
 
 /*CND-START*/
-var CNDS=["Blinded","Charmed","Deafened","Exhaustion","Frightened","Grappled","Incapacitated","Invisible","Paralyzed","Petrified","Poisoned","Prone","Restrained","Stunned","Unconscious"];
+var CNDS=["Blinded","Charmed","Deafened","Exhaustion","Frightened","Grappled","Incapacitated","Invisible","Paralyzed","Petrified","Poisoned","Prone","Restrained","Stunned","Surprised","Unconscious"];
 function cndFind(t){var out=[];String(t).replace(/\b(blinded|charmed|deafened|frightened|grappled|incapacitated|paralyzed|petrified|poisoned|prone|restrained|stunned|unconscious)\b/gi,function(m){var n=m.charAt(0).toUpperCase()+m.slice(1).toLowerCase();if(out.indexOf(n)<0)out.push(n);return m});return out}
 function cndFindFail(tail){var s=String(tail).split(/\.\s/)[0],o=cndFind(s);if(!o.length){var f=String(tail).match(/fail\w*[^.]*\./i);if(f)o=cndFind(f[0])}return o}
 function cndText(mc,at){
@@ -2265,32 +2265,30 @@ function cndImmune(c,n){var m=tgMemb(c),low=n.toLowerCase();
  if(m){try{return pcDefs(m).some(function(d){return d.k==="ci"&&!d.note&&!d.cond&&String(d.t).toLowerCase().indexOf(low)>-1})}catch(e){return false}}
  var en=tgEn(c),sb=en?String(en.statblock||""):"",x=sb.match(/Condition Immunities\s*:?\s*([^\n]*)/i);return !!x&&x[1].toLowerCase().indexOf(low)>-1}
 function cndAdd(c,o){c.conds=c.conds||[];var ex=c.conds.filter(function(x){return x.n===o.n&&x.src===(o.src||"")})[0];if(ex)return ex;
- var r={id:uid(),n:o.n,src:o.src||"",dc:o.dc||0,ab:o.ab||"",end:!!o.end&&!!o.dc&&!!o.ab,dur:o.dur||""};c.conds.push(r);return r}
+ var r={id:uid(),n:o.n,src:o.src||"",dc:o.dc||0,ab:o.ab||"",end:!!o.end&&!!o.dc&&!!o.ab,dur:o.dur||"",r0:S.round||1,rl:o.rl||cndRounds(o.dur),lvl:o.lvl||(o.n==="Exhaustion"?1:0),esc:o.esc||0};c.conds.push(r);return r}
 function cndRemove(c,id){if(c&&c.conds)c.conds=c.conds.filter(function(x){return x.id!==id})}
-function cndHint(mc,at){var rd=cndRider(mc,at);if(!rd)return"";return'<div class="mute" style="margin-top:6px">'+(at.kind==="atk"?"On a hit the target also makes a":"On a failed")+' DC '+rd.dc+' '+rd.ab.toUpperCase()+' save'+(at.kind==="atk"?" or is":":")+' <b>'+esc(rd.conds.join(", "))+'</b>'+(rd.dur?' ('+esc(rd.dur)+')':'')+(rd.end?'; the save repeats at the end of its turns':'')+'. The condition is added automatically.</div>'}
+function cndHint(mc,at){var rd=cndRider(mc,at);if(!rd){var es=cndEscape(mc,at);return es?'<div class="mute" style="margin-top:6px">On a hit the target is <b>'+esc(es.conds.join(" and "))+'</b> (escape DC '+es.dc+'). The condition is added automatically.</div>':""}return'<div class="mute" style="margin-top:6px">'+(at.kind==="atk"?"On a hit the target also makes a":"On a failed")+' DC '+rd.dc+' '+rd.ab.toUpperCase()+' save'+(at.kind==="atk"?" or is":":")+' <b>'+esc(rd.conds.join(", "))+'</b>'+(rd.dur?' ('+esc(rd.dur)+')':'')+(rd.end?'; the save repeats at the end of its turns':'')+'. The condition is added automatically.</div>'}
 function tgRiderRoll(row){var rd=ui.tg.rd,c=row.c;if(tgMemb(c)){row.rpend=true;return}var n=d20(),b=tgSvBon(c,rd.ab);row.rsv={nat:n,bon:b,tot:n+b,passed:n+b>=rd.dc}}
-function tgCondSync(row,at){(row.cids||[]).forEach(function(id){cndRemove(row.c,id)});row.cids=[];row.cnote="";var T=ui.tg,rd=T&&T.rd;if(!rd)return;
+function tgCondSync(row,at){(row.cids||[]).forEach(function(id){cndRemove(row.c,id)});row.cids=[];row.cnote="";var T=ui.tg,rd=T&&T.rd;exEscSync(row,at);if(!rd)return;
  var fail=at.kind==="sv"?(!row.pend&&!row.passed):!!(row.hit&&row.rsv&&!row.rpend&&!row.rsv.passed);if(!fail)return;
  var k=tgCur(),src=(k?k.mc.name+": ":"")+at.name;
  rd.conds.forEach(function(n){if(cndImmune(row.c,n)){row.cnote=(row.cnote?row.cnote+"; ":"")+row.c.name+" is immune to "+n;return}var o=cndAdd(row.c,{n:n,src:src,dc:rd.dc,ab:rd.ab,end:rd.end,dur:rd.dur});if(o)row.cids.push(o.id)})}
-function tgRiderHtml(row,at,i){var T=ui.tg,rd=T&&T.rd,h="";if(!rd)return"";
- if(at.kind==="atk"&&row.hit){var ab=rd.ab.toUpperCase();
+function tgRiderHtml(row,at,i){var T=ui.tg,rd=T&&T.rd,h="";if(!rd&&!(row.cids&&row.cids.length))return"";
+ if(rd&&at.kind==="atk"&&row.hit){var ab=rd.ab.toUpperCase();
   if(row.rpend)h+='<div class="sprow2"><span class="mute">'+ab+' save vs DC '+rd.dc+'. Ask the player for the total:</span><input id="tgrin'+i+'" inputmode="numeric" style="width:70px" placeholder="total" aria-label="Save total"><button data-tg="rpv" data-i="'+i+'">Apply</button></div>';
   else if(row.rsv)h+='<div class="mute">'+ab+' save '+(row.rsv.typed?'rolled by player: '+row.rsv.tot:'d20 '+row.rsv.nat+(row.rsv.bon>=0?" + ":" − ")+Math.abs(row.rsv.bon)+' = '+row.rsv.tot)+' vs DC '+rd.dc+'</div>';
   h+='<select data-tg="rpass" data-i="'+i+'" aria-label="Save result">'+(row.rpend?'<option value="x" selected>Awaiting result</option>':'')+'<option value="0"'+(row.rsv&&!row.rsv.passed?" selected":"")+'>Failed save</option><option value="1"'+(row.rsv&&row.rsv.passed?" selected":"")+'>Saved</option></select>'}
  var L=(row.cids||[]).map(function(id){var x=(row.c.conds||[]).filter(function(y){return y.id===id})[0];return x?x.n:""}).filter(Boolean);
- if(L.length)h+='<div><b class="bad">Now '+esc(L.join(", "))+'</b>'+(rd.end?' <span class="mute">(save to end it appears on their card)</span>':'')+'</div>';
+ if(L.length)h+='<div><b class="bad">Now '+esc(L.join(", "))+'</b>'+(rd&&rd.end?' <span class="mute">(save to end it appears on their card)</span>':'')+'</div>';
  if(row.cnote)h+='<div class="mute">'+esc(row.cnote)+'</div>';
  return h}
-function cndRow(c){var L=c.conds||[];
- return'<div class="cdrow">'+L.map(function(x){return'<span class="cdchip"><b>'+esc(x.n)+'</b>'+(x.src?'<span class="mute"> '+esc(x.src)+'</span>':'')+(x.dur?'<span class="mute"> &middot; '+esc(x.dur)+'</span>':'')+(x.end&&x.dc?'<button data-cd="sv" data-id="'+c.id+'" data-cid="'+x.id+'">Save to end (DC '+x.dc+' '+esc(x.ab.toUpperCase())+')</button>':'')+'<button class="cdx" data-cd="rm" data-id="'+c.id+'" data-cid="'+x.id+'" aria-label="Remove '+esc(x.n)+'">&times;</button></span>'}).join("")+'<button class="cdadd" data-cd="add" data-id="'+c.id+'">+ Condition</button></div>'}
 function cdRowsHtml(it){return(it.rows||[]).map(function(r,i){var c=clCmb(r.id);if(!c)return"";var pc=!!tgMemb(c),ab=r.ab.toUpperCase();
- var head='<b>'+esc(c.name)+'</b>'+(pc?'':' <span class="pill">'+(c.kind==="mon"&&isNpcEn(tgEn(c))?"NPC":"Enemy")+'</span>')+' <span class="mute">'+(r.condName?esc(r.condName)+': ':'')+ab+' save, DC '+r.dc+'</span>';
+ var head='<b>'+esc(c.name)+'</b>'+(pc?'':' <span class="pill">'+(c.kind==="mon"&&isNpcEn(tgEn(c))?"NPC":"Enemy")+'</span>')+' <span class="mute">'+(r.condName?esc(r.condName)+': ':'')+(r.chk?'escape check':ab+' save')+', DC '+r.dc+'</span>';
  if(r.done)return'<div class="tgrow">'+head+'<div class="mute">'+esc(r.txt)+'</div><div><b class="'+(r.ok?"ok":"bad")+'">'+esc(r.out)+'</b></div>'+(it.t==="csapp"&&!r.ok&&lrLeft(c)>0?'<button data-cd="lr" data-i="'+i+'">Use Legendary Resistance ('+lrLeft(c)+' left)</button>':'')+'</div>';
- var bon=pc?0:tgSvBon(c,r.ab);
+ var bon=pc?0:(r.chk?escBon(c):tgSvBon(c,r.ab));
  return'<div class="tgrow">'+head+'<div class="sprow2">'+(pc?'<label class="hpf"><span class="tl">Total</span><input id="cdin'+i+'" inputmode="numeric" style="width:80px" placeholder="d20 + mods"></label><button class="pri" data-cd="ra" data-i="'+i+'">Apply</button>':'<button class="pri" data-cd="rr" data-i="'+i+'">Roll save ('+(bon>=0?"+":"−")+Math.abs(bon)+')</button>')+'<button data-cd="rp" data-i="'+i+'">Passed</button><button data-cd="rf" data-i="'+i+'">Failed</button></div></div>'}).join("")}
 function cdResolve(it,i,ok,txt){var r=it.rows[i],c=r&&clCmb(r.id);if(!r||r.done||!c)return;r.done=true;r.ok=ok;r.txt=txt;
- if(it.t==="csend"){if(ok){cndRemove(c,r.condId);r.out="saved, "+r.condName+" ends"}else r.out="failed, still "+r.condName}
+ if(it.t==="csend"){if(ok){exEnd(c,r);r.out=(r.chk?"escapes, ":"saved, ")+r.condName+" ends"}else r.out="failed, still "+r.condName}
  else{if(ok)r.out="saved, no effect";else{var ns=[];r.conds.forEach(function(n){if(cndImmune(c,n)){ns.push(n+" (immune)");return}var o2=cndAdd(c,{n:n,src:r.src,dc:r.dc,ab:r.ab,end:r.end,dur:r.dur});(r.added=r.added||[]).push(o2.id);ns.push(n)});r.out="failed: "+ns.join(", ")}}
  save();render();cnDraw()}
 function cdAppRows(ids,rd,src){return ids.map(function(id){return{id:id,dc:rd.dc,ab:rd.ab,conds:rd.conds,end:rd.end,dur:rd.dur,src:src}})}
@@ -2305,7 +2303,7 @@ cnDraw=function(){var q=ui.cn||[],it=q[0];if(!it||(it.t!=="cadd"&&it.t!=="csend"
  if(it.t==="cadd"){if(!c){q.shift();cnDraw();return}
   h+='<div class="atkh"><b>Add a condition to '+esc(c.name)+'</b></div><div class="cllist"><label class="f">Condition<select id="cdn">'+CNDS.map(function(n){return'<option>'+n+'</option>'}).join("")+'</select></label>'+
    '<label class="f">Source or note (optional)<input id="cdnote" placeholder="e.g. Hold Person"></label>'+
-   '<div class="sprow2"><label class="f">Repeat save to end it<select id="cdab"><option value="">None</option>'+["str","dex","con","int","wis","cha"].map(function(a){return'<option value="'+a+'">'+a.toUpperCase()+'</option>'}).join("")+'</select></label><label class="hpf"><span class="tl">DC</span><input id="cddc" inputmode="numeric" style="width:70px"></label></div></div>'+
+   '<div class="sprow2"><label class="f">Repeat save to end it<select id="cdab"><option value="">None</option>'+["str","dex","con","int","wis","cha"].map(function(a){return'<option value="'+a+'">'+a.toUpperCase()+'</option>'}).join("")+'</select></label><label class="hpf"><span class="tl">DC</span><input id="cddc" inputmode="numeric" style="width:70px"></label></div><div class="sprow2"><label class="hpf"><span class="tl">Lasts (rounds)</span><input id="cdrl" inputmode="numeric" style="width:90px" placeholder="10 = 1 min"></label><label class="hpf"><span class="tl">Escape DC</span><input id="cdesc" inputmode="numeric" style="width:80px"></label></div></div>'+
    '<div style="display:flex;gap:8px"><button class="pri" data-cd="addgo" style="flex:1">Add</button><button data-cd="close">Cancel</button></div>'}
  else{h+='<div class="atkh"><b>'+esc(it.t==="csend"?"Save to end a condition":(it.title||"Saving throw"))+'</b></div><div class="cnbody">'+(it.t==="csend"?(c?esc(c.name)+' can repeat the saving throw.':''):'Roll for enemies and NPCs, or enter the total the player rolled. A failed save adds the condition.')+'</div><div class="cllist">'+cdRowsHtml(it)+'</div><button class="pri" data-cd="close">Done</button>'}
  el.innerHTML='<div class="clbox cnbox">'+h+'</div>';el.style.display="flex"};
@@ -2315,9 +2313,9 @@ document.addEventListener("click",function(e){var b=e.target.closest&&e.target.c
  else if(g==="sv"&&c){var x=(c.conds||[]).filter(function(y){return y.id===b.dataset.cid})[0];if(x)cnPush({t:"csend",cid:c.id,rows:[{id:c.id,condId:x.id,condName:x.n,dc:x.dc,ab:x.ab}]})}
  else if(g==="close"){cnShift();render()}
  else if(g==="addgo"&&it&&it.t==="cadd"){var cc=clCmb(it.cid),sel=document.getElementById("cdn"),nt=document.getElementById("cdnote"),ab=document.getElementById("cdab"),dc=document.getElementById("cddc"),dv=parseInt(dc&&dc.value,10)||0;
-  if(cc&&sel){cndAdd(cc,{n:sel.value,src:nt?nt.value.trim():"",dc:dv,ab:ab?ab.value:"",end:!!(dv&&ab&&ab.value)});save()}cnShift();render()}
+  if(cc&&sel)exAddManual(cc,sel.value,nt?nt.value.trim():"",dv,ab?ab.value:"");cnShift();render()}
  else if(it&&(it.t==="csend"||it.t==="csapp")&&b.dataset.i!==undefined){var i=+b.dataset.i,r=it.rows[i],t=r&&clCmb(r.id);if(!r||!t)return;
-  if(g==="rr"){var bon=tgSvBon(t,r.ab),n=d20(),tot=n+bon;cdResolve(it,i,tot>=r.dc,"d20 "+n+(bon>=0?" + ":" − ")+Math.abs(bon)+" = "+tot+" vs DC "+r.dc)}
+  if(g==="rr"){var bon=r.chk?escBon(t):tgSvBon(t,r.ab),n=d20(),tot=n+bon;cdResolve(it,i,tot>=r.dc,"d20 "+n+(bon>=0?" + ":" − ")+Math.abs(bon)+" = "+tot+" vs DC "+r.dc)}
   else if(g==="ra"){var inp=document.getElementById("cdin"+i),v=parseInt(inp&&inp.value,10);if(isNaN(v)){if(inp)inp.focus();return}cdResolve(it,i,v>=r.dc,"Player rolled "+v+" vs DC "+r.dc)}
   else if(g==="rp")cdResolve(it,i,true,"Marked as passed");
   else if(g==="rf")cdResolve(it,i,false,"Marked as failed")}});
@@ -2356,7 +2354,7 @@ function cndLimHtml(c,en){var sb=en.statblock,L=limOf(sb),lr=lrOf(sb),h="";
  return h?'<div class="slbar">'+h+'</div><div class="mute" style="font-size:.72rem">Tap a filled dot to spend it, an empty one to get it back. Recharge is rolled for you at the start of its turn.</div>':''}
 function cndLegHtml(c,en){var lg=legOf(en.statblock);if(!lg||!lg.items.length)return"";var a=actList(en),left=lg.n-Math.min(lg.n,(c.use||{})._leg||0);
  return'<div class="legp"><div class="sprow2"><b>Legendary actions</b> '+lgPips(c,"_leg",lg.n,"Legendary action")+'<span class="mute">'+left+' of '+lg.n+' left, refilled at the start of its turn</span><button data-lm="legfill" data-id="'+c.id+'">Refill</button></div><div class="atkrow">'+lg.items.map(function(e,i){var dis=e.cost>left;return'<button data-lm="leg" data-id="'+c.id+'" data-i="'+i+'"'+(dis?' disabled class="used" title="Not enough legendary actions left"':'')+'>'+esc(e.name)+(e.cost>1?' ('+e.cost+')':'')+'</button>'}).join("")+'</div></div>'}
-function cndAtkNote(mc,at){var h="",ac=mc.conds||[],bad=ac.filter(function(x){return/^(Paralyzed|Stunned|Unconscious|Petrified|Incapacitated)$/.test(x.n)});
+function cndAtkNote(mc,at){var h="",ac=mc.conds||[],bad=ac.filter(function(x){return/^(Paralyzed|Stunned|Unconscious|Petrified|Incapacitated|Surprised)$/.test(x.n)});
  if(bad.length)h+='<div class="bad" style="margin-top:6px"><b>'+esc(mc.name)+' is '+esc(bad.map(function(x){return x.n}).join(", "))+' and cannot take actions.</b></div>';
  var en=wsEnOf(mc);if(at.kind==="atk"&&en&&/Pack Tactics/i.test(en.statblock||""))h+='<label class="chk"><input type="checkbox" class="yn" data-tg="pack"'+(ui.tg&&ui.tg.pack?" checked":"")+'><span>Pack Tactics: one of its allies is within 5 ft of the target (advantage)</span></label>';
  return h}
@@ -2364,7 +2362,7 @@ function cndHas(c,names){return(c.conds||[]).some(function(x){return names.index
 function cndAtkMode(mc,tg,at){var ac=mc.conds||[],tc=tg.conds||[],adv=[],dis=[],auto=false,has=function(L,n){return L.some(function(x){return x.n===n})},tx=cndText(mc,at),
  ranged=/Ranged (?:Weapon|Spell) Attack/i.test(tx)&&!/Melee or Ranged|Melee (?:Weapon|Spell) Attack/i.test(tx);
  ["Blinded","Poisoned","Frightened","Prone","Restrained"].forEach(function(n){if(has(ac,n))dis.push(mc.name+" is "+n)});
- if(has(ac,"Invisible"))adv.push(mc.name+" is Invisible");
+ if(has(ac,"Invisible"))adv.push(mc.name+" is Invisible");ac.forEach(function(x){if(x.n==="Exhaustion"&&x.lvl>=3)dis.push(mc.name+" has exhaustion "+x.lvl)});
  ["Blinded","Paralyzed","Petrified","Restrained","Stunned","Unconscious"].forEach(function(n){if(has(tc,n))adv.push(tg.name+" is "+n)});
  if(has(tc,"Prone")){if(ranged)dis.push(tg.name+" is Prone (ranged)");else adv.push(tg.name+" is Prone")}
  if(has(tc,"Invisible"))dis.push(tg.name+" is Invisible");
@@ -2378,7 +2376,7 @@ function cndAtkMode(mc,tg,at){var ac=mc.conds||[],tc=tg.conds||[],adv=[],dis=[],
 var _cnDrawLg=cnDraw;
 cnDraw=function(){var q=ui.cn||[],it=q[0];if(!it||it.t!=="csregen")return _cnDrawLg();
  var c=clCmb(it.cid);if(!c){q.shift();cnDraw();return}var rg=regOf((wsEnOf(c)||{}).statblock);if(!rg){q.shift();cnDraw();return}
- var el=cnOv();el.innerHTML='<div class="clbox cnbox"><div class="atkh"><b>'+esc(c.name)+': Regeneration</b></div><div class="cnbody">'+esc(rg.text)+'<div class="mute" style="margin-top:6px">Currently '+esc(c.hp)+' / '+esc(c.max)+' HP.</div></div><div class="cllist"><button class="pri" data-cd="rgy">Regain '+rg.n+' hit points</button><button data-cd="rgn">It does not work this turn</button></div></div>';el.style.display="flex"};
+ var el=cnOv();el.innerHTML='<div class="clbox cnbox"><div class="atkh"><b>'+esc(c.name)+': Regeneration</b></div><div class="cnbody">'+esc(rg.text)+(it.warn?'<div class="bad" style="margin-top:6px"><b>'+esc(it.warn)+'</b></div>':'')+'<div class="mute" style="margin-top:6px">Currently '+esc(c.hp)+' / '+esc(c.max)+' HP.</div></div><div class="cllist"><button class="'+(it.warn?"":"pri")+'" data-cd="rgy">Regain '+rg.n+' hit points</button><button class="'+(it.warn?"pri":"")+'" data-cd="rgn">It does not work this turn</button></div></div>';el.style.display="flex"};
 document.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest("[data-lm],[data-cd]");if(!b||b.tagName==="INPUT"||b.tagName==="SELECT")return;
  var lm=b.dataset.lm,cd=b.dataset.cd,id=b.dataset.id,c=id?clCmb(id):null,it=(ui.cn||[])[0];
  if(lm==="pip"&&c){var k=b.dataset.k,m=+b.dataset.m,i=+b.dataset.i;c.use=c.use||{};var u=Math.min(m,c.use[k]||0),on=i<m-u;c.use[k]=on?Math.min(m,u+1):Math.max(0,u-1);if(!c.use[k])delete c.use[k];
@@ -2395,10 +2393,129 @@ advanceTurn=function(){_advLg.apply(this,arguments);var cc=clCmb(S.turnId);if(!c
  if(cc.use._leg){delete cc.use._leg;ch=true}
  limOf(en.statblock).forEach(function(L){if(L.rch&&cc.use[L.key]>0){var r=d6x();ch=true;if(r>=L.rch){delete cc.use[L.key];msgs.push("<b>"+esc(L.name)+"</b> recharged (rolled "+r+").")}else msgs.push("<b>"+esc(L.name)+"</b> did not recharge (rolled "+r+", needs "+L.rch+(L.rch<6?"-6":"")+").")}});
  if(msgs.length)clTurnToast("<b>"+esc(cc.name)+"</b>: "+msgs.join(" "));
- var rg=regOf(en.statblock);if(rg&&parseInt(cc.hp,10)>0&&!(ui.cn||[]).some(function(x){return x.t==="csregen"&&x.cid===cc.id}))cnPush({t:"csregen",cid:cc.id});
+ var rg=regOf(en.statblock);if(rg&&parseInt(cc.hp,10)>0&&!(ui.cn||[]).some(function(x){return x.t==="csregen"&&x.cid===cc.id}))cnPush({t:"csregen",cid:cc.id,warn:regWarn(cc,rg)});
  if(ch){save();render()}};
 function d6x(){return 1+Math.floor(Math.random()*6)}
 /*LEG-END*/
+/*EXT-START*/
+var DMGT=["acid","bludgeoning","cold","fire","force","lightning","necrotic","piercing","poison","psychic","radiant","slashing","thunder"];
+function secItems(sb,title){var ls=String(sb||"").split("\n"),i=-1,j,out=[];for(j=0;j<ls.length;j++){if(ls[j].trim()===title){i=j;break}}if(i<0)return out;
+ for(j=i+1;j<ls.length;j++){var L=ls[j];if(/^\s*[A-Z][A-Z ,'\u2019-]+\s*$/.test(L)&&L.trim().length>3)break;var h=L.match(/^\s*([A-Z][^.:(]{1,45}?)(?:\s*\([^)]*\))?\.\s+(.*)$/);if(h)out.push({name:h[1].trim(),text:h[2]})}return out}
+function lairOf(sb){var ls=String(sb||"").split("\n"),i=-1,j,intro="",items=[];for(j=0;j<ls.length;j++){if(ls[j].trim()==="LAIR ACTIONS"){i=j;break}}if(i<0)return null;
+ for(j=i+1;j<ls.length;j++){var L=ls[j];if(/^\s*[A-Z][A-Z ,'\u2019-]+\s*$/.test(L)&&L.trim().length>3)break;if(!L.trim())continue;if(/^\s*[-\u2022*]\s+/.test(L))items.push(L.replace(/^\s*[-\u2022*]\s+/,"").trim());else if(!items.length)intro+=(intro?" ":"")+L.trim();else items[items.length-1]+=" "+L.trim()}
+ return items.length?{intro:intro,items:items,norepeat:/same effect two rounds in a row|can't use the same|cannot use the same/i.test(intro)}:null}
+function isStrahd(c){return c&&c.kind==="mon"&&/^Strahd von Zarovich/i.test(c.name)}
+function cndRounds(d){d=String(d||"");var m=d.match(/(\d+)\s*(minute|hour|round)/i);if(m)return(+m[1])*(/minute/i.test(m[2])?10:/hour/i.test(m[2])?600:1);if(/until the end of (?:the target's|its) next turn/i.test(d))return 1;return 0}
+function cndEscape(mc,at){if(at.kind!=="atk")return null;var t=cndText(mc,at),m=t.match(/[^.]*\bescape DC\s*(\d+)[^.]*\.?(?:\s*[^.]*\b(?:restrained|grappled)\b[^.]*\.)?/i);if(!m)return null;var conds=cndFind(m[0]).filter(function(n){return n==="Grappled"||n==="Restrained"});if(!conds.length)return null;return{dc:+m[1],conds:conds}}
+function exEscSync(row,at){var k=tgCur();if(!(k&&at.kind==="atk"&&row.hit))return;var es=cndEscape(k.mc,at);if(!es)return;
+ es.conds.forEach(function(n){if(cndImmune(row.c,n)){row.cnote=(row.cnote?row.cnote+"; ":"")+row.c.name+" is immune to "+n;return}var o=cndAdd(row.c,{n:n,src:k.mc.name+": "+at.name,esc:es.dc});if(o)row.cids.push(o.id)})}
+function escBon(c){var en=tgEn(c),sb=en?String(en.statblock||""):"",best=-9,g=function(re){var m=sb.match(re);return m?parseInt(m[1].replace(/\u2212/g,"-"),10):null};
+ [g(/Athletics\s*([+\u2212-]\s*\d+)/i),g(/Acrobatics\s*([+\u2212-]\s*\d+)/i),g(/STR\s*\d+\s*\(([+\u2212-]\d+)\)/),g(/DEX\s*\d+\s*\(([+\u2212-]\d+)\)/)].forEach(function(v){if(v!==null&&v>best)best=v});return best<-8?0:best}
+var EXH=["","Disadvantage on ability checks","Speed halved","Disadvantage on attack rolls and saving throws","Hit point maximum halved","Speed reduced to 0","Death"];
+function exEnd(c,r){var cd=(c.conds||[]).filter(function(x){return x.id===r.condId})[0];if(cd&&r.chk&&cd.esc)c.conds=c.conds.filter(function(x){return!(x.esc&&x.src===cd.src)});else cndRemove(c,r.condId)}
+function exAddManual(cc,n,src,dc,ab){var rl=parseInt((document.getElementById("cdrl")||{}).value,10)||0,es=parseInt((document.getElementById("cdesc")||{}).value,10)||0;
+ if(n==="Exhaustion"){var ex=(cc.conds||[]).filter(function(x){return x.n==="Exhaustion"})[0];if(ex){ex.lvl=Math.min(6,(ex.lvl||1)+1);save();return}}
+ cndAdd(cc,{n:n,src:src,dc:dc,ab:ab,end:!!(dc&&ab),rl:rl,esc:es,lvl:n==="Exhaustion"?1:0});save()}
+function cndRow(c){var L=c.conds||[];
+ return'<div class="cdrow">'+L.map(function(x){var lv=x.lvl||0,tip=lv?"Level "+lv+": "+EXH.slice(1,lv+1).join("; "):(x.src||"");
+  return'<span class="cdchip" title="'+esc(tip)+'"><b>'+esc(x.n)+(lv?' '+lv:'')+'</b>'+(x.src?'<span class="mute"> '+esc(x.src)+'</span>':'')+(x.dur?'<span class="mute"> &middot; '+esc(x.dur)+'</span>':x.rl?'<span class="mute"> &middot; '+x.rl+' rounds</span>':'')+
+  (x.n==="Exhaustion"?'<button data-cd="exl" data-id="'+c.id+'" data-cid="'+x.id+'" data-d="-1" aria-label="Lower exhaustion">&minus;</button><button data-cd="exl" data-id="'+c.id+'" data-cid="'+x.id+'" data-d="1" aria-label="Raise exhaustion">+</button>':'')+
+  (x.esc?'<button data-cd="esc" data-id="'+c.id+'" data-cid="'+x.id+'">Escape (DC '+x.esc+')</button>':'')+
+  (x.end&&x.dc?'<button data-cd="sv" data-id="'+c.id+'" data-cid="'+x.id+'">Save to end (DC '+x.dc+' '+esc(x.ab.toUpperCase())+')</button>':'')+'<button class="cdx" data-cd="rm" data-id="'+c.id+'" data-cid="'+x.id+'" aria-label="Remove '+esc(x.n)+'">&times;</button></span>'}).join("")+'<button class="cdadd" data-cd="add" data-id="'+c.id+'">+ Condition</button></div>'}
+function exRow(c){if(!ui.atk)return"";var h='<div class="cdrow"><button data-ex="ra" data-id="'+c.id+'"'+(c.ra?' class="used"':'')+'>Reaction: '+(c.ra?"used":"ready")+'</button><button data-ex="ba" data-id="'+c.id+'"'+(c.ba?' class="used"':'')+'>Bonus action: '+(c.ba?"used":"ready")+'</button>';
+ if(c.kind==="mon"){var en=wsEnOf(c);if(en&&en.statblock){var sb=en.statblock,names=actList(en).map(function(a){return cdBase(a.name)});
+  secItems(sb,"REACTIONS").forEach(function(e,i){if(names.indexOf(cdBase(e.name))<0)h+='<button data-ex="react" data-id="'+c.id+'" data-i="'+i+'">'+esc(e.name)+' (reaction)</button>'});
+  secItems(sb,"BONUS ACTIONS").forEach(function(e,i){if(names.indexOf(cdBase(e.name))<0)h+='<button data-ex="bonus" data-id="'+c.id+'" data-i="'+i+'">'+esc(e.name)+' (bonus)</button>'});
+  h+='<button data-ex="opp" data-id="'+c.id+'">Opportunity attack</button><button data-ex="summon" data-id="'+c.id+'">Summon creatures</button>'}}
+ return h+'</div>'}
+function spLimit(a){var g=String(a.grp||"");if(!a.sp||!g)return null;var m=g.match(/(\d+)\s*slots?/i);if(m)return{key:"sp:"+g,max:+m[1]};m=g.match(/(\d+)\s*\/\s*(?:day|long rest|short rest)(\s+each)?/i);if(m)return{key:"sp:"+g+(m[2]?":"+a.name:""),max:+m[1]};return null}
+function spMark(mc,a){var L=spLimit(a);if(!L)return;mc.use=mc.use||{};mc.use[L.key]=Math.min(L.max,(mc.use[L.key]||0)+1);save()}
+function spPips(c,grp){var m=String(grp).match(/(\d+)\s*slots?/i);if(!m)return"";return' '+lgPips(c,"sp:"+grp,+m[1],grp)}
+var _tgRollEx=tgRoll;tgRoll=function(){var T=ui.tg,k=T&&tgCur(),first=T&&!T.spUsed;_tgRollEx.apply(this,arguments);if(T&&k&&first&&k.at.sp){T.spUsed=1;spMark(k.mc,k.at)}};
+var _atkOffEx=atkOff;atkOff=function(c,x){var r=_atkOffEx(c,x);if(r)return r;var L=spLimit(x);if(L&&((c.use||{})[L.key]||0)>=L.max)return"No uses left";return""};
+function dtOf(what){var w=String(what||"").toLowerCase(),out={};DMGT.forEach(function(t){if(w.indexOf(t)>-1)out[t]=1});if(/silver/.test(w))out.silvered=1;
+ var nm=String(what||"").replace(/\s*[\(\[].*$/,"").trim().toLowerCase();if(nm){try{var sp=spAll().filter(function(s){return s.n.toLowerCase()===nm})[0];if(sp){out.spell=1;(sp.dm||[]).forEach(function(d){if(d.t)out[String(d.t).toLowerCase()]=1})}}catch(e){}}return out}
+function regWarn(c,rg){var T=(ui.dt||{})[c.id]||{},tx=rg.text.toLowerCase(),hit=[];DMGT.forEach(function(t){if(tx.indexOf(t)>-1&&T[t])hit.push(t)});if(/silvered/.test(tx)&&T.silvered)hit.push("silvered weapon");if(/a spell/.test(tx)&&T.spell)hit.push("a spell");
+ ui.dt=ui.dt||{};ui.dt[c.id]={};return hit.length?c.name+" took "+hit.join(" and ")+" damage since its last turn, so Regeneration does not function.":""}
+var _dmgToEx=dmgTo;
+dmgTo=function(tg,d){d=Math.max(0,d|0);if(!d)return _dmgToEx(tg,d);
+ if(tg.kind==="mon"){ui.dt=ui.dt||{};var m=ui.dt[tg.id]=ui.dt[tg.id]||{},o=dtOf(ui.cl&&ui.cl.what);Object.keys(o).forEach(function(k){m[k]=1})}
+ var t0=parseInt(tg.thp,10)||0;if(t0>0){var a0=Math.min(t0,d);tg.thp=t0-a0>0?String(t0-a0):"";d-=a0}
+ if(isStrahd(tg)&&(S.heart=S.heart||{hp:50,on:true})&&S.heart.on&&S.heart.hp>0&&d>0){var a=Math.min(S.heart.hp,d);S.heart.hp-=a;d-=a;clTurnToast("The <b>Heart of Sorrow</b> absorbs "+a+" damage ("+S.heart.hp+" of 50 left)."+(S.heart.hp===0?" <b>The Heart is destroyed.</b>":""));save()}
+ return _dmgToEx(tg,d)};
+/* panel */
+var UND=[],UL=0;
+function undoSnap(){var o=JSON.stringify({c:S.combatants,r:S.round,t:S.turnId,f:S.fx,l:S.clog,p:S.cpend,h:S.heart,ll:S.lairLast});if(UND.length&&UND[UND.length-1]===o)return;UND.push(o);if(UND.length>40)UND.shift()}
+function undoGo(){var cur=JSON.stringify({c:S.combatants,r:S.round,t:S.turnId,f:S.fx,l:S.clog,p:S.cpend,h:S.heart,ll:S.lairLast}),o;while(UND.length&&UND[UND.length-1]===cur)UND.pop();o=UND.pop();if(!o)return;var d=JSON.parse(o);
+ S.combatants=d.c;S.round=d.r;S.turnId=d.t;S.fx=d.f;S.clog=d.l;S.cpend=d.p;S.heart=d.h;S.lairLast=d.ll;var el=document.getElementById("tgpop");if(el)el.style.display="none";ui.tg=null;ui.cn=[];cnDraw();
+ S.combatants.forEach(function(c){try{pcFromCombat(c)}catch(e){}});save();render();clTurnToast("Last change undone. Spell slots and uses are not restored.")}
+function uw(fn){return function(){var first=!UL;if(first)undoSnap();UL++;try{return fn.apply(this,arguments)}finally{UL--}}}
+function exPanel(){if(!S.combatants.length)return"";var lairy=S.combatants.some(function(c){return c.kind==="mon"&&c.hp!==""&&parseInt(c.hp,10)>0&&lairOf((wsEnOf(c)||{}).statblock)}),st=S.combatants.filter(isStrahd)[0];
+ var h='<div class="card" style="margin-bottom:14px"><h3>Encounter tools</h3><div class="cdrow"><button data-ex="undo"'+(UND.length?'':' disabled')+'>Undo last change'+(UND.length?' ('+UND.length+')':'')+'</button><button data-ex="surp-en">Enemies are surprised</button><button data-ex="surp-pc">Party is surprised</button>'+(lairy?'<button data-ex="lair" class="'+(S.lair?"pri":"")+'">Lair actions: '+(S.lair?"on":"off")+'</button>':'')+'</div>';
+ if(lairy&&S.lair)h+='<div class="mute" style="margin-top:6px">A popup lists the lair options when the order passes initiative count 20.</div>';
+ if(st){var hp=S.heart||{hp:50,on:true};h+='<div class="legp"><div class="sprow2"><b>Heart of Sorrow</b><label class="hpf"><span class="tl">HP</span><input data-exh="1" inputmode="numeric" value="'+hp.hp+'" style="width:64px" aria-label="Heart of Sorrow hit points"></label><span class="mute">/ 50</span><button data-ex="heartt" class="'+(hp.on?"pri":"")+'">Damage transferred: '+(hp.on?"on":"off")+'</button><button data-ex="heartr">Restore (dawn)</button></div><div class="mute">While on, damage Strahd takes goes to the Heart first, and anything beyond its hit points passes to him.</div></div>'}
+ return h+'</div>'}
+var _esetEX=esetCard;esetCard=function(){return exPanel()+_esetEX.apply(this,arguments)};
+var _partyEx=party;party=function(){var L=S.combatants.filter(function(c){return c.kind==="pc"&&(c.conds||[]).length});return(L.length?'<div class="card" style="margin-bottom:14px"><h3>Conditions in the current encounter</h3>'+L.map(function(c){return'<div><b>'+esc(c.name)+'</b>'+cndRow(c)+'</div>'}).join("")+'</div>':'')+_partyEx.apply(this,arguments)};
+/* popups */
+var _cnDrawEx=cnDraw;
+cnDraw=function(){var q=ui.cn||[],it=q[0];if(!it||["lair","cexp","csum","copp"].indexOf(it.t)<0)return _cnDrawEx();
+ var el=cnOv(),h='',c=it.cid?clCmb(it.cid):null;
+ if(it.t==="lair"){it.used=it.used||{};var ms=S.combatants.filter(function(x){return x.kind==="mon"&&parseInt(x.hp,10)>0&&lairOf((wsEnOf(x)||{}).statblock)});
+  h+='<div class="atkh"><b>Initiative count 20: lair actions</b></div><div style="max-height:62vh;overflow:auto">'+ms.map(function(m){var lo=lairOf(wsEnOf(m).statblock),last=(S.lairLast||{})[m.id];
+   return'<div class="tgrow"><b>'+esc(m.name)+'</b><div class="mute">'+esc(lo.intro)+'</div>'+lo.items.map(function(t,i){var dis=it.used[m.id]!==undefined||(lo.norepeat&&last===i);return'<div class="legp"><div>'+esc(t)+'</div><button data-ex="lairuse" data-id="'+m.id+'" data-i="'+i+'"'+(dis?' disabled':'')+'>'+(it.used[m.id]===i?"Used this round":lo.norepeat&&last===i&&it.used[m.id]===undefined?"Used last round":"Use this one")+'</button></div>'}).join("")+'</div>'}).join("")+'</div><button class="pri" data-cd="close">Done</button>'}
+ else if(it.t==="cexp"){var cd=c&&(c.conds||[]).filter(function(x){return x.id===it.condId})[0];if(!cd){q.shift();cnDraw();return}
+  h+='<div class="atkh"><b>Condition has run its time</b></div><div class="cnbody"><b>'+esc(c.name)+'</b> has been <b>'+esc(cd.n)+'</b>'+(cd.src?' ('+esc(cd.src)+')':'')+' for '+(S.round-cd.r0)+' rounds. Its duration was '+(cd.dur||cd.rl+' rounds')+'.</div><div class="cllist"><button class="pri" data-cd="exr">Remove it</button><button data-cd="exk">Keep it</button></div>'}
+ else if(it.t==="copp"){var en=c&&wsEnOf(c),a=en?actList(en):[];
+  h+='<div class="atkh"><b>'+(c?esc(c.name):"")+': opportunity attack</b></div><div class="cnbody">Uses its reaction. Choose the melee attack.</div><div class="cllist">'+a.map(function(x,i){return x.kind==="atk"&&!x.leg&&!x.sp&&!(/Ranged (?:Weapon|Spell) Attack/i.test(cndText(c,x))&&!/Melee/i.test(cndText(c,x)))?'<button data-ex="oppgo" data-id="'+c.id+'" data-i="'+i+'">'+esc(tgLabel(x))+'</button>':''}).join("")+'</div><button data-cd="close">Cancel</button>'}
+ else if(it.t==="csum"){if(!c){q.shift();cnDraw();return}it.sugg=it.sugg||exSugg(c);
+  h+='<div class="atkh"><b>'+esc(c.name)+': summon creatures</b></div><div class="cnbody">New creatures are added to the fight on '+esc(c.name)+"'s initiative.</div>"+(it.sugg.length?'<div class="mute">From its statblock:</div><div class="cllist">'+it.sugg.map(function(s,i){return'<button class="pri" data-ex="sumadd" data-id="'+c.id+'" data-i="'+i+'">Add '+s.n+' &times; '+esc(s.name)+(s.note?' <span class="mute">('+esc(s.note)+')</span>':'')+'</button>'}).join("")+'</div>':'')+
+   '<div class="sprow2"><label class="f">Any creature<select id="sumn">'+S.enemies.map(function(e){return e.name}).sort().map(function(n){return'<option>'+esc(n)+'</option>'}).join("")+'</select></label><label class="hpf"><span class="tl">How many</span><input id="sumc" inputmode="numeric" value="1" style="width:64px"></label><button data-ex="summan" data-id="'+c.id+'">Add</button></div><button data-cd="close">Close</button>'}
+ el.innerHTML='<div class="clbox cnbox">'+h+'</div>';el.style.display="flex"};
+function exSugg(c){var en=wsEnOf(c),out=[],seen={};if(!en)return out;
+ String(en.statblock||"").split("\n").forEach(function(L){if(!/\b(calls?|summons?|creates?|conjures?|animates?|raises?)\b/i.test(L))return;var an=(L.match(/^\s*([A-Z][^.:(]{1,45}?)(?:\s*\([^)]*\))?\.\s/)||[])[1]||"";
+  S.enemies.forEach(function(e){if(e.ref===c.ref||e.id===c.ref||e.name.length<4||seen[e.name])return;var nm=e.name.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g,"\\$&").replace(/^swarm of/,"swarms? of"),pl=nm.replace(/f$/,"ve")+"s?|"+nm+"s?",re=new RegExp("\\b(?:"+pl+")\\b","i"),m=re.exec(L);if(!m)return;
+   var before=L.slice(Math.max(0,m.index-45),m.index),dm=before.match(/(\d+d\d+(?:\s*[+\u2212-]\s*\d+)?|\d+)(?=[^\d]*$)/),n=1,note=an;if(dm){try{n=/d/.test(dm[1])?spDiceRoll(dm[1]).total:+dm[1]}catch(x){n=1}note=an+" ("+dm[1]+")"}
+   seen[e.name]=1;out.push({name:e.name,n:Math.max(1,n|0),note:note})})});return out}
+function exSummon(c,name,n){var en=S.enemies.filter(function(x){return x.name===name})[0];n=Math.max(1,Math.min(30,n|0));if(!en)return;var before=S.combatants.map(function(x){return x.id});addEnemies(en,n);
+ S.combatants.forEach(function(x){if(before.indexOf(x.id)<0)x.init=String(c.init)});save();render();clTurnToast("<b>"+esc(c.name)+"</b> brings in "+n+" &times; "+esc(name)+".")}
+/* clicks */
+document.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest("[data-ex],[data-cd]");if(!b||b.tagName==="INPUT"||b.tagName==="SELECT"||b.disabled)return;var x=b.dataset.ex,cd=b.dataset.cd,id=b.dataset.id,c=id?clCmb(id):null,it=(ui.cn||[])[0];
+ if(x){undoSnap();
+  if(x==="undo")undoGo();
+  else if(x==="ra"&&c){c.ra=!c.ra;save();render()}
+  else if(x==="ba"&&c){c.ba=!c.ba;save();render()}
+  else if(x==="react"&&c){var en=wsEnOf(c),e1=secItems(en.statblock,"REACTIONS")[+b.dataset.i];if(e1){var was=c.ra;c.ra=true;save();render();cnPush({t:"note",title:c.name+": "+e1.name+" (reaction)",msg:esc(e1.text)+(was?'<div class="bad" style="margin-top:6px">Its reaction was already used this round.</div>':'<div class="mute" style="margin-top:6px">Reaction marked as used.</div>')})}}
+  else if(x==="bonus"&&c){var en2=wsEnOf(c),e2=secItems(en2.statblock,"BONUS ACTIONS")[+b.dataset.i];if(e2){var was2=c.ba;c.ba=true;save();render();cnPush({t:"note",title:c.name+": "+e2.name+" (bonus action)",msg:esc(e2.text)+(was2?'<div class="bad" style="margin-top:6px">Its bonus action was already used this turn.</div>':'<div class="mute" style="margin-top:6px">Bonus action marked as used.</div>')})}}
+  else if(x==="opp"&&c){cnPush({t:"copp",cid:c.id})}
+  else if(x==="oppgo"&&c){var en3=wsEnOf(c),a3=actList(en3),at3=a3[+b.dataset.i];cnShift();if(at3){c.ra=true;var cl={};Object.keys(at3).forEach(function(q){cl[q]=at3[q]});cl.noCount=true;save();render();tgOpen(c.id,+b.dataset.i,cl)}}
+  else if(x==="summon"&&c){cnPush({t:"csum",cid:c.id})}
+  else if(x==="sumadd"&&c&&it&&it.sugg){var s=it.sugg[+b.dataset.i];cnShift();if(s)exSummon(c,s.name,s.n)}
+  else if(x==="summan"&&c){var sel=document.getElementById("sumn"),cn=document.getElementById("sumc");cnShift();if(sel)exSummon(c,sel.value,parseInt(cn&&cn.value,10)||1)}
+  else if(x==="surp-en"||x==="surp-pc"){S.combatants.forEach(function(q){if((x==="surp-pc")===(q.kind==="pc"))cndAdd(q,{n:"Surprised",src:"Surprise round"})});save();render()}
+  else if(x==="lair"){S.lair=!S.lair;save();render()}
+  else if(x==="heartt"){S.heart=S.heart||{hp:50,on:true};S.heart.on=!S.heart.on;save();render()}
+  else if(x==="heartr"){S.heart={hp:50,on:S.heart?S.heart.on:true};save();render()}
+  else if(x==="lairuse"&&c&&it&&it.t==="lair"){it.used=it.used||{};it.used[c.id]=+b.dataset.i;S.lairLast=S.lairLast||{};S.lairLast[c.id]=+b.dataset.i;var lo=lairOf(wsEnOf(c).statblock);save();cnDraw();clTurnToast("<b>"+esc(c.name)+"</b> lair action: "+esc(lo.items[+b.dataset.i]))}
+  return}
+ if(cd==="exl"&&c){var cn2=(c.conds||[]).filter(function(q){return q.id===b.dataset.cid})[0];if(cn2){undoSnap();cn2.lvl=Math.min(6,Math.max(0,(cn2.lvl||1)+(+b.dataset.d)));if(!cn2.lvl)cndRemove(c,cn2.id);else if(cn2.lvl>=6)clTurnToast("<b>"+esc(c.name)+"</b> reaches exhaustion level 6 and dies.");save();render()}}
+ else if(cd==="esc"&&c){var cn3=(c.conds||[]).filter(function(q){return q.id===b.dataset.cid})[0];if(cn3)cnPush({t:"csend",cid:c.id,rows:[{id:c.id,condId:cn3.id,condName:cn3.n,dc:cn3.esc,ab:"str",chk:true}]})}
+ else if(cd==="exr"&&it&&it.t==="cexp"){undoSnap();var cc=clCmb(it.cid);if(cc)cndRemove(cc,it.condId);cnShift();save();render()}
+ else if(cd==="exk"&&it&&it.t==="cexp"){var cc2=clCmb(it.cid),k2=cc2&&(cc2.conds||[]).filter(function(q){return q.id===it.condId})[0];if(k2)k2.alert=1;cnShift();save();render()}});
+document.addEventListener("change",function(e){var t=e.target;if(t&&t.dataset&&t.dataset.exh){undoSnap();S.heart=S.heart||{hp:50,on:true};S.heart.hp=Math.max(0,Math.min(50,parseInt(t.value,10)||0));save();render()}});
+/* turn hooks */
+var _advEx=advanceTurn;
+advanceTurn=function(){var pid=S.turnId,p=pid&&clCmb(pid),r0=S.round,ip=p?parseFloat(p.init):Infinity;
+ if(p&&p.conds&&p.conds.some(function(x){return x.n==="Surprised"}))p.conds=p.conds.filter(function(x){return x.n!=="Surprised"});
+ _advEx.apply(this,arguments);var cc=clCmb(S.turnId);if(!cc)return;cc.ra=false;cc.ba=false;
+ if(S.round>r0){S.combatants.forEach(function(q){(q.conds||[]).forEach(function(x){if(x.rl>0&&!x.alert&&S.round-x.r0>=x.rl){x.alert=1;cnPush({t:"cexp",cid:q.id,condId:x.id})}})})}
+ if((cc.conds||[]).some(function(x){return x.n==="Surprised"}))clTurnToast("<b>"+esc(cc.name)+"</b> is surprised: no movement, action or reaction this turn.");
+ if(S.lair){var inn=parseFloat(cc.init),cross=isNaN(inn)?false:(S.round>r0?inn<20:(ip>=20&&inn<20));
+  if(cross&&S.combatants.some(function(m){return m.kind==="mon"&&parseInt(m.hp,10)>0&&lairOf((wsEnOf(m)||{}).statblock)}))cnPush({t:"lair"})}
+ save();render()};
+/* undo wrappers last, so they are outermost */
+advanceTurn=uw(advanceTurn);dmgTo=uw(dmgTo);clHeal=uw(clHeal);tgRoll=uw(tgRoll);cdResolve=uw(cdResolve);clHitGo=uw(clHitGo);clCastGo=uw(clCastGo);
+/*EXT-END*/
 function restCard(){return'<div class="card"><h3>Rests</h3><div class="mute">Applies to everyone in the party tab: hit points, hit dice and spell slots.</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button data-a="restshort">Short rest</button><button class="pri" data-a="restlong">Long rest</button></div></div>'}
 function restOv(){var el=document.getElementById("restov");if(!el){el=document.createElement("div");el.id="restov";document.body.appendChild(el);
  el.addEventListener("click",function(e){var b=e.target.closest("[data-rs]");if(e.target===el){el.style.display="none";return}if(!b)return;var a=b.dataset.rs;if(a==="close")el.style.display="none";else if(a==="longgo")restLong();else if(a==="shortgo")restShort();else if(a==="goenc")restGoEnc(b)})}
