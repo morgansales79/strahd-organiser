@@ -477,7 +477,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=122;var APPLABEL="1.311";
+var APPV=123;var APPLABEL="1.312";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -1897,14 +1897,12 @@ function impFinish(m){if(!m)return;var T=String(m.sheet||"");if(!T.trim())return
  var a=pref(impMatch(eqL,arm))[0];if(a){e.armor=a.it.n;var ab=a.line.match(/\+(\d)\s*(?:armou?r|mail|plate|leather)|(?:armou?r|mail|plate|leather)[^+]{0,12}\+(\d)/i);e.ab=ab?Math.min(3,+(ab[1]||ab[2])):0;n++}
  var sh=impMatch(eqL,shl)[0];if(sh){e.shield="Shield";var sb=sh.line.match(/\+(\d)/);e.sb=sb?Math.min(3,+sb[1]):0;n++}
  var mg=pref(impMatch(eqL,mag)),sm={};mg=mg.filter(function(f){if(sm[f.it.n])return false;sm[f.it.n]=1;return true}).slice(0,3);if(mg.length){e.att=["","",""];mg.forEach(function(f,i){e.att[i]=f.it.n;n++})}
- if(n){notes.push(n+" equipment slot"+(n===1?"":"s"));if(!String(m.ac||"").trim())eqApply(m)}
+ if(n){notes.push(n+" equipment slot"+(n===1?"":"s"));if(e.armor||e.shield||String(m.ac||"").trim()==="")eqApply(m)}
  /* spells */
  var spL=FS.length?FS:sec.sp,c=pcSpC(m),ns=0;
  if(spL.length&&c){var all=spAll(),names=impNames(all.map(function(sp){return{n:sp.n,sp:sp,c:"",k:sp.k}})).map(function(x){return{k:x.k,it:x.it.sp}}),hit=impMatch(spL,names),have={};
   m.kn=sarr(m.kn);m.pr=sarr(m.pr);hit.forEach(function(f){var sp=f.it;if(have[sp.k])return;have[sp.k]=1;
-   if(sp.l===0){if(m.kn.indexOf(sp.k)<0){m.kn.push(sp.k);ns++}}
-   else if(c.learn){if(m.kn.indexOf(sp.k)<0){m.kn.push(sp.k);ns++}if(m.pr.indexOf(sp.k)<0)m.pr.push(sp.k)}
-   else if(m.pr.indexOf(sp.k)<0){m.pr.push(sp.k);ns++}});
+   if(m.kn.indexOf(sp.k)<0){m.kn.push(sp.k);ns++}});
   if(ns)notes.push(ns+" spell"+(ns===1?"":"s"))}
  if(notes.length)try{clTurnToast("Imported from the sheet: "+notes.join(" and ")+".")}catch(x){}}
 /*EQ-END*/
