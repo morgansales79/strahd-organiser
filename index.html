@@ -496,7 +496,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=142;var APPLABEL="1.410";
+var APPV=143;var APPLABEL="1.420";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -1608,7 +1608,8 @@ function clAtkLim(c){var m=tgMemb(c);if(!m)return 0;
  return clExtraAtk(m)}
 function clActDone(c,kind){if(S.noauto||!c||c.pet||S.turnId!==c.id||!tgMemb(c))return;
  var pa=ui.pa&&ui.pa.id===S.turnId?ui.pa:(ui.pa={id:S.turnId,atk:0}),lim=clAtkLim(c);
- if(kind==="atk"){pa.atk++;if(pa.atk<lim){clTurnToast("<b>"+esc(c.name)+"</b>: attack "+pa.atk+" of "+lim+". Turn continues.");return}}
+ if(kind==="atk"){if(pa.off){pa.off=0;pa.offDone=1}else{pa.atk++;if(pa.atk<lim){clTurnToast("<b>"+esc(c.name)+"</b>: attack "+pa.atk+" of "+lim+". Turn continues.");return}
+  if(!pa.offDone&&!pa.offAsk&&clDualIdx(c).length>1){pa.offAsk=1;cnPush({t:"offhand",cid:c.id});return}}}
  clTurnToast("<b>"+esc(c.name)+"</b>'s action is used, so the turn has ended.");advanceTurn()}
 function clActKind(sp){var t=String(sp&&sp.t||"");return/bonus action/i.test(t)?"bonus":/reaction/i.test(t)?"reaction":"action"}
 /* hit */
@@ -1662,13 +1663,13 @@ function clCastDraw(){var Cs=ui.cs;if(!Cs)return;var c=clCmb(Cs.cid),m=c&&tgMemb
   else h+='<div class="mute">Cantrip, no slot used.</div>';
   var hasD=!!(sp.dm&&sp.dm.length),hasH=!!(CL_HEAL[sp.n]||/regains? (?:a number of )?hit points|hit points (?:equal|you regain)|regain hit points/i.test(sp.x||"")),rd0=!!CL_RIDER[sp.n],self0=/^self/i.test(sp.r||"")&&!clIsAoe(sp),mds=rd0?["util"]:Cs.allm?["dmg","heal","util"]:(hasD||hasH)?[hasD?"dmg":"",hasH?"heal":"","util"].filter(Boolean):["util"];
   h+='<div class="sprow2">'+[["dmg","Damage"],["heal","Healing"],["util",self0||rd0?"Self / no HP change":"No HP change"]].filter(function(x){return mds.indexOf(x[0])>-1}).map(function(x){return'<button class="'+(Cs.mode===x[0]?"pri":"")+'" data-clc="mode" data-v="'+x[0]+'">'+x[1]+'</button>'}).join("")+(mds.length<3&&!rd0?'<button data-clc="allm">Other options</button>':'')+'</div>';
-  if(Cs.mode==="util"&&!rd0&&!self0){if(!Cs.uinit){Cs.sel={};Cs.sel[c.id]=true;Cs.uinit=true}h+='<div class="mute">Who is affected? Yourself or any willing creatures (tick as many as the spell allows).</div><div class="cllist">'+clTgtRows(S.combatants.slice().sort(function(a,b){return(a.id===c.id?0:1)-(b.id===c.id?0:1)||(a.kind==="pc"?0:1)-(b.kind==="pc"?0:1)}),"checkbox",Cs.sel,"",null,false)+'</div>'}
+  if(Cs.mode==="util"&&!rd0&&!self0){if(!Cs.uinit){Cs.sel={};Cs.sel[c.id]=true;Cs.uinit=true}h+='<div class="mute">'+(spMulti(sp)?'Who is affected? Yourself or any willing creatures (tick as many as the spell allows).':'Who is affected? Yourself or one willing creature.')+'</div><div class="cllist">'+clTgtRows(S.combatants.slice().sort(function(a,b){return(a.id===c.id?0:1)-(b.id===c.id?0:1)||(a.kind==="pc"?0:1)-(b.kind==="pc"?0:1)}),spMulti(sp)?"checkbox":"radio",Cs.sel,"",null,false)+'</div>'}
   if(Cs.mode==="dmg"&&sp.dc)h+='<div class="mute">'+SPABIL[sp.dc[0]]+' save'+(sp.dc[1]==="half"?', half damage on success':sp.dc[1]==="none"?', no damage on success':'')+'. Enemy saves are rolled for you; enter the damage the player rolled for a failed save.</div>';
   if(Cs.mode==="dmg"){h+='<div class="mute">'+(sp.dm?esc(spDiceOf(sp,lv).map(function(x){return x.d+(x.t?" "+x.t:"")}).join(" + ")):"No dice saved for this spell. Type the damage.")+'</div>'}
   if(Cs.mode!=="util"&&!aoe){
    h+='<div class="sprow2"><label class="hpf"><span class="tl">'+(Cs.mode==="heal"?"Healing":"Damage")+'</span><input id="clcamt" data-clc="amt" inputmode="numeric" value="'+esc(Cs.amt)+'" placeholder="Amount" style="width:100px"></label>'+
     (Cs.mode==="heal"?'<label class="hpf"><span class="tl">Dice</span><input data-clc="dice" value="'+esc(Cs.dice)+'" placeholder="2d8+4" style="width:110px"></label>':'')+'<button data-clc="roll">Roll</button></div>'+(Cs.roll?'<div class="mute">'+esc(Cs.roll)+'</div>':'');
-   if(Cs.mode==="heal"&&self0){h+='<div class="mute">This spell targets only the caster, so '+esc(c.name)+' is healed.</div>'}else{var tl=clTargets("");if(Cs.mode==="heal")tl=S.combatants.slice().sort(function(a,b){return(a.kind==="pc"?0:1)-(b.kind==="pc"?0:1)});var multi=Cs.mode==="heal"&&/mass|prayer of|aura of|circle of|vitality/i.test(sp.n);h+='<div class="mute">'+(Cs.mode==="heal"?(multi?"Choose everyone who is healed":"Choose who is healed"):"Choose the target")+'</div><div class="cllist">'+clTgtRows(tl,multi?"checkbox":"radio",Cs.sel,"",Cs.mode==="dmg"?dt:"",true)+'</div>'}}
+   if(Cs.mode==="heal"&&self0){h+='<div class="mute">This spell targets only the caster, so '+esc(c.name)+' is healed.</div>'}else{var tl=clTargets("");if(Cs.mode==="heal")tl=S.combatants.slice().sort(function(a,b){return(a.kind==="pc"?0:1)-(b.kind==="pc"?0:1)});var multi=Cs.mode==="heal"&&(/mass|prayer of|aura of|circle of|vitality/i.test(sp.n)||spMulti(sp));h+='<div class="mute">'+(Cs.mode==="heal"?(multi?"Choose everyone who is healed":"Choose who is healed"):"Choose the target")+'</div><div class="cllist">'+clTgtRows(tl,multi?"checkbox":"radio",Cs.sel,"",Cs.mode==="dmg"?dt:"",true)+'</div>'}}
   if(aoe)h+='<div class="mute">This is an area spell. The slot is used now, then the group damage window opens with the spell ready.</div>';
   if(Cs.err)h+='<div style="color:#c0334d">'+esc(Cs.err)+'</div>';
   h+='<div style="display:flex;gap:8px"><button class="pri" data-clc="go" style="flex:1"'+(sp.l>0&&!so2.length&&!Cs.free?" disabled":"")+'>'+(aoe?"Cast and open group damage":Cs.mode==="util"?"Cast":Cs.mode==="heal"?"Cast and heal":"Cast and apply damage")+'</button><button data-clc="back">Back</button><button data-clc="x">Cancel</button></div>';
@@ -2095,6 +2096,17 @@ document.addEventListener("click",function(e){var b=e.target.closest&&e.target.c
 var _renderLK=render;render=function(){var r=_renderLK.apply(this,arguments);try{pcLockApply()}catch(x){}return r};
 /*LOCK-END*/
 
+
+/*DW-START*/
+function clDualIdx(c){var m=tgMemb(c);if(!m||c.wsOn)return[];var e=pcEq(m);if(e.shield)return[];var out=[];
+ for(var i=0;i<(e.dual?3:2);i++){var w=e.w[i],it=w&&eqFind(w);if(!it)continue;var pr=it.pr||"";if(/Ranged/i.test(it.c)||/ammunition/i.test(pr)||/two-handed|heavy/i.test(pr))continue;if(!e.dual&&!/light/i.test(pr))continue;out.push(i)}
+ return out}
+function clOffGo(cid,slot){var c=clCmb(cid),m=c&&tgMemb(c);if(!c||!m)return;var e=pcEq(m),w=e.w[slot],nm=w+(e.b[slot]?" +"+e.b[slot]:""),a=clAtks(c),idx=-1;a.forEach(function(x,i){if(idx<0&&x.n===nm)idx=i});if(idx<0)return;
+ var pa=ui.pa&&ui.pa.id===S.turnId?ui.pa:(ui.pa={id:S.turnId,atk:0});pa.off=1;clHitOpen(cid,idx,true)}
+var _clHitOpenDW=clHitOpen;clHitOpen=function(id,i,off){var pa=ui.pa&&ui.pa.id===S.turnId?ui.pa:null;if(pa&&!off)pa.off=0;_clHitOpenDW.call(this,id,i);
+ if(off&&ui.ht){var c=clCmb(id),m=c&&tgMemb(c),twf=m&&/two-weapon fighting/i.test(String(m.sheet||"")+" "+String(m.notes||"")),a=clAtks(c)[+i],it=a&&eqFind(String(a.n).replace(/ \+\d+$/,""));
+  if(it&&it.dmg&&!twf){var b=(String(a.n).match(/\+(\d+)$/)||[0,0])[1]|0;ui.ht.hint=it.dmg+(b?"+"+b:"")+(it.dt?" "+it.dt:"")+" (off-hand: no ability modifier)"}else if(ui.ht)ui.ht.hint=(ui.ht.hint||"")+" (off-hand)";ui.ht.what=String(ui.ht.what||"")+" (off-hand)";clHitDraw()}};
+/*DW-END*/
 /*FX-START*/
 /* spell data patches: ongoing and follow-up damage */
 (function(){var up=function(a,b,c,d){var o={};for(var i=a;i<=9;i++)o[i]=(b+(i-a)*c)+d;return o};
@@ -2126,6 +2138,7 @@ var FXTAB={
  "Hunter's Mark":[{k:"mod",act:"bonus",lbl:"Move the mark",note:"When the marked creature drops to 0 hit points, use a bonus action on a later turn to mark a new creature."}],
  "Eyebite":[{k:"mod",act:"action",lbl:"Target a new creature",note:"On each of your turns for the duration, use an action to target another creature with the same effect."}]
 };
+function spMulti(sp){if(!sp)return true;if(sp.custom)return true;var x=String(sp.x||"").split(/\n/)[0];return/(?:up to|as many as)\s+(?:two|three|four|five|six|seven|eight|nine|ten|twelve|\d+)\s+(?:willing |other |different |additional )?(?:creatures|humanoids|targets|allies|beasts)|each creature|creatures of your choice|any number of|all creatures|you and up to|willing creatures|creatures that you choose|up to \w+ creatures/i.test(x)}
 function fxDur(sp){var d=String(sp&&sp.d||"");if(/instant|special|dispelled/i.test(d))return null;var m=d.match(/(\d+)\s*(round|minute|hour|day)/i);if(!m)return null;var n=+m[1],u=m[2].toLowerCase(),r=n*(u==="round"?1:u==="minute"?10:u==="hour"?600:14400);if(!sp.cc&&r>100)return null;return r}
 function fxById(id){return(S.fx||[]).filter(function(f){return f.id===id})[0]}
 function fxRemove(id){S.fx=(S.fx||[]).filter(function(f){return f.id!==id});save()}
@@ -2169,13 +2182,15 @@ function cnDraw(){var q=ui.cn||[],el=cnOv();if(!q.length){el.style.display="none
   h+='<div class="atkh"><b>Concentration broken</b></div><div class="cnbody"><b>'+nm+'</b> '+(it.reason==="down"?'dropped to 0 hit points and':'failed the save and')+' loses concentration. <b>'+esc(f.n)+'</b> ends.'+(fxNames(f).length?'<br><span class="mute">Was affecting: '+esc(fxNames(f).join(", "))+'</span>':'')+'</div><button class="pri" data-cn="ok">OK</button>'}
  else if(it.t==="timeout"){if(!f){q.shift();cnDraw();return}
   h+='<div class="atkh"><b>Spell ended</b></div><div class="cnbody"><b>'+esc(f.n)+'</b> cast by <b>'+nm+'</b> has run out after '+f.dur+' round'+(f.dur===1?"":"s")+'.'+(fxNames(f).length?'<br><span class="mute">Was affecting: '+esc(fxNames(f).join(", "))+'</span>':'')+'</div><button class="pri" data-cn="ok">OK</button>'}
+ else if(it.t==="offhand"){var oc=clCmb(it.cid),om=oc&&tgMemb(oc),oe=om&&pcEq(om),oi=oc?clDualIdx(oc):[];
+  h+='<div class="atkh"><b>'+(oc?esc(oc.name):"")+': bonus action</b></div><div class="cnbody">Wielding two weapons. Attack with the off-hand weapon as a bonus action before the turn moves on?<div class="mute" style="margin-top:6px">Off-hand attacks do not add the ability modifier to damage unless the character has the Two-Weapon Fighting style.</div></div><div class="cllist">'+oi.map(function(i){return'<button class="pri" data-cn="offgo" data-i="'+i+'">Attack with '+esc(oe.w[i]+(oe.b[i]?" +"+oe.b[i]:""))+'</button>'}).join("")+'</div><button data-cn="offno">No bonus attack, end turn</button>'}
  else if(it.t==="ecast"){var sp=it.act.spk?spFind(it.act.spk):null,tl=S.combatants.slice().sort(function(a,b){return(a.id===it.cid?-1:0)-(b.id===it.cid?-1:0)||(a.kind==="pc"?1:0)-(b.kind==="pc"?1:0)});
   it.sel=it.sel||(function(){var o={};o[it.cid]=true;return o})();
-  h+='<div class="atkh"><b>'+nm+' casts '+esc(it.act.name)+'</b></div>'+espInfoHtml(it.act)+(sp&&fxDur(sp)?'<div class="mute" style="margin-top:8px">Who is affected? Self or any willing creatures.</div><div class="cllist">'+tl.map(function(x){return'<label class="chk clrow"><input type="checkbox" data-cn="tg" data-id="'+x.id+'"'+(it.sel[x.id]?" checked":"")+'><span><b>'+esc(x.id===it.cid?x.name+" (self)":x.name)+'</b></span></label>'}).join("")+'</div>':'')+'<div style="display:flex;gap:8px"><button class="pri" data-cn="ecgo" style="flex:1">Cast'+(sp&&fxDur(sp)&&sp.cc?" (concentration)":"")+'</button><button data-cn="ok">Close</button></div>'}
+  h+='<div class="atkh"><b>'+nm+' casts '+esc(it.act.name)+'</b></div>'+espInfoHtml(it.act)+(sp&&fxDur(sp)?'<div class="mute" style="margin-top:8px">'+(spMulti(sp)?"Who is affected? Self or any willing creatures.":"Who is affected? Self or one willing creature.")+'</div><div class="cllist">'+tl.map(function(x){return'<label class="chk clrow"><input type="'+(spMulti(sp)?"checkbox":"radio")+'" name="cnt" data-cn="tg" data-id="'+x.id+'"'+(it.sel[x.id]?" checked":"")+'><span><b>'+esc(x.id===it.cid?x.name+" (self)":x.name)+'</b></span></label>'}).join("")+'</div>':'')+'<div style="display:flex;gap:8px"><button class="pri" data-cn="ecgo" style="flex:1">Cast'+(sp&&fxDur(sp)&&sp.cc?" (concentration)":"")+'</button><button data-cn="ok">Close</button></div>'}
  else{h+='<div class="atkh"><b>'+esc(it.title||"Note")+'</b></div><div class="cnbody">'+(it.msg||"")+'</div><button class="pri" data-cn="ok">OK</button>'}
  el.innerHTML='<div class="clbox cnbox">'+h+'</div>';el.style.display="flex"}
 function cnClick(e){var b=e.target.closest("[data-cn]");if(!b)return;var q=ui.cn||[],it=q[0];if(!it)return;var g=b.dataset.cn,f=it.fxid?fxById(it.fxid):null,c=f?clCmb(f.cid):null;
- if(g==="tg"){it.sel=it.sel||{};it.sel[b.dataset.id]=!!b.checked;return}
+ if(g==="tg"){it.sel=it.sel||{};if(b.type==="radio")it.sel={};it.sel[b.dataset.id]=!!b.checked;return}
  if(b.tagName==="INPUT")return;
  if(g==="ok"){if((it.t==="broken"||it.t==="timeout")&&f)fxRemove(f.id);cnShift();render();return}
  if(g==="cont"){if(it.res.ok){cnShift()}else{ui.cn[0]={t:"broken",fxid:it.fxid,reason:"save"};cnDraw()}return}
@@ -2183,6 +2198,8 @@ function cnClick(e){var b=e.target.closest("[data-cn]");if(!b)return;var q=ui.cn
  if(g==="apply"){var inp=document.getElementById("cnin"),v=parseInt(inp&&inp.value,10);if(isNaN(v)){if(inp)inp.focus();return}it.res={ok:v>=it.dc,txt:"Rolled "+v+" vs DC "+it.dc};cnDraw();return}
  if(g==="pass"){it.res={ok:true,txt:"Passed"};cnDraw();return}
  if(g==="fail"){it.res={ok:false,txt:"Failed"};cnDraw();return}
+ if(g==="offgo"){var oc2=clCmb(it.cid);cnShift();if(oc2)clOffGo(oc2.id,+b.dataset.i);return}
+ if(g==="offno"){var oc3=clCmb(it.cid);cnShift();if(oc3){var pq=ui.pa;if(pq)pq.offDone=1;clTurnToast("<b>"+esc(oc3.name)+"</b>'s action is used, so the turn has ended.");advanceTurn()}return}
  if(g==="ecgo"){var cc=clCmb(it.cid),sp2=it.act.spk?spFind(it.act.spk):null;var who=Object.keys(it.sel||{}).filter(function(k){return it.sel[k]&&clCmb(k)});cnShift();
   if(cc&&sp2){fxStart(cc,sp2,it.act.lvl,who.length?who:[cc.id]);if(clActKind(sp2)==="action")fxUseAction(cc,"action")}return}}
 document.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest("[data-fx]");if(!b)return;var g=b.dataset.fx,id=b.dataset.id;
