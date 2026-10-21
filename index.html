@@ -210,7 +210,7 @@ button{transition:background-color .3s ease,border-color .3s ease,color .3s ease
 @media (max-width:719px){#mdov .mdcols{overflow:auto}}
 @media (min-width:720px){#mdov .mdcols{align-items:stretch}#mdov .mdleft{flex:0 0 340px}#mdov .mdright{min-height:0}#mdov .mdl{max-height:none!important;flex:1;min-height:0;overflow:auto}}
 .spol{margin:0 0 8px;padding-left:20px}.sphb{height:6px;border-radius:3px;background:var(--line,#8884);overflow:hidden;margin:4px 0}.sphb i{display:block;height:100%}
-</style>
+.cl1 .cname{flex:0 1 170px!important;width:170px;max-width:170px;min-width:90px!important}.cl2 button[data-cl]{min-width:84px;padding:4px 20px}#dsov{z-index:1300!important}</style>
 </head>
 <body>
 <header>
@@ -432,7 +432,7 @@ function norm(raw){
  var s={v:6,day:Math.max(1,parseInt(b.day,10)||1),hour:isNaN(parseFloat(b.hour))?8:Math.max(0,Math.min(23.99,Math.round(parseFloat(b.hour)*60)/60))};
  s.party=arr(b.party).map(function(m){return{id:str(m.id)||uid(),name:str(m.name),className:str(m.className),level:str(m.level),ac:str(m.ac),maxHp:str(m.maxHp),passivePerception:str(m.passivePerception),notes:str(m.notes),race:str(m.race),background:str(m.background),speed:str(m.speed),init:str(m.init),str:str(m.str),dex:str(m.dex),con:str(m.con),int:str(m.int),wis:str(m.wis),cha:str(m.cha),sheet:str(m.sheet),sp:(m.sp&&typeof m.sp==="object")?m.sp:{},curHp:str(m.curHp),hdUsed:Math.max(0,parseInt(m.hdUsed,10)||0),su:(m.su&&typeof m.su==="object")?m.su:{},arcUsed:!!m.arcUsed,wsFav:arr(m.wsFav).map(function(f){return{id:str(f.id)||uid(),name:str(f.name),hp:str(f.hp),ac:str(f.ac),cr:str(f.cr),note:str(f.note)}}),wsCur:str(m.wsCur),moon:!!m.moon,wsOn:!!m.wsOn,wsName:str(m.wsName),wsHp:str(m.wsHp),wsAc:str(m.wsAc),petName:str(m.petName),petType:str(m.petType),petHp:str(m.petHp),petCur:str(m.petCur),petAc:str(m.petAc),petSpeed:str(m.petSpeed),petNotes:str(m.petNotes),ma:!!m.ma,acBase:str(m.acBase),res:str(m.res),imm:str(m.imm),vul:str(m.vul),tl:(m.tl===0||m.tl===1||m.tl===2)?m.tl:null,kn:sarr(m.kn),pr:sarr(m.pr)}});
  s.cpend=arr(b.cpend).map(function(e){return{id:str(e.id)||uid(),cid:str(e.cid),n:str(e.n),dice:str(e.dice),type:str(e.type),once:!!e.once,endsMiss:!!e.endsMiss,note:str(e.note)}});s.noauto=!!b.noauto;s.clog=arr(b.clog).map(function(e){return{id:str(e.id)||uid(),k:["dmg","heal","miss","cast"].indexOf(e.k)>-1?e.k:"dmg",r:Math.max(1,parseInt(e.r,10)||1),src:str(e.src),srcId:str(e.srcId),srcPc:!!e.srcPc,tgt:str(e.tgt),tgtId:str(e.tgtId),tgtPc:!!e.tgtPc,amt:Math.max(0,parseInt(e.amt,10)||0),what:str(e.what),h0:e.h0===undefined?undefined:parseInt(e.h0,10)||0,h1:e.h1===undefined?undefined:parseInt(e.h1,10)||0,dead:!!e.dead}}).slice(-600);s.round=Math.max(1,parseInt(b.round,10)||1);s.turnId=str(b.turnId);
- s.combatants=arr(b.combatants).map(function(c){return{id:str(c.id)||uid(),kind:c.kind==="pc"?"pc":"mon",ref:str(c.ref),name:str(c.name),init:str(c.init),dex:str(c.dex),hp:str(c.hp),max:str(c.max),ac:str(c.ac),wsName:str(c.wsName),wsHp:str(c.wsHp),wsMax:str(c.wsMax),wsAc:str(c.wsAc),wsOn:!!c.wsOn,pet:!!c.pet}});
+ s.combatants=arr(b.combatants).map(function(c){return{id:str(c.id)||uid(),kind:c.kind==="pc"?"pc":"mon",ref:str(c.ref),name:str(c.name),init:str(c.init),dex:str(c.dex),hp:str(c.hp),max:str(c.max),ac:str(c.ac),wsName:str(c.wsName),wsHp:str(c.wsHp),wsMax:str(c.wsMax),wsAc:str(c.wsAc),wsOn:!!c.wsOn,pet:!!c.pet,ds:(c.ds&&typeof c.ds==="object")?{s:Math.min(3,parseInt(c.ds.s,10)||0),f:Math.min(3,parseInt(c.ds.f,10)||0)}:null}});
  s.sess=(b.sess&&typeof b.sess==="object")?b.sess:null;s.trv=tvNorm(b.trv);s.enSeedV=parseInt(b.enSeedV,10)||0;
  s.encSets=arr(b.encSets).map(function(x){return{id:str(x.id)||uid(),name:str(x.name),notes:str(x.notes),items:arr(x.items).map(function(i){return{id:str(i.id)||uid(),ref:str(i.ref),qty:Math.max(1,Math.min(20,parseInt(i.qty,10)||1))}})}});
  s.spells=arr(b.spells).map(function(x){return{id:str(x.id)||uid(),name:str(x.name),level:Math.max(0,Math.min(9,parseInt(x.level,10)||0)),dice:str(x.dice),up:str(x.up),type:str(x.type),save:str(x.save),succ:x.succ==="none"?"none":"half",time:str(x.time),range:str(x.range),dur:str(x.dur),conc:!!x.conc,desc:str(x.desc),school:str(x.school)||"Custom"}});
@@ -472,7 +472,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=112;var APPLABEL="1.232";
+var APPV=113;var APPLABEL="1.240";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -1087,7 +1087,7 @@ var _render0=render;render=function(){var t=ui.tab+"|"+(ui.tab==="Enemies"?ui.en
  [].forEach.call(m.querySelectorAll("[data-pid],.sppop"),function(e){var k=e.dataset.pid||"_pop";now[k]=1;if(!pre[k]){e.classList.remove("fadein");void e.offsetWidth;e.classList.add("fadein")}});
  Object.keys(pre).forEach(function(k){if(now[k])return;var g=pre[k].c,r=pre[k].r;g.removeAttribute("id");g.style.cssText+=";position:fixed;margin:0;box-sizing:border-box;left:"+r.left+"px;top:"+r.top+"px;width:"+r.width+"px;height:"+r.height+"px;z-index:5";g.classList.add("cosghost");document.body.appendChild(g);setTimeout(function(){if(g.parentNode)g.parentNode.removeChild(g)},520)})};
 
-var OVL=["atkpop","tgpop","prepop","hitov","castov","wsov","clov","downpop","startpop","tvanim","tvmo","restov","rulov","libov","cmpov","cqov","esov","gcov","gsov","mapov","nzov","scanov","mdov"],OVS={};
+var OVL=["atkpop","tgpop","prepop","hitov","castov","wsov","dsov","clov","downpop","startpop","tvanim","tvmo","restov","rulov","libov","cmpov","cqov","esov","gcov","gsov","mapov","nzov","scanov","mdov"],OVS={};
 function ovVis(el){return el.childElementCount>0&&!el.hidden&&getComputedStyle(el).display!=="none"}
 function ovGhost(c){c.removeAttribute("hidden");c.classList.add("cosghost");if(!c.style.display||c.style.display==="none")c.style.display="flex";document.body.appendChild(c);setTimeout(function(){if(c.parentNode)c.parentNode.removeChild(c)},520)}
 function ovAttach(el){if(el._ov)return;el._ov=1;var was=ovVis(el);if(was)OVS[el.id]=el.cloneNode(true);
@@ -1149,7 +1149,7 @@ function encCard(c,cur){
  '<div class="cbody"><div class="cl1"><input class="cname" '+k+' data-f="name" value="'+esc(c.name)+'" aria-label="Name">'+tag+(cur?'<span class="pill now">Turn</span>':'')+(down?'<span class="pill dn">'+(c.kind==="pc"?"Down":"Defeated")+'</span>':'')+delBtn("combatants",c.id,c.name)+'</div>'+
  '<div class="bar"><div style="width:'+pct+'%;background:'+col+'"></div></div>'+
  '<div class="cl2"><label class="hpf"><span class="tl">HP</span><input '+k+' data-f="hp" value="'+esc(c.hp)+'" inputmode="numeric" aria-label="Current HP"></label><span class="mute">/</span><label class="hpf"><span class="tl">Max</span><input '+k+' data-f="max" value="'+esc(c.max)+'" inputmode="numeric" aria-label="Max HP"></label><label class="hpf"><span class="tl">AC</span><input '+k+' data-f="ac" value="'+esc(c.ac)+'" inputmode="numeric" aria-label="AC"></label><button class="pri" data-a="calcopen" data-id="'+c.id+'">Damage / Heal</button>'+clBtns(c)+'</div>'+
- (ui.atk&&en&&en.statblock?atkBtns(c,en):'')+wsBlock(c)+cbSlots(c)+(en&&en.statblock?'<details><summary>Statblock</summary><pre class="sbx">'+esc(en.statblock)+'</pre></details>':'')+'<div class="ntrow"><button class="'+(cur?"pri":"")+'" data-a="nextfrom" data-id="'+c.id+'">Next turn &rarr;</button></div></div></div>'}
+ (dsDown(c)?'<div class="sprow2">&#9760; <b>Death saves</b> <span style="font-size:1.1rem">'+dsPips(c)+'</span>'+(dsState(c)==="down"?'<button data-ds="1" data-id="'+c.id+'">Enter death save</button>':'<span class="pill">'+(dsState(c)==="dead"?"Dead":"Stable")+'</span>')+'</div>':'')+(ui.atk&&en&&en.statblock?atkBtns(c,en):'')+wsBlock(c)+cbSlots(c)+(en&&en.statblock?'<details><summary>Statblock</summary><pre class="sbx">'+esc(en.statblock)+'</pre></details>':'')+'<div class="ntrow"><button class="'+(cur?"pri":"")+'" data-a="nextfrom" data-id="'+c.id+'">Next turn &rarr;</button></div></div></div>'}
 var XPT=[[25,50,75,100],[50,100,150,200],[75,150,225,400],[125,250,375,500],[250,500,750,1100],[300,600,900,1400],[350,750,1100,1700],[450,900,1400,2100],[550,1100,1600,2400],[600,1200,1900,2800],[800,1600,2400,3600],[1000,2000,3000,4500],[1100,2200,3400,5100],[1250,2500,3800,5700],[1400,2800,4300,6400],[1600,3200,4800,7200],[2000,3900,5900,8800],[2100,4200,6300,9500],[2400,4900,7300,10900],[2800,5700,8500,12700]];
 var CRXP={"0":10,"0.125":25,"0.25":50,"0.5":100,"1":200,"2":450,"3":700,"4":1100,"5":1800,"6":2300,"7":2900,"8":3900,"9":5000,"10":5900,"11":7200,"12":8400,"13":10000,"14":11500,"15":13000,"16":15000,"17":18000,"18":20000,"19":22000,"20":25000,"21":33000,"22":41000,"23":50000,"24":62000,"25":75000,"26":90000,"27":105000,"28":120000,"29":135000,"30":155000};
 function encLv(){if(ui.encLv)return ui.encLv;var ls=S.party.map(function(m){return Math.max(1,Math.min(20,parseInt(m.level,10)||1))});return ls.length?Math.max(1,Math.min(20,Math.round(ls.reduce(function(a,b){return a+b},0)/ls.length))):1}
@@ -1701,6 +1701,32 @@ document.addEventListener("click",function(e){var b=e.target.closest&&e.target.c
  else if(k==="ws-f"){var f=(m.wsFav||[]).find(function(x){return x.id===b.dataset.id});if(f)wsChGo(c,f.name,f.hp,f.ac)}
  else if(k==="ws-c"){var x=wsCands(m).find(function(y){return y.key===b.dataset.k});if(x)wsChGo(c,x.name,x.hp,x.ac)}},true);
 document.addEventListener("change",function(e){var el=e.target;if(el.dataset&&el.dataset.clc==="ws-all"&&ui.wsp){ui.wsp.all=!!el.checked;wsChDraw()}});
+
+/* death saving throws */
+function dsDown(c){if(!c||c.kind!=="pc"||c.pet||c.wsOn)return false;var h=parseInt(c.hp,10);return c.hp!==""&&!isNaN(h)&&h<=0}
+function dsState(c){var d=c.ds||{s:0,f:0};return d.f>=3?"dead":d.s>=3?"stable":"down"}
+function dsPips(c){var d=c.ds||{s:0,f:0},p=function(n,ch,col){var o="";for(var i=0;i<3;i++)o+='<span style="color:'+(i<n?col:'#888')+'">'+(i<n?ch:'&#9675;')+'</span> ';return o};return p(d.s,"&#9679;","#3f9f6a")+'&nbsp;&nbsp;'+p(d.f,"&#9679;","#c0334d")}
+function dsOpen(id){ui.dsp=id;dsDraw()}
+function dsDraw(){var c=clCmb(ui.dsp);if(!c){clHide("dsov");return}var el=clOv("dsov"),st=dsState(c);
+ el.innerHTML='<div class="clbox"><div class="atkh"><b>&#9760; '+esc(c.name)+': death saving throw</b></div><div class="mute">At 0 hit points. Roll a d20, no modifiers: 10 or more is a success, 9 or less a failure. A 1 counts as two failures. A 20 restores 1 hit point.</div>'+
+ '<div style="font-size:1.3rem;margin:6px 0"><span class="mute">Successes</span> '+dsPips({ds:{s:(c.ds||{}).s||0,f:0}})+'<br><span class="mute">Failures</span>&nbsp; '+dsPips({ds:{s:0,f:(c.ds||{}).f||0}}).replace(/#3f9f6a/g,"#888")+'</div>'+
+ (st==="down"?'<div class="cllist"><button class="pri" data-clc="ds-roll">Roll a d20 for them</button><button data-clc="ds-s">Success (10+)</button><button data-clc="ds-f">Failure (1-9)</button><button data-clc="ds-n20">Natural 20: back up with 1 HP</button><button data-clc="ds-n1">Natural 1: two failures</button><button data-clc="ds-dmg">Hit while down: one failure</button></div>':'<div class="mute"><b>'+(st==="dead"?"Dead.":"Stable at 0 HP.")+'</b></div>')+'<button data-clc="ds-x">Close</button></div>';el.style.display="flex"}
+function dsApply(c,kind,roll){c.ds=c.ds||{s:0,f:0};var msg="";
+ if(kind==="n20"){c.hp="1";c.ds=null;pcFromCombat(c);msg=c.name+" rolled a natural 20 and is back at 1 HP."}
+ else{var succ=kind==="s"||kind==="roll"&&roll>=10;
+  if(kind==="roll"&&roll===20){return dsApply(c,"n20")}
+  if(kind==="roll"&&roll===1)kind="n1";
+  if(kind==="n1")c.ds.f=Math.min(3,c.ds.f+2);else if(kind==="dmg")c.ds.f=Math.min(3,c.ds.f+1);else if(succ)c.ds.s=Math.min(3,c.ds.s+1);else c.ds.f=Math.min(3,c.ds.f+1);
+  msg=c.name+(roll?" rolled "+roll+": ":": ")+(c.ds.f>=3?"third failure, dead.":c.ds.s>=3?"third success, stable.":"successes "+c.ds.s+", failures "+c.ds.f+".")}
+ clAdd({k:"cast",srcId:c.id,what:"Death save: "+msg});save();clTurnToast("&#9760; "+esc(msg));
+ if(kind!=="n20"&&kind!=="dmg"&&S.turnId===c.id){ui.dsp=null;clHide("dsov");advanceTurn()}else{render();dsDraw()}}
+function dsCheck(){var c=clCmb(S.turnId);if(c&&dsDown(c)&&dsState(c)==="down")dsOpen(c.id)}
+var _adv1=advanceTurn;advanceTurn=function(){_adv1.apply(this,arguments);try{dsCheck()}catch(e){}};
+document.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest("[data-clc^=ds-],[data-ds]");if(!b)return;
+ if(b.dataset.ds){dsOpen(b.dataset.id);return}
+ var k=b.dataset.clc,c=clCmb(ui.dsp);if(k==="ds-x"){ui.dsp=null;clHide("dsov");return}if(!c)return;
+ if(k==="ds-roll"){var r=1+Math.floor(Math.random()*20);dsApply(c,"roll",r)}else if(k==="ds-s")dsApply(c,"s");else if(k==="ds-f")dsApply(c,"f");else if(k==="ds-n20")dsApply(c,"n20");else if(k==="ds-n1")dsApply(c,"n1");else if(k==="ds-dmg")dsApply(c,"dmg")},true);
+var _rDs=render;render=function(){S.combatants.forEach(function(c){if(c.ds&&!dsDown(c))c.ds=null});return _rDs.apply(this,arguments)};
 /*CL-END*/
 function restCard(){return'<div class="card"><h3>Rests</h3><div class="mute">Applies to everyone in the party tab: hit points, hit dice and spell slots.</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button data-a="restshort">Short rest</button><button class="pri" data-a="restlong">Long rest</button></div></div>'}
 function restOv(){var el=document.getElementById("restov");if(!el){el=document.createElement("div");el.id="restov";document.body.appendChild(el);
