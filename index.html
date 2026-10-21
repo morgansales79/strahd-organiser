@@ -473,7 +473,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=110;var APPLABEL="1.230";
+var APPV=111;var APPLABEL="1.231";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -1086,7 +1086,7 @@ var _render0=render;render=function(){var t=ui.tab+"|"+(ui.tab==="Enemies"?ui.en
  [].forEach.call(m.querySelectorAll("[data-pid],.sppop"),function(e){var k=e.dataset.pid||"_pop";now[k]=1;if(!pre[k]){e.classList.remove("fadein");void e.offsetWidth;e.classList.add("fadein")}});
  Object.keys(pre).forEach(function(k){if(now[k])return;var g=pre[k].c,r=pre[k].r;g.removeAttribute("id");g.style.cssText+=";position:fixed;margin:0;box-sizing:border-box;left:"+r.left+"px;top:"+r.top+"px;width:"+r.width+"px;height:"+r.height+"px;z-index:5";g.classList.add("cosghost");document.body.appendChild(g);setTimeout(function(){if(g.parentNode)g.parentNode.removeChild(g)},520)})};
 
-var OVL=["atkpop","tgpop","prepop","hitov","castov","clov","downpop","startpop","tvanim","tvmo","restov","rulov","libov","cmpov","cqov","esov","gcov","gsov","mapov","nzov","scanov","mdov"],OVS={};
+var OVL=["atkpop","tgpop","prepop","hitov","castov","wsov","clov","downpop","startpop","tvanim","tvmo","restov","rulov","libov","cmpov","cqov","esov","gcov","gsov","mapov","nzov","scanov","mdov"],OVS={};
 function ovVis(el){return el.childElementCount>0&&!el.hidden&&getComputedStyle(el).display!=="none"}
 function ovGhost(c){c.removeAttribute("hidden");c.classList.add("cosghost");if(!c.style.display||c.style.display==="none")c.style.display="flex";document.body.appendChild(c);setTimeout(function(){if(c.parentNode)c.parentNode.removeChild(c)},520)}
 function ovAttach(el){if(el._ov)return;el._ov=1;var was=ovVis(el);if(was)OVS[el.id]=el.cloneNode(true);
@@ -1136,7 +1136,7 @@ function cbSlots(c){if(c.kind!=="pc"||c.pet)return'';var m=S.party.find(function
  return h?'<div class="slbar"><span class="mute">Slots</span>'+h+'</div>':''}
 function wsBlock(c){if(c.kind!=="pc"||c.pet)return'';var m=S.party.find(function(x){return x.id===c.ref});if(!(m&&/druid/i.test(m.className||""))&&!c.wsMax&&!c.wsOn)return'';var k='data-k="combatants" data-id="'+c.id+'"';
  if(c.wsOn)return'<div class="wsb on"><b>Wild Shape: '+esc(c.wsName||"Beast")+'</b><label class="hpf"><span class="tl">Beast HP</span><input '+k+' data-f="wsHp" value="'+esc(c.wsHp)+'" inputmode="numeric" style="width:60px"></label><span class="mute">/ '+esc(c.wsMax)+' &middot; AC '+esc(c.wsAc||"-")+'</span><button class="pri" data-a="calcopen" data-id="'+c.id+'">Beast damage / heal</button><button data-a="wsoff" data-id="'+c.id+'">Revert</button>'+clSlotBtn(c)+'</div>';
- return'<div class="wsb"><span class="mute">Wild Shape</span>'+wsSel(c)+'<input '+k+' data-f="wsName" value="'+esc(c.wsName)+'" placeholder="Beast" aria-label="Beast form" style="width:120px"><input '+k+' data-f="wsMax" value="'+esc(c.wsMax)+'" placeholder="HP" inputmode="numeric" aria-label="Beast HP" style="width:60px"><input '+k+' data-f="wsAc" value="'+esc(c.wsAc)+'" placeholder="AC" inputmode="numeric" aria-label="Beast AC" style="width:60px"><button data-a="wson" data-id="'+c.id+'">Wild Shape</button></div>'}
+ return'<div class="wsb"><span class="mute">Wild Shape</span>'+wsSel(c)+'<input '+k+' data-f="wsName" value="'+esc(c.wsName)+'" placeholder="Beast" aria-label="Beast form" style="width:120px"><input '+k+' data-f="wsMax" value="'+esc(c.wsMax)+'" placeholder="HP" inputmode="numeric" aria-label="Beast HP" style="width:60px"><input '+k+' data-f="wsAc" value="'+esc(c.wsAc)+'" placeholder="AC" inputmode="numeric" aria-label="Beast AC" style="width:60px"><button data-cl="wspick" data-id="'+c.id+'">Wild Shape</button></div>'}
 function encCard(c,cur){
  var en=c.kind==="mon"?S.enemies.find(function(e){return e.id===c.ref}):null;
  var hp=parseInt(c.hp,10),mx=parseInt(c.max,10),down=!isNaN(hp)&&hp<=0;
@@ -1646,7 +1646,7 @@ function clRevDraw(){var V=ui.clv;if(!V)return;var el=clOv("clov"),lg=S.clog||[]
 function clFinish(){S.cpend=[];var t=clReportText();try{if(SS&&SS.log)SS.log.unshift({t:"Day "+S.day+" "+tvClock(S.hour||0),x:t})}catch(e){}S.clog=[];S.round=1;S.turnId="";ui.turnAtk=null;clHide("clov");ui.clv=null;save();render()}
 /* events */
 document.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest("[data-cl]");if(b){var a=b.dataset.cl;
- if(a==="hit")clHitOpen(b.dataset.id);else if(a==="spell")clCastOpen(b.dataset.id);else if(a==="slotheal"){ui.cs={cid:b.dataset.id,mode:"sh",sel:{}};clCastDraw()}
+ if(a==="hit")clHitOpen(b.dataset.id);else if(a==="spell")clCastOpen(b.dataset.id);else if(a==="wspick"){wsChoose(b.dataset.id)}else if(a==="slotheal"){ui.cs={cid:b.dataset.id,mode:"sh",sel:{}};clCastDraw()}
  else if(a==="auto"){S.noauto=!b.checked;save();return}else if(a==="review")clReview(false);else if(a==="end")clReview(true);return}
  if(e.target.closest&&e.target.closest("#hdcmb")){clReview(false);return}
  b=e.target.closest&&e.target.closest("[data-clc]");if(!b)return;var k=b.dataset.clc,T=ui.ht,Cs=ui.cs,V=ui.clv;
@@ -1681,6 +1681,25 @@ document.addEventListener("input",function(e){var el=e.target,k=el.dataset&&el.d
  if(k==="ht-amt"&&T)T.amt=el.value;else if(k==="ht-dice"&&T)T.dice=el.value;else if(k==="ht-what"&&T)T.what=el.value;
  else if(k==="amt"&&Cs)Cs.amt=el.value;else if(k==="dice"&&Cs)Cs.dice=el.value});
 var _rCl=render;render=function(){var r=_rCl.apply(this,arguments);try{var hb=document.getElementById("hdcmb");if(hb)hb.hidden=!((S.clog&&S.clog.length)||(S.turnId&&S.combatants.length))}catch(e){}return r};
+
+/* wild shape chooser */
+function wsChoose(cid){ui.wsp={cid:cid,all:false};wsChDraw()}
+function wsChDraw(){var W=ui.wsp;if(!W)return;var c=clCmb(W.cid),m=c&&tgMemb(c);if(!m){clHide("wsov");return}
+ var r=wsRule(m),fl=wsFavsOf(m),cands=wsCands(m).filter(function(x){return W.all||wsAllowed(x,r)}),el=clOv("wsov"),
+ row=function(n,hp,ac,extra,attrs,star){return'<button class="clrow wsrow" '+attrs+'>'+(star?'&#9733; ':'')+'<b>'+esc(n)+'</b> <span class="mute">HP '+esc(hp||"?")+' &middot; AC '+esc(ac||"?")+(extra?' &middot; '+esc(extra):'')+'</span></button>'},h='';
+ h+='<div class="atkh"><b>'+esc(c.name)+': Wild Shape</b></div><div class="mute">'+esc(r.txt)+(r.moon?' Moon druids shift as a bonus action, so this does not end your turn.':' Wild Shape is a bonus action, so this does not end your turn.')+'</div>';
+ h+='<div class="mute" style="margin-top:6px">Favourites</div><div class="cllist">'+(fl.length?fl.map(function(f){return row(f.name,f.hp,f.ac,f.cr?"CR "+f.cr:"",'data-clc="ws-f" data-id="'+f.id+'"',1)}).join(""):'<span class="mute">None yet. Add them on the Party tab.</span>')+'</div>';
+ var fn={};fl.forEach(function(f){fn[f.name.toLowerCase()]=1});var rest=cands.filter(function(x){return!fn[x.name.toLowerCase()]});
+ h+='<div class="mute" style="margin-top:6px">All available forms</div><div class="cllist" style="max-height:34vh;overflow:auto">'+(rest.length?rest.map(function(x){return row(x.name,x.hp,x.ac,"CR "+x.cr+(x.fly?", fly":x.swim?", swim":""),'data-clc="ws-c" data-k="'+esc(x.key)+'"',0)}).join(""):'<span class="mute">None.</span>')+'</div>';
+ h+='<label class="chk"><input type="checkbox" class="yn" data-clc="ws-all"'+(W.all?" checked":"")+'><span>Show forms this druid cannot use yet</span></label><button data-clc="ws-x">Cancel</button>';
+ el.innerHTML='<div class="clbox">'+h+'</div>';el.style.display="flex"}
+function wsChGo(c,name,hp,ac){var m=tgMemb(c);c.wsName=name;c.wsMax=String(hp||"");c.wsHp=String(hp||"");c.wsAc=String(ac||"");if(m){m.wsName=name;m.wsHp=c.wsMax;m.wsAc=c.wsAc}
+ var mx=parseInt(c.wsMax,10);if(isNaN(mx)||mx<1){wsChDraw();return}c.wsOn=true;pcFromCombat(c);ui.wsp=null;clHide("wsov");save();render();clTurnToast("<b>"+esc(c.name)+"</b> becomes a "+esc(name)+". Bonus action, so the turn continues.")}
+document.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest("[data-clc^=ws-]");if(!b)return;var W=ui.wsp,k=b.dataset.clc;if(!W)return;var c=clCmb(W.cid),m=c&&tgMemb(c);
+ if(k==="ws-x"){ui.wsp=null;clHide("wsov")}else if(!c||!m)return;
+ else if(k==="ws-f"){var f=(m.wsFav||[]).find(function(x){return x.id===b.dataset.id});if(f)wsChGo(c,f.name,f.hp,f.ac)}
+ else if(k==="ws-c"){var x=wsCands(m).find(function(y){return y.key===b.dataset.k});if(x)wsChGo(c,x.name,x.hp,x.ac)}},true);
+document.addEventListener("change",function(e){var el=e.target;if(el.dataset&&el.dataset.clc==="ws-all"&&ui.wsp){ui.wsp.all=!!el.checked;wsChDraw()}});
 /*CL-END*/
 function restCard(){return'<div class="card"><h3>Rests</h3><div class="mute">Applies to everyone in the party tab: hit points, hit dice and spell slots.</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button data-a="restshort">Short rest</button><button class="pri" data-a="restlong">Long rest</button></div></div>'}
 function restOv(){var el=document.getElementById("restov");if(!el){el=document.createElement("div");el.id="restov";document.body.appendChild(el);
