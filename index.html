@@ -112,6 +112,7 @@ header{min-height:84px!important}input[type=radio]{accent-color:var(--acc)}
 .clbox .hpf,.calc .hpf{width:auto!important;flex-direction:column!important;align-items:stretch!important}.clbox .hpf input{width:120px!important}
 .pc .phead{gap:2px}.pc .phead input{padding:5px 8px}.pc .psub{grid-template-columns:minmax(0,1fr) minmax(0,1.7fr) 64px;gap:6px;align-items:end}.pc .psub input:first-child{grid-column:auto}.lvlw{display:flex;flex-direction:column;gap:0}.lvlw .tl{text-align:center}.lvlw input.lvl{text-align:center;font-weight:700;width:100%}.pclk .lvlw input.lvl[readonly]{border-color:var(--line);background:var(--field)}
 details.dbi>summary{padding:2px 0}
+.fxrow{padding:8px 0;border-top:1px solid var(--line)}.fxrow:first-of-type{border-top:0}.fxt{font-size:.66rem;opacity:.8;text-transform:uppercase;letter-spacing:.04em;margin-right:4px}#cnov{display:none;position:fixed;inset:0;z-index:1090;background:rgba(0,0,0,.6);align-items:center;justify-content:center;padding:12px}.cnbox{max-width:480px;width:100%;max-height:92vh;overflow:auto}.cnbody{margin:8px 0;line-height:1.45}.cnres{margin:10px 0}.cnres.ok{color:#3f9f6a}.cnres.bad{color:#c0334d}
 .enspw{margin-top:8px}.enspt{padding:6px 10px;font-size:13px}.enspg{margin:6px 0 0;font-size:.78rem;text-transform:uppercase;letter-spacing:.04em}.atkrow button.spinfo{border-style:dashed}
 nav button{overflow-wrap:anywhere}
 .tiles.tstat{grid-template-columns:repeat(auto-fit,minmax(76px,1fr))}
@@ -454,7 +455,7 @@ function norm(raw){
  var f=fresh();
  var s={v:6,day:Math.max(1,parseInt(b.day,10)||1),hour:isNaN(parseFloat(b.hour))?8:Math.max(0,Math.min(23.99,Math.round(parseFloat(b.hour)*60)/60))};
  s.party=arr(b.party).map(function(m){return{id:str(m.id)||uid(),name:str(m.name),className:str(m.className),level:str(m.level),ac:str(m.ac),maxHp:str(m.maxHp),passivePerception:str(m.passivePerception),notes:str(m.notes),race:str(m.race),background:str(m.background),speed:str(m.speed),init:str(m.init),str:str(m.str),dex:str(m.dex),con:str(m.con),int:str(m.int),wis:str(m.wis),cha:str(m.cha),sheet:str(m.sheet),sp:(m.sp&&typeof m.sp==="object")?m.sp:{},curHp:str(m.curHp),hdUsed:Math.max(0,parseInt(m.hdUsed,10)||0),su:(m.su&&typeof m.su==="object")?m.su:{},arcUsed:!!m.arcUsed,acAuto:!!m.acAuto,rage:!!m.rage,acBase:m.acBase===undefined?undefined:str(m.acBase),wsFav:arr(m.wsFav).map(function(f){return{id:str(f.id)||uid(),name:str(f.name),hp:str(f.hp),ac:str(f.ac),cr:str(f.cr),note:str(f.note)}}),wsCur:str(m.wsCur),moon:!!m.moon,wsOn:!!m.wsOn,wsName:str(m.wsName),wsHp:str(m.wsHp),wsAc:str(m.wsAc),petName:str(m.petName),petType:str(m.petType),petHp:str(m.petHp),petCur:str(m.petCur),petAc:str(m.petAc),petSpeed:str(m.petSpeed),petNotes:str(m.petNotes),ma:!!m.ma,acBase:str(m.acBase),res:str(m.res),imm:str(m.imm),vul:str(m.vul),cimm:str(m.cimm),sadv:str(m.sadv),tl:(m.tl===0||m.tl===1||m.tl===2)?m.tl:null,kn:sarr(m.kn),pr:sarr(m.pr),eq:eqNorm(m.eq)}});s.items=arr(b.items).map(function(i){return{id:str(i.id)||uid(),n:str(i.n),c:str(i.c),cost:str(i.cost),wt:str(i.wt),dmg:str(i.dmg),dt:str(i.dt),ac:str(i.ac),pr:str(i.pr)}});
- s.cpend=arr(b.cpend).map(function(e){return{id:str(e.id)||uid(),cid:str(e.cid),n:str(e.n),dice:str(e.dice),type:str(e.type),once:!!e.once,endsMiss:!!e.endsMiss,note:str(e.note)}});s.noauto=!!b.noauto;s.clog=arr(b.clog).map(function(e){return{id:str(e.id)||uid(),k:["dmg","heal","miss","cast"].indexOf(e.k)>-1?e.k:"dmg",r:Math.max(1,parseInt(e.r,10)||1),src:str(e.src),srcId:str(e.srcId),srcPc:!!e.srcPc,tgt:str(e.tgt),tgtId:str(e.tgtId),tgtPc:!!e.tgtPc,amt:Math.max(0,parseInt(e.amt,10)||0),what:str(e.what),h0:e.h0===undefined?undefined:parseInt(e.h0,10)||0,h1:e.h1===undefined?undefined:parseInt(e.h1,10)||0,dead:!!e.dead}}).slice(-600);s.round=Math.max(1,parseInt(b.round,10)||1);s.turnId=str(b.turnId);
+ s.cpend=arr(b.cpend).map(function(e){return{id:str(e.id)||uid(),cid:str(e.cid),n:str(e.n),dice:str(e.dice),type:str(e.type),once:!!e.once,endsMiss:!!e.endsMiss,note:str(e.note)}});s.noauto=!!b.noauto;s.fx=arr(b.fx).map(function(f){return{id:str(f.id)||uid(),cid:str(f.cid),spk:str(f.spk),n:str(f.n),lvl:parseInt(f.lvl,10)||1,cc:!!f.cc,start:parseInt(f.start,10)||1,dur:f.dur===null?null:(parseInt(f.dur,10)||1),who:sarr(f.who),hp:f.hp===null||f.hp===undefined?null:(parseInt(f.hp,10)||0),alert:!!f.alert}});s.clog=arr(b.clog).map(function(e){return{id:str(e.id)||uid(),k:["dmg","heal","miss","cast"].indexOf(e.k)>-1?e.k:"dmg",r:Math.max(1,parseInt(e.r,10)||1),src:str(e.src),srcId:str(e.srcId),srcPc:!!e.srcPc,tgt:str(e.tgt),tgtId:str(e.tgtId),tgtPc:!!e.tgtPc,amt:Math.max(0,parseInt(e.amt,10)||0),what:str(e.what),h0:e.h0===undefined?undefined:parseInt(e.h0,10)||0,h1:e.h1===undefined?undefined:parseInt(e.h1,10)||0,dead:!!e.dead}}).slice(-600);s.round=Math.max(1,parseInt(b.round,10)||1);s.turnId=str(b.turnId);
  s.combatants=arr(b.combatants).map(function(c){return{id:str(c.id)||uid(),kind:c.kind==="pc"?"pc":"mon",ref:str(c.ref),name:str(c.name),init:str(c.init),dex:str(c.dex),hp:str(c.hp),max:str(c.max),ac:str(c.ac),wsName:str(c.wsName),wsHp:str(c.wsHp),wsMax:str(c.wsMax),wsAc:str(c.wsAc),wsOn:!!c.wsOn,pet:!!c.pet,ds:(c.ds&&typeof c.ds==="object")?{s:Math.min(3,parseInt(c.ds.s,10)||0),f:Math.min(3,parseInt(c.ds.f,10)||0)}:null}});
  s.sess=(b.sess&&typeof b.sess==="object")?b.sess:null;s.trv=tvNorm(b.trv);s.enSeedV=parseInt(b.enSeedV,10)||0;
  s.encSets=arr(b.encSets).map(function(x){return{id:str(x.id)||uid(),name:str(x.name),notes:str(x.notes),items:arr(x.items).map(function(i){return{id:str(i.id)||uid(),ref:str(i.ref),qty:Math.max(1,Math.min(20,parseInt(i.qty,10)||1))}})}});
@@ -495,7 +496,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=141;var APPLABEL="1.400";
+var APPV=142;var APPLABEL="1.410";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -1074,11 +1075,11 @@ function tgDmg(row,at){if(!row.parts)return{tot:0,bits:[]};var tot=0,bits=[];row
  var fx=tgFactor(row.c,p.t,at.magic);if(fx.f!==1){v=Math.floor(v*fx.f);note=" ("+fx.w+")"}
  tot+=v;bits.push(v+(p.t?" "+p.t:"")+note)});return{tot:tot,bits:bits}}
 function tgIsAoe(at){return at.kind==="sv"&&at.aoe}
-function tgOpen(mid,i){var mc=S.combatants.find(function(x){return x.id===mid}),en=mc&&wsEnOf(mc),at=en&&actList(en)[i];if(!at)return;
- if(at.kind==="info"){atkPop(mc,espInfoHtml(at));return}
+function tgOpen(mid,i,act,opts){var mc=S.combatants.find(function(x){return x.id===mid}),en=mc&&wsEnOf(mc),at=act||(en&&actList(en)[i]);if(!at)return;
+ if(at.kind==="info"){cnPush({t:"ecast",cid:mc.id,act:at});return}
  var tg=tgTargets(mid),sel={};if(tgIsAoe(at))tg.forEach(function(c){sel[c.id]=true});else if(tg.length===1)sel[tg[0].id]=true;
- ui.tg={mid:mid,i:i,sel:sel,half:at.kind==="sv"?at.half:false,res:null};tgDraw()}
-function tgCur(){var T=ui.tg;if(!T)return null;var mc=S.combatants.find(function(x){return x.id===T.mid}),en=mc&&wsEnOf(mc),at=en&&actList(en)[T.i];return at?{mc:mc,at:at}:null}
+ ui.tg={mid:mid,i:i,sel:sel,half:at.kind==="sv"?at.half:false,res:null,act:act||null,fxd:!!(opts&&opts.nofx)};tgDraw()}
+function tgCur(){var T=ui.tg;if(!T)return null;var mc=S.combatants.find(function(x){return x.id===T.mid}),en=mc&&wsEnOf(mc),at=T.act||(en&&actList(en)[T.i]);return at?{mc:mc,at:at}:null}
 function tgRestore(row){if(!row.snap)return;var c=row.c;c.hp=row.snap.hp;c.wsHp=row.snap.wsHp;c.wsOn=row.snap.wsOn;pcFromCombat(c);row.snap=null}
 function tgUndoAll(){var T=ui.tg;if(T&&T.res){T.res.rows.forEach(tgRestore);save()}}
 function tgApplyRow(row,at){tgRestore(row);var tg=row.c,amt=tgDmg(row,at).tot;row.snap={hp:tg.hp,wsHp:tg.wsHp,wsOn:tg.wsOn};if(amt<1)return;
@@ -1138,7 +1139,7 @@ function multiLim(en){var t=multiText(en),out={N:multiN(en),lim:{},has:!!t};if(!
  while((y=re1.exec(t)))add(y[1],y[2]);while((y=re2.exec(t)))add(y[1],y[2]);while((y=re3.exec(t)))add(y[1],y[2]);return out}
 function atkOff(c,x){if(S.turnId!==c.id||x.kind==="info")return"";var en=wsEnOf(c),ml=multiLim(en),T=ui.turnAtk&&ui.turnAtk.id===c.id?ui.turnAtk:{n:0,by:{}},nm=String(x.name).toLowerCase().replace(/\s*\(.*$/,"");
  if(T.n>=ml.N)return"All "+ml.N+" attack"+(ml.N>1?"s":"")+" used this turn";var l=ml.lim[nm];if(l&&((T.by||{})[nm]||0)>=l)return x.name+" limit ("+l+") reached";return""}
-function tgCount(add){var k=tgCur(),T=ui.tg;if(!k||!T)return;var cur=ui.turnAtk&&ui.turnAtk.id===S.turnId?ui.turnAtk:{id:S.turnId,n:0};if(S.turnId!==k.mc.id)return;ui.turnAtk=cur;cur.by=cur.by||{};var nmk=String(k.at.name).toLowerCase().replace(/\s*\(.*$/,"");if(T.base===undefined){T.base=cur.n;T.baseBy=cur.by[nmk]||0}cur.n=T.base+add;cur.by[nmk]=T.baseBy+add}
+function tgCount(add){var k=tgCur(),T=ui.tg;if(!k||!T||k.at.noCount)return;var cur=ui.turnAtk&&ui.turnAtk.id===S.turnId?ui.turnAtk:{id:S.turnId,n:0};if(S.turnId!==k.mc.id)return;ui.turnAtk=cur;cur.by=cur.by||{};var nmk=String(k.at.name).toLowerCase().replace(/\s*\(.*$/,"");if(T.base===undefined){T.base=cur.n;T.baseBy=cur.by[nmk]||0}cur.n=T.base+add;cur.by[nmk]=T.baseBy+add}
 function tgTurnDone(){var k=tgCur();if(!k||S.turnId!==k.mc.id)return false;var en=wsEnOf(k.mc),n=multiN(en),c=ui.turnAtk&&ui.turnAtk.id===k.mc.id?ui.turnAtk.n:0;return c>=n}
 
 function downCheck(){var first=!ui.down;ui.down=ui.down||{};var now=[];S.combatants.forEach(function(c){var h=parseInt(c.hp,10),dead=c.hp!==""&&!isNaN(h)&&h<=0;if(dead){if(!ui.down[c.id]){ui.down[c.id]=1;if(!first)now.push(c)}}else if(ui.down[c.id])delete ui.down[c.id]});
@@ -1661,6 +1662,7 @@ function clCastDraw(){var Cs=ui.cs;if(!Cs)return;var c=clCmb(Cs.cid),m=c&&tgMemb
   else h+='<div class="mute">Cantrip, no slot used.</div>';
   var hasD=!!(sp.dm&&sp.dm.length),hasH=!!(CL_HEAL[sp.n]||/regains? (?:a number of )?hit points|hit points (?:equal|you regain)|regain hit points/i.test(sp.x||"")),rd0=!!CL_RIDER[sp.n],self0=/^self/i.test(sp.r||"")&&!clIsAoe(sp),mds=rd0?["util"]:Cs.allm?["dmg","heal","util"]:(hasD||hasH)?[hasD?"dmg":"",hasH?"heal":"","util"].filter(Boolean):["util"];
   h+='<div class="sprow2">'+[["dmg","Damage"],["heal","Healing"],["util",self0||rd0?"Self / no HP change":"No HP change"]].filter(function(x){return mds.indexOf(x[0])>-1}).map(function(x){return'<button class="'+(Cs.mode===x[0]?"pri":"")+'" data-clc="mode" data-v="'+x[0]+'">'+x[1]+'</button>'}).join("")+(mds.length<3&&!rd0?'<button data-clc="allm">Other options</button>':'')+'</div>';
+  if(Cs.mode==="util"&&!rd0&&!self0){if(!Cs.uinit){Cs.sel={};Cs.sel[c.id]=true;Cs.uinit=true}h+='<div class="mute">Who is affected? Yourself or any willing creatures (tick as many as the spell allows).</div><div class="cllist">'+clTgtRows(S.combatants.slice().sort(function(a,b){return(a.id===c.id?0:1)-(b.id===c.id?0:1)||(a.kind==="pc"?0:1)-(b.kind==="pc"?0:1)}),"checkbox",Cs.sel,"",null,false)+'</div>'}
   if(Cs.mode==="dmg"&&sp.dc)h+='<div class="mute">'+SPABIL[sp.dc[0]]+' save'+(sp.dc[1]==="half"?', half damage on success':sp.dc[1]==="none"?', no damage on success':'')+'. Enemy saves are rolled for you; enter the damage the player rolled for a failed save.</div>';
   if(Cs.mode==="dmg"){h+='<div class="mute">'+(sp.dm?esc(spDiceOf(sp,lv).map(function(x){return x.d+(x.t?" "+x.t:"")}).join(" + ")):"No dice saved for this spell. Type the damage.")+'</div>'}
   if(Cs.mode!=="util"&&!aoe){
@@ -1726,7 +1728,7 @@ function clRevDraw(){var V=ui.clv;if(!V)return;var el=clOv("clov"),lg=S.clog||[]
  else h+=clReport();
  h+='<div style="display:flex;gap:8px;flex-wrap:wrap">'+(V.end?'<button class="pri" data-clc="finish">Finish combat</button><button data-clc="keep">Keep fighting</button>':'<button data-clc="save">Add report to session log</button><button class="pri" data-clc="x">Close</button>')+'</div>';
  el.innerHTML='<div class="clbox wide">'+h+'</div>';el.style.display="flex"}
-function clFinish(){S.cpend=[];var t=clReportText();try{if(SS&&SS.log)SS.log.unshift({t:"Day "+S.day+" "+tvClock(S.hour||0),x:t})}catch(e){}S.clog=[];S.round=1;S.turnId="";ui.turnAtk=null;clHide("clov");ui.clv=null;save();render()}
+function clFinish(){S.cpend=[];S.fx=[];var t=clReportText();try{if(SS&&SS.log)SS.log.unshift({t:"Day "+S.day+" "+tvClock(S.hour||0),x:t})}catch(e){}S.clog=[];S.round=1;S.turnId="";ui.turnAtk=null;clHide("clov");ui.clv=null;save();render()}
 /* events */
 document.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest("[data-cl]");if(b){var a=b.dataset.cl;
  if(a==="hit")clHitOpen(b.dataset.id,b.dataset.i);else if(a==="spell")clCastOpen(b.dataset.id);else if(a==="wspick"){wsChoose(b.dataset.id)}else if(a==="slotheal"){ui.cs={cid:b.dataset.id,mode:"sh",sel:{}};clCastDraw()}
@@ -1741,7 +1743,7 @@ document.addEventListener("click",function(e){var b=e.target.closest&&e.target.c
  else if(k==="pickq"&&Cs){var q=document.getElementById("clspq"),sp=pcSpFindName(q&&q.value);if(sp){Cs.spk=sp.k;Cs.mode="";Cs.sel={};Cs.err="";clCastDraw()}}
  else if(k==="allm"&&Cs){Cs.allm=true;clCastDraw()}
  else if(k==="back"&&Cs){Cs.spk="";clCastDraw()}
- else if(k==="mode"&&Cs){Cs.mode=b.dataset.v;Cs.sel={};Cs.amt="";Cs.roll="";Cs.err="";Cs.dice="";clCastDraw()}
+ else if(k==="mode"&&Cs){Cs.mode=b.dataset.v;Cs.sel={};Cs.uinit=false;Cs.amt="";Cs.roll="";Cs.err="";Cs.dice="";clCastDraw()}
  else if(k==="roll"&&Cs){var sp2=spFind(Cs.spk),c2=clCmb(Cs.cid),m2=c2&&tgMemb(c2);if(!sp2||!m2)return;
   if(Cs.mode==="dmg"){if(sp2.dm){var rr=spRollSpell(sp2,clCastLvl(m2,sp2,Cs));Cs.amt=String(rr.total);Cs.roll=rr.lines.join("; ")}else Cs.err="No dice saved for this spell. Type the damage."}
   else{var r3=spDiceRoll(Cs.dice||"");if(Cs.dice){Cs.amt=String(r3.total);Cs.roll=Cs.dice+": "+r3.txt+" = "+r3.total}}
@@ -2093,6 +2095,122 @@ document.addEventListener("click",function(e){var b=e.target.closest&&e.target.c
 var _renderLK=render;render=function(){var r=_renderLK.apply(this,arguments);try{pcLockApply()}catch(x){}return r};
 /*LOCK-END*/
 
+/*FX-START*/
+/* spell data patches: ongoing and follow-up damage */
+(function(){var up=function(a,b,c,d){var o={};for(var i=a;i<=9;i++)o[i]=(b+(i-a)*c)+d;return o};
+ var P={"Spirit Guardians":{dm:[{t:"radiant",s:up(3,3,1,"d8")}],dc:["wis","half"],a:["sphere",15]},"Evard's Black Tentacles":{dm:[{t:"bludgeoning",s:{4:"3d6",5:"3d6",6:"3d6",7:"3d6",8:"3d6",9:"3d6"}}],dc:["dex","none"],a:["cube",20]},"Dragon's Breath":{dm:[{t:"",s:up(2,3,1,"d6")}],dc:["dex","half"],a:["cone",15]},"Flaming Sphere":{dc:["dex","half"]},"Call Lightning":{dc:["dex","half"]}};
+ SPELLS.forEach(function(s){var p=P[s.n];if(!p)return;if(!s.dm&&p.dm)s.dm=p.dm;if(!s.dc&&p.dc)s.dc=p.dc;if(!s.a&&p.a)s.a=p.a})})();
+var FXTAB={
+ "Cloudkill":[{k:"ong",lbl:"Apply cloud damage",dmg:1,note:"A creature takes this when it enters the cloud for the first time on a turn or starts its turn there. The cloud moves 10 feet away from the caster at the start of each of the caster's turns."}],
+ "Moonbeam":[{k:"ong",lbl:"Apply beam damage",dmg:1},{k:"mod",act:"action",lbl:"Move the beam",note:"Move the beam up to 60 feet in any direction."}],
+ "Spirit Guardians":[{k:"ong",lbl:"Apply aura damage",dmg:1}],
+ "Wall of Fire":[{k:"ong",lbl:"Apply wall damage",dmg:1}],
+ "Insect Plague":[{k:"ong",lbl:"Apply swarm damage",dmg:1}],
+ "Incendiary Cloud":[{k:"ong",lbl:"Apply cloud damage",dmg:1},{k:"mod",lbl:"Cloud moves",note:"The cloud moves 10 feet away from the caster at the start of each of the caster's turns."}],
+ "Cloud of Daggers":[{k:"ong",lbl:"Apply dagger damage",dmg:1}],
+ "Evard's Black Tentacles":[{k:"ong",lbl:"Apply tentacle damage",dmg:1}],
+ "Sickening Radiance":[{k:"ong",lbl:"Apply radiance damage",dmg:1}],
+ "Create Bonfire":[{k:"ong",lbl:"Apply bonfire damage",dmg:1}],
+ "Dawn":[{k:"ong",lbl:"Apply dawn damage",dmg:1},{k:"mod",act:"action",lbl:"Move the light",note:"Move the cylinder of light up to 60 feet."}],
+ "Wall of Thorns":[{k:"ong",lbl:"Apply thorn damage",dmg:1}],
+ "Storm Sphere":[{k:"ong",lbl:"Apply sphere damage",dmg:1},{k:"mod",act:"bonus",lbl:"Lightning bolt",note:"Bonus action: choose a creature within 60 feet. It makes a DEX save, taking 4d6 lightning on a failure (half on a success; +1d6 per slot above 4th)."}],
+ "Flaming Sphere":[{k:"mod",act:"bonus",lbl:"Move and ram",dmg:1,note:"Move the sphere up to 30 feet. If it ends next to a creature, that creature makes the save."}],
+ "Call Lightning":[{k:"mod",act:"action",lbl:"Call a bolt",dmg:1}],
+ "Heat Metal":[{k:"mod",act:"bonus",lbl:"Damage again",dmg:1}],
+ "Witch Bolt":[{k:"mod",act:"action",lbl:"Deal damage again",dmg:1}],
+ "Spiritual Weapon":[{k:"mod",act:"bonus",lbl:"Attack or move",dmg:1}],
+ "Vampiric Touch":[{k:"mod",act:"action",lbl:"Drain",dmg:1,note:"The caster regains half the necrotic damage dealt."}],
+ "Dragon's Breath":[{k:"mod",act:"action",lbl:"Breathe",dmg:1}],
+ "Sunbeam":[{k:"mod",act:"action",lbl:"New beam",dmg:1}],
+ "Hex":[{k:"mod",act:"bonus",lbl:"Move the curse",note:"When the cursed creature drops to 0 hit points, use a bonus action on a later turn to curse a new creature."}],
+ "Hunter's Mark":[{k:"mod",act:"bonus",lbl:"Move the mark",note:"When the marked creature drops to 0 hit points, use a bonus action on a later turn to mark a new creature."}],
+ "Eyebite":[{k:"mod",act:"action",lbl:"Target a new creature",note:"On each of your turns for the duration, use an action to target another creature with the same effect."}]
+};
+function fxDur(sp){var d=String(sp&&sp.d||"");if(/instant|special|dispelled/i.test(d))return null;var m=d.match(/(\d+)\s*(round|minute|hour|day)/i);if(!m)return null;var n=+m[1],u=m[2].toLowerCase(),r=n*(u==="round"?1:u==="minute"?10:u==="hour"?600:14400);if(!sp.cc&&r>100)return null;return r}
+function fxById(id){return(S.fx||[]).filter(function(f){return f.id===id})[0]}
+function fxRemove(id){S.fx=(S.fx||[]).filter(function(f){return f.id!==id});save()}
+function fxNames(f){return(f.who||[]).map(function(id){var c=clCmb(id);return c?(c.id===f.cid?"self":c.name):""}).filter(Boolean)}
+function fxStart(c,sp,lv,who){var dur=fxDur(sp);if(!dur||!c)return;S.fx=S.fx||[];
+ if(sp.cc){var old=S.fx.filter(function(f){return f.cid===c.id&&f.cc});old.forEach(function(f){cnPush({t:"note",title:"Concentration ended",msg:'<b>'+esc(c.name)+'</b> starts concentrating on <b>'+esc(sp.n)+'</b>, so <b>'+esc(f.n)+'</b> ends.'});fxRemove(f.id)})}
+ else S.fx=S.fx.filter(function(f){return!(f.cid===c.id&&f.spk===sp.k)});
+ var h=clTot(c);S.fx.push({id:uid(),cid:c.id,spk:sp.k,n:sp.n,lvl:lv,cc:!!sp.cc,start:S.round,dur:dur,who:(who||[]).slice(),hp:c.hp===""?null:h});save();render()}
+function fxLeft(f){return f.dur===null?null:f.dur-(S.round-f.start)}
+function fxUseAction(c,kind,defer){if(!c||kind!=="action"||S.turnId!==c.id||S.noauto)return;
+ if(tgMemb(c)&&c.kind==="pc"){clActDone(c,"act");return}
+ var en=wsEnOf(c);ui.turnAtk={id:c.id,n:en?multiN(en):1,by:{}};if(!defer)advanceTurn()}
+function fxDcOf(c){var en=wsEnOf(c)||S.enemies.filter(function(e){return e.id===c.ref})[0],r={dc:13,bonus:5};if(!en)return r;espBlocks(en.statblock).forEach(function(b,i){var t=b.lines.join(" "),d=t.match(/spell save DC\s*(\d+)/i),h=t.match(/([+−-]\s*\d+)\s*to hit with spell attacks/i);if(i===0||d){if(d)r.dc=+d[1];if(h)r.bonus=parseInt(h[1].replace(/−/g,"-").replace(/\s/g,""),10);else if(d)r.bonus=+d[1]-8}});return r}
+function espMake(sp,lvl,dc,bonus,clv){var dice=[];try{spDiceOf(sp,sp.l===0?clv:lvl).forEach(function(x){espDice(x.d,x.t).forEach(function(q){dice.push(q)})})}catch(e){}
+ var base={sp:true,name:sp.n,grp:"",spk:sp.k,lvl:lvl,magic:true};
+ if(dice.length&&sp.dc)return Object.assign(base,{kind:"sv",dc:dc,ab:sp.dc[0],parts:dice,half:sp.dc[1]==="half",aoe:!!sp.a||clIsAoe(sp)});
+ if(dice.length&&sp.at)return Object.assign(base,{kind:"atk",bonus:bonus,parts:dice});
+ if(dice.length)return Object.assign(base,{kind:"atk",bonus:0,auto:true,parts:dice});
+ return null}
+function fxGo(id,i){var f=fxById(id),c=f&&clCmb(f.cid),sp=f&&spFind(f.spk),it=f&&(FXTAB[f.n]||[])[i];if(!f||!it)return;
+ if(!it.dmg){cnPush({t:"note",title:f.n+": "+it.lbl,msg:esc(it.note||"")+(it.act?'<div class="mute">Uses '+(it.act==="bonus"?"a bonus action":"an action")+'.</div>':'')});if(c)fxUseAction(c,it.act);return}
+ if(!c||!sp){cnPush({t:"note",title:"Caster not in the fight",msg:"The caster is not in the encounter, so use Group damage to apply this by hand."});return}
+ var what=f.n+" ("+it.lbl.toLowerCase()+")",m=tgMemb(c);
+ if(it.note)clTurnToast(esc(it.note));
+ if(m&&c.kind==="pc"){clAoeOpen(c,m,sp,f.lvl,what);fxUseAction(c,it.act);return}
+ var d=fxDcOf(c),act=espMake(sp,f.lvl,d.dc,d.bonus,1);
+ if(!act){cnPush({t:"note",title:what,msg:"No damage is recorded for this spell. Use Group damage and type the damage."});return}
+ act.name=sp.n+" ("+it.lbl.toLowerCase()+")";act.sp=false;act.noCount=1;tgOpen(c.id,-1,act,{nofx:1});fxUseAction(c,it.act,true)}
+/* popups */
+function cnOv(){var el=document.getElementById("cnov");if(!el){el=document.createElement("div");el.id="cnov";document.body.appendChild(el);el.addEventListener("click",cnClick)}return el}
+function cnPush(it){ui.cn=ui.cn||[];ui.cn.push(it);cnDraw()}
+function cnShift(){(ui.cn||[]).shift();cnDraw()}
+function cnDraw(){var q=ui.cn||[],el=cnOv();if(!q.length){el.style.display="none";el.innerHTML="";return}
+ var it=q[0],h='',f=it.fxid?fxById(it.fxid):null,c=f?clCmb(f.cid):it.cid?clCmb(it.cid):null,nm=c?esc(c.name):"Someone";
+ if(it.t==="check"){if(!f){q.shift();cnDraw();return}
+  h+='<div class="atkh"><b>Concentration check</b></div><div class="cnbody"><b>'+nm+'</b> took <b>'+it.dmg+'</b> damage while concentrating on <b>'+esc(f.n)+'</b>.<br>Constitution saving throw, <b>DC '+it.dc+'</b>.</div>';
+  if(it.res){h+='<div class="cnres '+(it.res.ok?"ok":"bad")+'">'+esc(it.res.txt)+': <b>'+(it.res.ok?"concentration holds":"concentration broken")+'</b></div><button class="pri" data-cn="cont">Continue</button>'}
+  else{var auto=c&&c.kind!=="pc";
+   h+=(auto?'<button class="pri" data-cn="auto">Roll automatically (CON '+(function(){var b=spSvMod(c,"con");return(b>=0?"+":"−")+Math.abs(b)})()+')</button><div class="mute">or enter the result yourself:</div>':'<div class="mute">Ask the player to roll and enter the total.</div>')+'<div class="sprow2"><label class="hpf"><span class="tl">Save total</span><input id="cnin" inputmode="numeric" placeholder="d20 + mods" style="width:120px"></label><button class="'+(auto?"":"pri")+'" data-cn="apply">Apply</button></div><div class="sprow2"><button data-cn="pass">Passed</button><button data-cn="fail">Failed</button></div>'}}
+ else if(it.t==="broken"){if(!f){q.shift();cnDraw();return}
+  h+='<div class="atkh"><b>Concentration broken</b></div><div class="cnbody"><b>'+nm+'</b> '+(it.reason==="down"?'dropped to 0 hit points and':'failed the save and')+' loses concentration. <b>'+esc(f.n)+'</b> ends.'+(fxNames(f).length?'<br><span class="mute">Was affecting: '+esc(fxNames(f).join(", "))+'</span>':'')+'</div><button class="pri" data-cn="ok">OK</button>'}
+ else if(it.t==="timeout"){if(!f){q.shift();cnDraw();return}
+  h+='<div class="atkh"><b>Spell ended</b></div><div class="cnbody"><b>'+esc(f.n)+'</b> cast by <b>'+nm+'</b> has run out after '+f.dur+' round'+(f.dur===1?"":"s")+'.'+(fxNames(f).length?'<br><span class="mute">Was affecting: '+esc(fxNames(f).join(", "))+'</span>':'')+'</div><button class="pri" data-cn="ok">OK</button>'}
+ else if(it.t==="ecast"){var sp=it.act.spk?spFind(it.act.spk):null,tl=S.combatants.slice().sort(function(a,b){return(a.id===it.cid?-1:0)-(b.id===it.cid?-1:0)||(a.kind==="pc"?1:0)-(b.kind==="pc"?1:0)});
+  it.sel=it.sel||(function(){var o={};o[it.cid]=true;return o})();
+  h+='<div class="atkh"><b>'+nm+' casts '+esc(it.act.name)+'</b></div>'+espInfoHtml(it.act)+(sp&&fxDur(sp)?'<div class="mute" style="margin-top:8px">Who is affected? Self or any willing creatures.</div><div class="cllist">'+tl.map(function(x){return'<label class="chk clrow"><input type="checkbox" data-cn="tg" data-id="'+x.id+'"'+(it.sel[x.id]?" checked":"")+'><span><b>'+esc(x.id===it.cid?x.name+" (self)":x.name)+'</b></span></label>'}).join("")+'</div>':'')+'<div style="display:flex;gap:8px"><button class="pri" data-cn="ecgo" style="flex:1">Cast'+(sp&&fxDur(sp)&&sp.cc?" (concentration)":"")+'</button><button data-cn="ok">Close</button></div>'}
+ else{h+='<div class="atkh"><b>'+esc(it.title||"Note")+'</b></div><div class="cnbody">'+(it.msg||"")+'</div><button class="pri" data-cn="ok">OK</button>'}
+ el.innerHTML='<div class="clbox cnbox">'+h+'</div>';el.style.display="flex"}
+function cnClick(e){var b=e.target.closest("[data-cn]");if(!b)return;var q=ui.cn||[],it=q[0];if(!it)return;var g=b.dataset.cn,f=it.fxid?fxById(it.fxid):null,c=f?clCmb(f.cid):null;
+ if(g==="tg"){it.sel=it.sel||{};it.sel[b.dataset.id]=!!b.checked;return}
+ if(b.tagName==="INPUT")return;
+ if(g==="ok"){if((it.t==="broken"||it.t==="timeout")&&f)fxRemove(f.id);cnShift();render();return}
+ if(g==="cont"){if(it.res.ok){cnShift()}else{ui.cn[0]={t:"broken",fxid:it.fxid,reason:"save"};cnDraw()}return}
+ if(g==="auto"&&c){var bon=spSvMod(c,"con"),r=d20(),t=r+bon;it.res={ok:t>=it.dc,txt:"d20 "+r+(bon>=0?" + ":" − ")+Math.abs(bon)+" = "+t+" vs DC "+it.dc};cnDraw();return}
+ if(g==="apply"){var inp=document.getElementById("cnin"),v=parseInt(inp&&inp.value,10);if(isNaN(v)){if(inp)inp.focus();return}it.res={ok:v>=it.dc,txt:"Rolled "+v+" vs DC "+it.dc};cnDraw();return}
+ if(g==="pass"){it.res={ok:true,txt:"Passed"};cnDraw();return}
+ if(g==="fail"){it.res={ok:false,txt:"Failed"};cnDraw();return}
+ if(g==="ecgo"){var cc=clCmb(it.cid),sp2=it.act.spk?spFind(it.act.spk):null;var who=Object.keys(it.sel||{}).filter(function(k){return it.sel[k]&&clCmb(k)});cnShift();
+  if(cc&&sp2){fxStart(cc,sp2,it.act.lvl,who.length?who:[cc.id]);if(clActKind(sp2)==="action")fxUseAction(cc,"action")}return}}
+document.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest("[data-fx]");if(!b)return;var g=b.dataset.fx,id=b.dataset.id;
+ if(g==="go")fxGo(id,+b.dataset.i);
+ else if(g==="end"){fxRemove(id);render()}
+ else if(g==="brk"){cnPush({t:"broken",fxid:id,reason:"manual"})}});
+/* checks and timers */
+function fxSettle(){if(!(S.fx||[]).length)return;
+ var busy=["tgpop","hitov","mdov","castov","wsov","atkpop"].some(function(id){var e=document.getElementById(id);return e&&ovVis(e)});if(busy)return;
+ var ch=false;(S.fx||[]).slice().forEach(function(f){var c=clCmb(f.cid);if(!c){S.fx=S.fx.filter(function(x){return x.id!==f.id});ch=true;return}
+  if(c.hp===""){return}var cur=clTot(c);if(f.hp===null||f.hp===undefined){f.hp=cur;ch=true;return}
+  if(cur<f.hp){var dmg=f.hp-cur;f.hp=cur;ch=true;if(!f.cc)return;if(cur<=0)cnPush({t:"broken",fxid:f.id,reason:"down"});else cnPush({t:"check",fxid:f.id,dmg:dmg,dc:Math.max(10,Math.floor(dmg/2))})}
+  else if(cur>f.hp){f.hp=cur;ch=true}});if(ch)save()}
+function fxTick(){var cur=S.turnId;(S.fx||[]).forEach(function(f){if(f.dur===null||f.alert)return;var el=S.round-f.start;if(el>=f.dur&&(f.cid===cur||el>f.dur)){f.alert=1;cnPush({t:"timeout",fxid:f.id})}});save()}
+var _advFX=advanceTurn;advanceTurn=function(){var r=_advFX.apply(this,arguments);try{fxTick()}catch(e){}return r};
+var _renderFX=render;render=function(){var r=_renderFX.apply(this,arguments);try{fxSettle()}catch(e){}return r};
+var _esetFX=esetCard;esetCard=function(){return fxPanel()+_esetFX.apply(this,arguments)};
+function fxRow(f){var c=clCmb(f.cid),L=fxLeft(f),w=fxNames(f),its=FXTAB[f.n]||[];
+ return'<div class="fxrow"><div><b>'+esc(f.n)+'</b> <span class="mute">L'+f.lvl+'</span> '+(f.cc?'<span class="pill">Concentration</span> ':'')+'<span class="mute">'+esc(c?c.name:"?")+(w.length&&!(w.length===1&&w[0]==="self")?" → "+esc(w.join(", ")):w.length?" (self)":"")+' &middot; '+(L===null?"no fixed end":L>0?L+" round"+(L===1?"":"s")+" left":"ends this turn")+'</span></div><div class="atkrow">'+its.map(function(it,i){return'<button data-fx="go" data-id="'+f.id+'" data-i="'+i+'">'+(it.act?'<span class="fxt">'+(it.act==="bonus"?"Bonus":"Action")+'</span> ':it.k==="ong"?'<span class="fxt">Ongoing</span> ':'')+esc(it.lbl)+'</button>'}).join("")+(f.cc?'<button data-fx="brk" data-id="'+f.id+'">Concentration broken</button>':'')+'<button data-fx="end" data-id="'+f.id+'">End spell</button></div></div>'}
+function fxPanel(){var L=S.fx||[];return L.length?'<div class="card fxp" style="margin-bottom:14px"><h3>Active spells</h3>'+L.map(fxRow).join("")+'</div>':''}
+var _clCastGoFX=clCastGo;clCastGo=function(){var Cs=ui.cs,c=Cs&&clCmb(Cs.cid),sp=Cs&&Cs.spk&&spFind(Cs.spk),m=c&&tgMemb(c),snap=null;
+ if(c&&sp&&m){var sl=Object.keys(Cs.sel||{}).filter(function(k){return Cs.sel[k]&&clCmb(k)});snap={c:c,sp:sp,mode:Cs.mode,sel:sl,lv:clCastLvl(m,sp,Cs)}}
+ _clCastGoFX.apply(this,arguments);
+ if(snap&&!ui.cs){var aoe=clIsAoe(snap.sp)&&snap.mode==="dmg",who=aoe?[]:(snap.mode==="util"&&!snap.sel.length?[snap.c.id]:snap.sel);fxStart(snap.c,snap.sp,snap.lv,who)}};
+var _tgRollFX=tgRoll;tgRoll=function(){var k=tgCur(),T=ui.tg,had=T&&T.fxd;_tgRollFX.apply(this,arguments);
+ if(k&&T&&k.at.sp&&!had&&T.res){T.fxd=1;var sp=spFind(k.at.spk);if(sp)fxStart(k.mc,sp,k.at.lvl,Object.keys(T.sel||{}).filter(function(id){return T.sel[id]}))}};
+/*FX-END*/
+
 function restCard(){return'<div class="card"><h3>Rests</h3><div class="mute">Applies to everyone in the party tab: hit points, hit dice and spell slots.</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button data-a="restshort">Short rest</button><button class="pri" data-a="restlong">Long rest</button></div></div>'}
 function restOv(){var el=document.getElementById("restov");if(!el){el=document.createElement("div");el.id="restov";document.body.appendChild(el);
  el.addEventListener("click",function(e){var b=e.target.closest("[data-rs]");if(e.target===el){el.style.display="none";return}if(!b)return;var a=b.dataset.rs;if(a==="close")el.style.display="none";else if(a==="longgo")restLong();else if(a==="shortgo")restShort();else if(a==="goenc")restGoEnc(b)})}
@@ -2203,7 +2321,7 @@ document.addEventListener("click",function(e){
  else if(a==="encroll"){S.combatants.forEach(function(c){if(c.kind==="mon")c.init=String(d20()+(parseInt(c.dex,10)||0))});save();render()}
  else if(a==="encsort"||a==="initdone"){ui.initq=null;render();startAsk()}
  else if(a==="encreset"){S.round=1;S.turnId="";save();render()}
- else if(a==="encclear"){if(ui.clr){ui.clr=false;S.combatants=[];S.clog=[];S.cpend=[];S.round=1;S.turnId="";save()}else ui.clr=true;render()}
+ else if(a==="encclear"){if(ui.clr){ui.clr=false;S.combatants=[];S.clog=[];S.cpend=[];S.fx=[];S.round=1;S.turnId="";save()}else ui.clr=true;render()}
  else if(a==="nextturn"){advanceTurn()}
  else if(a==="nextfrom"){if(b.dataset.id&&S.combatants.some(function(c){return c.id===b.dataset.id}))S.turnId=b.dataset.id;advanceTurn()}
  else if(a==="dmg"||a==="heal"){
@@ -2471,7 +2589,7 @@ function tvRun(){var T=S.trv,a=tvStart(),b=tvDest(),leg=tvLeg(a,b,T.roads);if(!l
 function tvEnemy(name){var k=cmKey(name),en=S.enemies.filter(function(e){return cmKey(e.name)===k||cmKey(e.name)===k+"s"})[0];if(en)return en;if(MONS[k])return lbAdd(k);var r=cmFind(name);if(r)return lbAdd(cmKey(r.n));return null}
 function tvGo(i){var T=S.trv,e=T.res&&T.res.enc&&T.res.enc[i];if(!e||!e.mons.length)return;
  ui.tvc=null;tvLoad(e)}
-function tvLoad(e){S.combatants=[];S.clog=[];S.cpend=[];ui.initq=null;S.round=1;S.turnId="";var miss=[];
+function tvLoad(e){S.combatants=[];S.clog=[];S.cpend=[];S.fx=[];ui.initq=null;S.round=1;S.turnId="";var miss=[];
  e.mons.forEach(function(m){var en=tvEnemy(m.m);if(!en){miss.push(m.m);return}addEnemies(en,Math.max(1,Math.min(20,m.n)))});
  save();ui.tab="Encounter";saveUi();ui.msg=miss.length?"No statblock saved for: "+miss.join(", ")+". Add them on the Enemies tab.":"";render();
  var mn=document.getElementById("main");if(mn)mn.scrollTop=0;}
