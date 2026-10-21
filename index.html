@@ -496,7 +496,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=144;var APPLABEL="1.421";
+var APPV=145;var APPLABEL="1.422";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -1615,10 +1615,10 @@ function clActKind(sp){var t=String(sp&&sp.t||"");return/bonus action/i.test(t)?
 /* hit */
 function clHitOpen(id,i){var c=clCmb(id),a=c&&i!==undefined&&i!==""?clAtks(c)[+i]:null;ui.ht={cid:id,tgt:"",amt:"",dice:"",type:a?a.t:"",magic:a?!!a.mg:false,what:a?a.n:"",hint:a?a.hint:"",err:""};clHitDraw()}
 function clHitDraw(){var T=ui.ht;if(!T)return;var c=clCmb(T.cid);if(!c){clHide("hitov");return}
- var tl=clTargets(c.id),tg=clCmb(T.tgt);if(!tg&&tl.length){tg=tl.filter(function(x){return x.kind==="mon"&&clTot(x)>0})[0]||tl[0];T.tgt=tg.id}
+ var tl=foesOf(c),tg=clCmb(T.tgt);if(!tg&&tl.length){tg=tl.filter(function(x){return x.kind==="mon"&&clTot(x)>0})[0]||tl[0];T.tgt=tg.id}
  var sel={};sel[T.tgt]=true;var fx=tg&&T.type?tgFactor(tg,T.type,T.magic):{f:1,w:""},el=clOv("hitov");
  T.off=T.off||{};var pl=clPend(c.id),ph=pl.length?'<div class="cllist">'+pl.map(function(e){return'<div class="clrow"><label class="chk"><input type="checkbox" data-clc="pe-on" data-id="'+e.id+'"'+(T.off[e.id]?"":" checked")+'><span><b>'+esc(e.n)+'</b>: add '+esc(e.dice)+(e.type?" "+esc(e.type):"")+' on this hit'+(e.note?'<span class="mute"> &middot; '+esc(e.note)+'</span>':'')+'</span></label><button data-clc="pe-end" data-id="'+e.id+'">End spell</button></div>'}).join("")+'</div>':'';
- el.innerHTML='<div class="clbox"><div class="atkh"><b>'+esc(c.name)+' hits&hellip;</b></div>'+(T.hint?'<div class="mute">Damage to roll: <b>'+esc(T.hint)+'</b>. Type in what the player rolled.</div>':'')+ph+(tl.length?'<div class="cllist">'+clTgtRows(tl,"radio",sel,"",T.type,T.magic)+'</div>':'<div class="mute">There is nobody else in the encounter.</div>')+
+ el.innerHTML='<div class="clbox"><div class="atkh"><b>'+esc(c.name)+' hits&hellip;</b></div>'+(T.hint?'<div class="mute">Damage to roll: <b>'+esc(T.hint)+'</b>. Type in what the player rolled.</div>':'')+ph+(tl.length?'<div class="cllist">'+clTgtRows(tl,"radio",sel,"",T.type,T.magic)+'</div>':'<div class="mute">There are no enemies in the encounter.</div>')+
  '<div class="sprow2"><label class="hpf"><span class="tl">Damage</span><input id="clhamt" data-clc="ht-amt" inputmode="numeric" value="'+esc(T.amt)+'" placeholder="8 or 5+3" style="width:110px"></label><label class="hpf"><span class="tl">Or roll dice</span><input data-clc="ht-dice" value="'+esc(T.dice)+'" placeholder="1d8+3" style="width:110px"></label><button data-clc="ht-roll">Roll</button></div>'+
  '<div class="sprow2"><input data-clc="ht-what" value="'+esc(T.what)+'" placeholder="Weapon or attack (optional)" style="flex:1"><select data-clc="ht-type" aria-label="Damage type">'+CL_TYPES.map(function(t){return'<option value="'+t+'"'+(T.type===t?" selected":"")+'>'+(t||"Damage type (optional)")+'</option>'}).join("")+'</select></div>'+
  (/^(bludgeoning|piercing|slashing)$/.test(T.type)?'<label class="chk"><input type="checkbox" class="yn" data-clc="ht-magic"'+(T.magic?" checked":"")+'><span>Magical weapon</span></label>':'')+
