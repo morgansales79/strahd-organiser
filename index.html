@@ -670,7 +670,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=202;var APPLABEL="1.587";
+var APPV=203;var APPLABEL="1.588";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -3174,15 +3174,15 @@ function tvText(e,ms){if(e[2]==="*ravens")return ms[0].m==="Wereraven"?"1 werera
 function tvRoll(night){var tb=night?TVN:TVD,dis=S.trv.dis[night?"n":"d"],ok=tb.filter(function(e){return!dis[e[0]]});if(!ok.length)return null;
  var n=0;while(n++<500){var r=2+Math.floor(Math.random()*12)+Math.floor(Math.random()*8);var e=tb.filter(function(x){return x[0]===r})[0];if(e&&!dis[e[0]])return e}return ok[0]}
 function tvRun(){var T=S.trv,a=tvStart(),b=tvDest(),leg=tvLeg(a,b,T.roads);if(!leg){T.res={err:"Pick two different places."};save();return}
- var ex=T.sub&&SB[T.sub]&&sbTown(T.sub)===b?sbHrs(SBHOME[b]||"SQ",T.sub,3):0,H=leg.h+ex,half=H/2,rest=T.rest?8:0,total=H+rest,ticks=Math.ceil(total*2-1e-9),i,found=[],checks=0,res={a:a,b:b,H:H,sub:ex?T.sub:"",ex:ex,mi:leg.mi,rest:T.rest,roads:T.roads,hour:S.hour||0,enc:[],checks:0,skipped:0,total:total};
+ var ex=T.sub&&SB[T.sub]&&sbTown(T.sub)===b?sbHrs(SBHOME[b]||"SQ",T.sub,3):0,H=leg.h+ex,half=H/2,rest=T.rest?8:0,total=H+rest,ticks=Math.ceil(total*2-1e-9),i,found=[],trvN=0,restN=0,checks=0,res={a:a,b:b,H:H,sub:ex?T.sub:"",ex:ex,mi:leg.mi,rest:T.rest,roads:T.roads,hour:S.hour||0,enc:[],checks:0,skipped:0,total:total};
  for(i=1;i<=ticks;i++){var t=Math.min(i*0.5,total),inRest=T.rest&&t>half+1e-9&&t<=half+8+1e-9;
   if(inRest&&!T.restChk)continue;
-  var recent=found.filter(function(f){return f>t-12-1e-9}).length;if(recent>=2){res.skipped++;continue}
+  var recent=(inRest?restN:trvN);if(recent>=1){res.skipped++;continue}
   checks++;var road=!inRest&&Math.random()<leg.rf,thr=road?18:15,d20=1+Math.floor(Math.random()*20);if(d20<thr)continue;
   var hr=((S.hour||0)+t)%24,night=hr>=19||hr<6,e=tvRoll(night);if(!e)continue;
   if(inRest&&TVTR[e[0]])continue;
   if(e[0]===19&&night){if(T.wisp)continue;T.wisp=true}
-  var ms=tvMons(e),hint=e[4]||"";if(e[1]==="Trinket"){var tr=1+Math.floor(Math.random()*100);hint="A random character finds: "+TVTK[Math.floor((tr-1)/2)]+" (d100 roll "+tr+", Gothic Trinkets)"}found.push(t);res.enc.push(tvDress({t:t,clock:tvClock(hr),night:night,rest:inRest,road:road,text:tvText(e,ms),hint:hint,mons:ms,table:night?"Night":"Day"},e))}
+  var ms=tvMons(e),hint=e[4]||"";if(e[1]==="Trinket"){var tr=1+Math.floor(Math.random()*100);hint="A random character finds: "+TVTK[Math.floor((tr-1)/2)]+" (d100 roll "+tr+", Gothic Trinkets)"}found.push(t);if(inRest)restN++;else trvN++;res.enc.push(tvDress({t:t,clock:tvClock(hr),night:night,rest:inRest,road:road,text:tvText(e,ms),hint:hint,mons:ms,table:night?"Night":"Day"},e))}
  res.checks=checks;T.res=res;ui.tvc=null;save()}
 function tvEnemy(name){var k=cmKey(name),en=S.enemies.filter(function(e){return cmKey(e.name)===k||cmKey(e.name)===k+"s"})[0];if(en)return en;if(MONS[k])return lbAdd(k);var r=cmFind(name);if(r)return lbAdd(cmKey(r.n));return null}
 function tvGo(i){var T=S.trv,e=T.res&&T.res.enc&&T.res.enc[i];if(!e||!e.mons.length)return;
@@ -3209,7 +3209,7 @@ function tvView(){var T=S.trv,a=tvStart(),b=tvDest(),pts=tvPts(),leg=tvLeg(a,b,T
   '<label class="chk"><input type="checkbox" class="yn" data-tvc="restchk"'+(T.restChk?" checked":"")+'><span>Check for encounters during the rest</span></label>'+
   '<div class="f"><span>Starts at (Barovian clock)</span>'+clkHtml()+'</div>'+
   (T.sub&&SB[T.sub]&&sbTown(T.sub)===b?'<div class="mute">Plus about '+sbMin(SBHOME[b]||"SQ",T.sub,3)+' min on foot inside '+esc(b)+' to reach '+esc(sbLabel(T.sub))+'.</div>':'')+(leg?'<div class="mute">'+leg.mi+' miles, about '+tvFmt(leg.h)+' on foot at a normal pace'+(T.roads?' (roads and trails where they exist)':' (straight across country, dense forest and steep slopes at half speed)')+(T.rest?', plus the rest':'')+'.</div>':'')+
-  '<div><button class="pri" data-tv="start">Start travel</button></div></div>'+out+'<details class="card mute"><summary>How this works</summary>Every 30 minutes on the road, an encounter happens on a d20 roll of 18 or higher. Off the road, it is 15 or higher. Roads, trails and cross-country times come from measuring the Barovia map (1 square is &frac14; mile) at 3 miles per hour, with dense forest and steep ground at half speed. Nothing is checked once two encounters have happened in the last 12 hours. A disabled encounter is re-rolled. The will-o&rsquo;-wisp only appears once; later results count as no encounter. Night is 19:00 to 06:00. Encounters that need the party to be travelling are ignored during the long rest.'+(T.wisp?' <button data-tv="wisp">Allow the will-o&rsquo;-wisp again</button>':'')+'</details></div></div>'}
+  '<div><button class="pri" data-tv="start">Start travel</button></div></div>'+out+'<details class="card mute"><summary>How this works</summary>Every 30 minutes on the road, an encounter happens on a d20 roll of 18 or higher. Off the road, it is 15 or higher. Roads, trails and cross-country times come from measuring the Barovia map (1 square is &frac14; mile) at 3 miles per hour, with dense forest and steep ground at half speed. Once a journey has had one random encounter, nothing more is checked until the next journey. A rest within the journey gets its own single encounter check. A disabled encounter is re-rolled. The will-o&rsquo;-wisp only appears once; later results count as no encounter. Night is 19:00 to 06:00. Encounters that need the party to be travelling are ignored during the long rest.'+(T.wisp?' <button data-tv="wisp">Allow the will-o&rsquo;-wisp again</button>':'')+'</details></div></div>'}
 document.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest("[data-tv]");if(!b)return;var a=b.dataset.tv,T=S.trv;
  if(a==="start"){if(tvAll().length>1)moOpen();else{tvRun();render();tvAnimOpen()}}else if(a==="anim")tvAnimOpen();else if(a==="go")tvGo(+b.dataset.i);else if(a==="clear"){T.res=null;ui.tvc=null;save();render()}
  else if(a==="follow"){T.start="";save();render()}else if(a==="wisp"){T.wisp=false;save();render()}
@@ -3230,7 +3230,7 @@ function restEncUi(night){var loc=restLocDef(),tb=LOCENC[SS.loc],op=[[0,"Wildern
 function restEncRead(){var t=document.querySelector('[data-rsl="time"]'),l=document.querySelector('[data-rsl="locr"]:checked'),r={night:!!t&&t.value==="1",loc:l?parseInt(l.value,10)||0:0};if(r.loc===3&&!LOCENC[SS.loc])r.loc=0;var fl=document.querySelector('[data-rsl="flag"]'),tb1=LOCENC[SS.loc];if(fl&&tb1&&tb1.flag){S.trv[tb1.flag]=fl.checked;save()}ui.rsLoc=r.loc;ui.rsLocFor=SS.loc;return r}
 function restEncRoll(hours,rv){var T=S.trv,out=[],found=[],i,thr=rv.loc===1?18:15;if(rv.loc===2)return out;
  if(rv.loc===3){var tb0=LOCENC[SS.loc];out=(tb0.flag&&S.trv[tb0.flag])?[]:leRun(tb0,hours);rv.tbl=LOCENC[SS.loc].name;save();ui.rsEnc=out;return out}
- for(i=1;i<=Math.ceil(hours*2-1e-9);i++){var t=Math.min(i*0.5,hours);if(found.filter(function(f){return f>t-12-1e-9}).length>=2)continue;
+ for(i=1;i<=Math.ceil(hours*2-1e-9);i++){var t=Math.min(i*0.5,hours);if(found.length>=1)continue;
   if(1+Math.floor(Math.random()*20)<thr)continue;var e=tvRoll(rv.night);if(!e||TVTR[e[0]])continue;if(e[0]===19&&rv.night){if(T.wisp)continue;T.wisp=true}
   var ms=tvMons(e),hint=e[4]||"";if(e[1]==="Trinket"){var tr=1+Math.floor(Math.random()*100);hint="A random character finds: "+TVTK[Math.floor((tr-1)/2)]+" (d100 roll "+tr+", Gothic Trinkets)"}
   found.push(t);out.push(tvDress({t:t,text:tvText(e,ms),hint:hint,mons:ms},e))}

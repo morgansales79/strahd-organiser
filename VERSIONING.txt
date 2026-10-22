@@ -93,3 +93,5 @@ Current: 1.571 (build 194)
 1.585 (build 200) - Village of Barovia to Durst Manor road route follows Old Svalich Road on the animated travel map.
 1.586 (build 201) - All road routes to Durst Manor (from every location) now follow Old Svalich Road instead of cutting through the village.
 1.587 - Pop-ups fit tablet screens: rules buttons compact, local map pop-up sized to viewport height
+1.587 (build 202) - Pop-ups fit tablet screens without scrolling (rules buttons, local map pop-up sized to screen height).
+1.588 (build 203) - Random encounters: max one per journey, plus one more allowed during a rest.
