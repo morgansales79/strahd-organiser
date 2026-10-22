@@ -74,7 +74,8 @@ input[type=checkbox]:focus-visible{outline:2px solid var(--acc2);outline-offset:
 #rulov{display:none;position:fixed;inset:0;z-index:1050;background:rgba(0,0,0,.5)}
 .rulp{position:absolute;right:0;top:0;bottom:0;width:min(560px,100%);background:var(--panel);color:var(--text);border-left:1px solid var(--line);display:flex;flex-direction:column;gap:10px;padding:14px;overflow:hidden}
 .rulh{display:flex;justify-content:space-between;align-items:center;font-size:1.1rem}
-.rulb{display:flex;flex-wrap:wrap;gap:6px;max-height:34%;overflow:auto;flex:none}.rulb button{padding:6px 10px;font-size:13px}.rulb button.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.rulb{display:flex;flex-wrap:wrap;gap:6px;flex:none}
+@media (max-height:760px){.rulb{gap:4px}.rulb button{padding:3px 7px;font-size:12px}.rulp{padding:10px;gap:6px}#lmov{padding:6px}.lmbox{padding:8px;gap:4px}#lmov .lmbox .mute{font-size:12px;line-height:1.25}}.rulb button{padding:6px 10px;font-size:13px}.rulb button.on{background:var(--acc);border-color:var(--acc);color:#fff}
 .rulx{flex:1;overflow:auto;border:1px solid var(--line);border-radius:10px;padding:12px;background:var(--field)}
 .slc{border:1px solid var(--line);border-radius:10px;padding:8px}.slc .pcx{margin:4px 0 0;padding:0;border:0}.slc .pcxh{display:none}
 .slbar{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center;margin-top:6px}.slg{display:inline-flex;gap:3px;align-items:center}.pip.sm{width:14px;height:14px;border-width:1.5px;position:relative}.pip.sm:after{content:"";position:absolute;inset:-8px}
@@ -669,7 +670,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=201;var APPLABEL="1.586";
+var APPV=202;var APPLABEL="1.587";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -3631,9 +3632,9 @@ function lmInfo(id,ctx){var s=SB[id];if(!s)return"";
  return'<div class="card lminfo"><div class="row" style="margin:0"><h3 style="margin:0">'+esc(sbLabel(id))+'</h3><div style="display:flex;gap:8px;flex-wrap:wrap">'+(own?'<button data-sbx="map" data-id="'+id+'" data-ctx="'+ctx+'">Open map</button>':"")+'<button class="pri" data-sbx="travel" data-id="'+id+'">Travel here</button></div></div><div>'+esc(s.desc)+'</div>'+
   (s.npcs.length?'<div class="mute">NPCs: '+s.npcs.map(esc).join(", ")+'</div>':"")+(t===LMAPS[s.m].town?'<div class="mute">'+(mn?'About '+mn+' min on foot from the party.':'The party is here.')+'</div>':'')+'</div>'}
 function lmView(id,ctx){var M=LMAPS[id],zs=ui.lmz||(ui.lmz={}),z=zs[ctx]||100,sel=ctx==="pop"?(ui.lm&&ui.lm.sel):ui.mapSel,vh=ctx==="pop"?74:68,
- w=z===100?(M.fitw?'width:100%':'width:min(100%,calc('+vh+'vh*'+(M.w/M.h).toFixed(4)+'))'):'width:'+z+'%';
+ w=z===100?(M.fitw?'width:100%':'width:min(100%,calc('+(ctx==="pop"?"(100vh - 180px)":vh+"vh")+'*'+(M.w/M.h).toFixed(4)+'))'):'width:'+z+'%';
  return'<div class="lmgrid"><div><div class="row" style="margin:0 0 6px"><div class="mute">'+esc(M.scale)+'</div><div style="display:flex;gap:8px"><button data-lz="out" data-ctx="'+ctx+'">Zoom out</button><button data-lz="in" data-ctx="'+ctx+'">Zoom in</button><button data-lz="fit" data-ctx="'+ctx+'">Fit</button></div></div>'+
-  '<div style="overflow:auto;max-height:'+(vh+6)+'vh;border:1px solid var(--line);border-radius:10px"><div style="position:relative;margin:0 auto;'+w+'"><img src="'+M.img+'" alt="'+esc(M.name)+'" style="width:100%;display:block"><svg viewBox="0 0 '+M.w+' '+M.h+'" style="position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none">'+lmPins(id,ctx,sel)+'</svg></div></div></div><div>'+(ui.lpMsg&&Date.now()-(ui.lpMsgAt||0)<20000?'<div class="lpmsg" style="margin-bottom:8px">'+esc(ui.lpMsg)+'</div>':'')+(sel?lmInfo(sel,ctx):'<div class="mute">Tap a marker for details. Double tap a marker to travel there. Use Zoom in to read small labels.</div>')+'</div></div>'}
+  '<div style="overflow:auto;max-height:'+(ctx==="pop"?"calc(100vh - 175px)":(vh+6)+"vh")+';border:1px solid var(--line);border-radius:10px"><div style="position:relative;margin:0 auto;'+w+'"><img src="'+M.img+'" alt="'+esc(M.name)+'" style="width:100%;display:block"><svg viewBox="0 0 '+M.w+' '+M.h+'" style="position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none">'+lmPins(id,ctx,sel)+'</svg></div></div></div><div>'+(ui.lpMsg&&Date.now()-(ui.lpMsgAt||0)<20000?'<div class="lpmsg" style="margin-bottom:8px">'+esc(ui.lpMsg)+'</div>':'')+(sel?lmInfo(sel,ctx):'<div class="mute">Tap a marker for details. Double tap a marker to travel there. Use Zoom in to read small labels.</div>')+'</div></div>'}
 function lmDraw(){var el=document.getElementById("lmov");if(!ui.lm){if(el)el.style.display="none";return}
  if(!el){el=document.createElement("div");el.id="lmov";document.body.appendChild(el)}
  var M=LMAPS[ui.lm.id];el.style.display="flex";el.innerHTML='<div class="lmbox"><div class="row" style="margin:0"><h3 style="margin:0">'+esc(M.name)+'</h3><div style="display:flex;gap:8px">'+(M.back?'<button data-lmx="back">Back to '+esc(LMAPS[M.back].name)+'</button>':"")+'<button data-lmx="close">Close</button></div></div>'+lmView(ui.lm.id,"pop")+'</div>'}

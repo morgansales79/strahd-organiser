@@ -1,0 +1,95 @@
+Display version (APPLABEL in the app) is 1.MM.
+Major update (new feature set): bump the first decimal place (1.10 -> 1.20 -> 1.30).
+Minor update (fixes, small tweaks): bump the second decimal place (1.10 -> 1.11 -> 1.12).
+Current: 1.571 (build 194)
+1.180 (build 102): five new Active Session panes: Travel, Marching order, Combat controls, Rests and time, Party health.
+1.181 (build 103): fade-outs match fade-in speed (.48s); panes, Panes popup and Enemies/NPC sub-tabs fade.
+1.190 (build 104): five spells added from D&D Beyond page (Abi-Dalzim's, Absorb Elements, Aganazzar's, Air Bubble, Alustriel's).
+1.200 (build 105): 153 more spells (Xanathar's, Tasha's and others) imported from the spell PDF.
+1.210 (build 106): per-character spell lists (known/spellbook and prepared) with add from the spell list, prepared count limits, and a Prepare your spells popup after a long rest.
+1.211 (build 107): Add 4 test characters button (level 8 druid, wizard, rogue, ranger).
+1.212 (build 108): the 4 test characters are added automatically once if the party is empty.
+1.220 (build 109): combat log (Hit and Spell buttons, spell slots used, AoE hand-off to group damage, group damage lists AoE spells only), Moon druid slot heal, Combat log header button, review and end-of-combat report.
+1.230 (build 110): spells like Lightning Arrow, Hex, Hunter's Mark and smites add their bonus damage to the next Hit automatically (with End spell and untick options); a PC turn ends after their action unless Extra Attack or a wild shape Multiattack allows more attacks (Auto-end turn toggle).
+1.231 (build 111): Wild Shape button in the Encounter opens a form picker (favourites first, then all allowed beasts); shifting is a bonus action and does not end the turn.
+1.232 (build 112): wild-shaped party members get the beast statblock and its attack buttons (targeting enemies, multiattack counted); Combat log header button removed (Review combat stays in the Encounters toolbar).
+1.240 (build 113): death saving throw popup when a downed PC's turn starts (and a button on their card), success/failure pips, stable/dead/nat 20, damage-while-down failure; shorter name box and wider Hit/Spell buttons in the Encounter.
+1.250 (build 114): Encounter page tidy-up (grouped toolbar, uniform combatant cards with Next turn and Delete at top right, equal-width action buttons, consistent wild shape row); end-of-combat report pops up automatically when the last enemy is defeated.
+1.260 (build 115): Spells/Equipment tab with ~515 items (SRD weapons, armor, gear, tools, mounts, magic items), add item, import from image/PDF/camera; party equipment slots (2 weapons, 3 if dual wielder, armor, shield, 3 attuned items); Hit buttons replaced by weapon/beast attack buttons with manual damage entry; attack/spell buttons right-aligned; spell popup shows only relevant damage/heal/self options.
+1.270 (build 116): searchable equipment pickers; equipment now changes AC (armor, shield, magic bonuses, cloak/ring of protection, bracers of defense, unarmored defense), ability scores (gauntlets, headband, amulet, belts), save bonuses and war mage wand attacks; Damage/Heal and Hit/Spell button colours swapped.
+1.280 (build 117): party member cards use tabs (Stats, Spells, Equipment, Notes).
+1.290 (build 118): all character imports (D&D Beyond JSON/HTML, photo scan, PDF) now fill equipment slots and spell lists from the sheet text when present.
+1.291 (build 119): versatile weapons get a two-handed attack button (larger die) when no shield is equipped.
+1.300 (build 120): PDF character imports read every page (up to 15) into the sheet text so spells and equipment on later pages are picked up; several PDFs can be chosen at once and are reviewed one after another.
+1.310 (build 121): enemies targeted by player spells with a saving throw now roll their saves automatically (area spells in the group damage window, single-target spells in the cast window); half or no damage is applied on a success and the result is shown and logged.
+1.311 (build 122): D&D Beyond PDF exports (fillable form fields) now read the real weapon, equipment and spell lists instead of proficiency text; Staff maps to Quarterstaff.
+1.312 (build 123): imported spells are all added as known (none set to prepared); when an import finds armour or a shield, AC is recalculated from the armour type (base AC, Dex cap for medium, none for heavy) plus shield.
+1.320 (build 124): AC is now recalculated live from worn armour, shield and AC items every time the screen draws (so changing Dex or armour always updates it); armour, shields and weapons a character is not proficient with show in red (equipment slots, picker list, encounter attack buttons). Proficiency comes from class, dwarf/elf weapon training, and the imported sheet proficiency list.
+1.321 (build 125): removing armour or shield now restores the AC the character had before equipment was applied (it was staying at the armoured value).
+1.330 (build 126): AC and Max HP are always calculated, never taken from imports. AC from armour type, Dex, shield, unarmoured defence and AC items; Max HP from class hit dice (full die at level 1, average after), Con modifier, multiclass and hill dwarf. The AC and Max HP tiles are read-only.
+1.340 (build 127): Initiative, passive Perception and Speed are now calculated too (Dex mod; 10+Wis+proficiency; race base speed with heavy armour Str penalty, barbarian Fast Movement and monk Unarmored Movement). Initiative and Speed tiles are read-only.
+1.350 (build 128): damage defenses on the character sheet are now a Resistant / Immune / Vulnerable chip display with sources, derived from race, class and level, subclass, equipment and the imported sheet; barbarian Rage toggle; manual extras moved into a collapsible box; monster attacks use the combined result.
+1.351 (build 129): removed the damage defenses heading text; defense labels, chips and None boxes restyled with the app theme colours.
+1.360 (build 130): Party sheets are locked by default with an edit toggle at the top of the Party page; locked sheets protect names, race, class, level, ability scores, proficiencies, defenses, sheet text and Delete. Equipment, prepared spells, current HP and notes stay editable in both modes.
+1.361 (build 131): damage defense labels and chips now share one consistent style (same border, same width).
+1.362 (build 132): the party sheet lock is now the standard NO/YES toggle switch labelled Edit sheets.
+1.363 (build 133): removed the Background field from the character import review screens (comment request).
+1.364 (build 134): removed the Background box from party cards; stat tiles (AC, Max HP, Current HP, Speed, Initiative, Spell DC) now have equal label height and value size so the numbers line up.
+1.370 (build 135) - Polish pass: phone overflow fixes, calculated fields removed from import review, level label, collapsible import card, primary Apply buttons, larger touch targets.
+1.380 (build 136) - Defenses panel gains condition immunities and saving throw notes (read from imported sheets, derived from race and class, editable); tiles, labels and pane titles no longer clip on narrow screens.
+1.381 (build 137) - Defenses shown as a table (Defense, Detail, Source) with grouped and de-duplicated entries.
+1.390 (build 138) - Header tidy (sync button under title, clock right-aligned), D&D Beyond file import card removed, defense table colours unified and 'Character sheet' source labels dropped.
+1.391 (build 139) - Defense table Source column removed (source shown on hover), header clock vertically centred, compact one-row header on phones.
+1.392 (build 140) - Removed the Read proficiencies from sheet text button.
+1.400 (build 141) - Enemy and NPC statblock spells appear in encounters: damage spells roll against targets (saves and attacks), other spells show their text, grouped by level under a Spells button.
+1.410 (build 142) - Active spell tracker: buff spells (Barkskin etc.) target self or willing creatures; duration countdown with timeout popup; concentration checks on damage (manual for players, auto-roll for enemies) and broken popup; action/bonus follow-up buttons; ongoing damage button for cloud and aura spells.
+1.420 (build 143) - Dual wielders get an off-hand bonus attack prompt before the turn moves on; single-target spells use radio buttons for target pickers.
+1.421 (build 144) - Off-hand bonus attack offers the weapon not yet used; offensive spells list only enemies, beneficial spells only allies (and self).
+1.422 (build 145) - Weapon hit window lists enemies only.
+1.430 (build 146) - Saving-throw attacks: player results are entered, enemies and NPCs roll; failed saves add the statblock condition. Manual conditions, save-to-end rolls at end of turn, abbreviated 'DC 13 WIS save' actions now recognised.
+1.440 (build 147) - Legendary actions and Legendary Resistance counters; regeneration prompt at turn start; recharge (auto-rolled) and per-day use counters; conditions now drive advantage, disadvantage, auto-crit and auto-fail on enemy attacks and saves; Pack Tactics tick box.
+1.450 (build 148) - Lair actions at initiative 20, Heart of Sorrow, condition timers and exhaustion, reaction and bonus action tracking, opportunity attacks, summon creatures, enemy spell slots and daily spells, regeneration blocking by damage type, grapple escape, temp HP, surprise, undo, party tab conditions.
+1.460 (build 149) - Survival: food, water and sleep tracking with popup warnings, exhaustion levels shared with combat, long rest recovery, dashboard section.
+1.461 (build 150) - Hit window and heal Roll buttons aligned and use the weapon or spell dice by default; survival pane has party-wide controls and a per-member popup.
+1.462 (build 151) - Survival pane: per-member rows moved into an Individual party members popup (with Manage and Back).
+1.463 (build 152) - Survival card is now normal size with one button; all controls and members are in a popup.
+1.464 (build 153) - Everyone eats and Everyone drinks buttons on the dashboard survival card.
+1.469 (build 158) - Survival card shows detailed summary (supplies, next warning, exhaustion, longest without food/water/sleep) at the same height as neighbouring cards.
+1.470 (build 159) - Survival popups (eat, drink, exhaustion, sleep) spaced out: one row per character.
+1.481 (build 160) - Hunting trap and False trail travel events can be resolved in a popup (front rank checks, victim saving throw, damage applied to the character). Marching order supports formations: ranks of any width, presets (single file, abreast, line, wedge).
+1.482 (build 161) - Travel: arriving at a destination makes it the default starting point; start and destination remain editable.
+1.490 (build 162) - Ambient sound: attach an audio file to each location (and a default), plays on loop for the current location with crossfade; floating Sound panel for on/off, volume, default.
+1.491 (build 163) - Ambient sound loops with an adjustable crossover (0-10 s, default 3 s) instead of a hard restart.
+1.492 (build 164) - Durst Manor added to the Barovia map and Travel as a point east of the Village of Barovia (Death House location now maps to it).
+1.493 (build 165) - Map: Durst Manor and Party labels restyled to match the printed map labels (cream box, serif lettering, lettered circle).
+1.491 (build 167) - Reverted to v1.491 at the user's request (removes Durst Manor map/travel point and the map label restyle from 1.492 and 1.493).
+1.500 (build 168) - Ambient sound: From Google Drive picker (search your Drive for audio, downloads a copy to the device).
+1.501 (build 169) - Attach sound / From Google Drive buttons only show in Edit locations/layout mode.
+1.502 (build 171) - Google Drive sound picker opens in My Drive / Dungeons & Dragons / The Curse of Strahd / Ambient Sound, with folder navigation and a whole-Drive search option.
+1.502 (build 171) - Google Drive sound picker opens in My Drive / Dungeons & Dragons / The Curse of Strahd / Ambient Sound, with folder navigation and a whole-Drive search option.
+1.503 (build 174) - Map: X Durst Manor marker added above Old Svalich Road, drawn in the same style as the printed map labels (graphics only).
+1.510 (build 175) - Death House renamed Durst Manor everywhere (saved data migrated, Google Doc heading still matches), added as a Travel point with routes, Ambient sound on/off toggle in the dashboard Options card.
+1.511 (build 176) - Header: current location shown in the Day box; new survival/exhaustion warning box that only appears when someone has a warning.
+1.512 (build 177) - Header: location moved to the top-left of the Day box without the pin icon; box widens to fit.
+1.513 (build 178) - Header warning box: capitalised Hungry / Thirsty / Needs sleep labels.
+1.514 (build 179) - Header: location now sits on the same line as the Day number.
+1.515 (build 180) - Header: Day aligned left, location aligned right on the same baseline.
+1.516 (build 181) - Header: Day/time box returned to the original style without the location (warning box kept).
+1.517 (build 182) - Header: current location back in the Day box, small text at the top left on the same baseline as the Day number.
+1.520 (build 183) - Village of Barovia package: Maps tab (Lands, Village, Church) with labelled local maps, tap/double-tap sublocations, Locations local-destinations pane with walking times, Travel sublocation option, NPC notes updated from the book.
+1.521 (build 184) - Walking to E7 Durst Manor in the Local destinations pane (or arriving there with the Travel sublocation option) now sets the party location to Durst Manor so its ambient sound plays; walking elsewhere in the village returns to the village sound.
+1.530 (build 186) - Floating Sound button removed (Sound settings now in the dashboard Options card); local travel moved to a popup opened by a Local travel button on the Travel page; double tap any map place goes to a prefilled Travel page, except double tap inside the current town which just walks the party.
+1.531 (build 187) - Local travel only lists places local to the party location and the button is greyed out when there are none.
+1.540 (build 188) - Castle Ravenloft: new Castle Ravenloft map view (all level maps with area lists, zoom) in Maps; castle random encounter table used only when resting in the castle (every 10 minutes, 18+; Ezmerelda and the witch once only); rest dialogs reworded to 'Where is the party resting?' with location table option; NPC notes for Escher, Helga, Cyrus, Lief, Emil, Gertruda, the brides and new Patrina Velikovna.
+1.550 (build 189) - Vallaki: town map plus Blue Water Inn, Burgomaster's Mansion, Wachterhaus, Coffin Maker's Shop and Vistani Camp maps with room pins and walking times; local travel generalised beyond Barovia; Vallaki and camp NPC notes and stats; Vallaki location notes with house-occupant table (no random encounter tables in this chapter).
+1.551 (build 190) - Vistani Camp (N9) added as a pin on the Vallaki map and its rooms are part of Vallaki local travel (about 25 min from the square).
+1.560 (build 191) - Old Bonegrinder: windmill map with four floor pins, local travel inside the windmill, hag and captive-children NPC notes, location note with megaliths and dream pastry rules (no random encounter table in this chapter).
+1.561 (build 192) - Existing saved data now receives new NPCs, NPC notes and location notes from every release (one-time content sync); added Vallaki special events, Keepers of the Feather, Vistani Camp and Old Bonegrinder location notes, and extra notes appended to Morgantha, Rictavio, Izek, Kasimir and Arabelle.
+1.580 (build 195) - Chapters 9 and 12-15 and chapter 2: new maps with pins and walking times for the Wizard of Wines winery (3 floors), Yester Hill, Werewolf Den, Amber Temple (both levels) and Tsolenka Pass; new NPCs, NPC and location notes, 13 quests/events, chapter 2 landmark notes, and the Werewolf Den Leader of the Pack rest event (d20 per hour, 18+).
+1.581 (build 196) - Durst Manor pin removed from the Village of Barovia local map.
+1.582 (build 197) - Printed E7 marker painted out of the Village of Barovia map image.
+1.583 (build 198) - Durst Manor marker on the Lands of Barovia map relabelled X1.
+1.584 (build 199) - Animated travel map now matches the Lands of Barovia map: X1 pin, dashed local-map rings, same party marker with label, bordered rounded frame.
+1.585 (build 200) - Village of Barovia to Durst Manor road route follows Old Svalich Road on the animated travel map.
+1.586 (build 201) - All road routes to Durst Manor (from every location) now follow Old Svalich Road instead of cutting through the village.
+1.587 - Pop-ups fit tablet screens: rules buttons compact, local map pop-up sized to viewport height
