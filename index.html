@@ -497,7 +497,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=152;var APPLABEL="1.463";
+var APPV=153;var APPLABEL="1.464";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -2586,7 +2586,7 @@ function survRows(){var now=absH(),Sv=sv();return S.party.map(function(m){survEn
    '<span class="svb"><button data-sv="mem" data-id="'+m.id+'">Manage</button></span></div>'}).join("")}
 function survCard(){var Sv=sv(),now=absH();if(!S.party.length)return'<div class="card"><h3>Survival and exhaustion</h3><div class="mute">Add party members to track their food, water, sleep and exhaustion.</div></div>';
  var bad=S.party.filter(function(m){survEnsure(m);return m.exh>0||now-m.fedAt>=24||now-m.drAt>=18||now-m.restAt>=16}).length;
- return'<div class="card"><h3>Survival and exhaustion</h3><div class="mute">'+(Sv.on?'Tracking on. Rations '+(Sv.rat||0)+', water '+(Sv.wat||0)+'. '+(bad?'<b>'+bad+' of '+S.party.length+' need attention.</b>':'Everyone is fine.'):'Tracking is off.')+'</div><div style="margin-top:8px"><button class="pri" data-sv="list">Open survival controls</button></div></div>'}
+ return'<div class="card"><h3>Survival and exhaustion</h3><div class="mute">'+(Sv.on?'Tracking on. Rations '+(Sv.rat||0)+', water '+(Sv.wat||0)+'. '+(bad?'<b>'+bad+' of '+S.party.length+' need attention.</b>':'Everyone is fine.'):'Tracking is off.')+'</div><div class="sprow2" style="margin-top:8px;flex-wrap:wrap"><button data-sv="allfood">Everyone eats</button><button data-sv="alldrink">Everyone drinks</button><button class="pri" data-sv="list">More controls</button></div></div>'}
 function survBody(){var Sv=sv(),now=absH(),h='';
  var tg=function(k,l){return'<button data-sv="t'+k+'" class="'+(Sv[k]?"pri":"")+'">'+l+': '+(Sv[k]?"on":"off")+'</button>'};
  h+='<div class="cdrow">'+tg("on","Tracking")+tg("food","Food")+tg("water","Water")+tg("sleep","Sleep")+'</div>';
