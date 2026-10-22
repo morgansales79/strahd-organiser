@@ -497,7 +497,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=169;var APPLABEL="1.501";
+var APPV=170;var APPLABEL="1.502";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -3235,25 +3235,41 @@ document.addEventListener("change",function(e){var t=e.target;if(!t||!t.dataset|
 document.addEventListener("input",function(e){var t=e.target;if(!t||!t.dataset)return;if(t.dataset.aud==="xf"){var B=au();B.xf=Math.max(0,Math.min(10,+t.value||0));save();var lb=t.previousElementSibling;if(lb)lb.textContent="Loop crossover: "+(B.xf>0?B.xf+" s":"off (plain loop)");if(AE.a)AE.a.loop=B.xf<=0;return}if(t.dataset.aud!=="vol")return;var A=au();A.vol=Math.max(0,Math.min(1,(+t.value||0)/100));if(AE.a&&!AE.blocked){if(AE.a._f){clearInterval(AE.a._f);AE.a._f=0}AE.a.volume=A.vol}save()});
 document.addEventListener("pointerdown",audUnlock,true);
 setInterval(function(){try{audInit();audTick()}catch(e){}},700);
-var DP={open:false,q:"",items:[],next:"",busy:false,msg:"",tg:""};
+var DP={open:false,q:"",items:[],next:"",busy:false,msg:"",tg:"",root:"",folder:"",stack:[],all:false,name:""};
+var DPATH=["Dungeons & Dragons","The Curse of Strahd","Ambient Sound"];
 function audMime(n){var e=String(n).toLowerCase().replace(/^.*\./,"");return{mp3:"audio/mpeg",ogg:"audio/ogg",oga:"audio/ogg",opus:"audio/ogg",m4a:"audio/mp4",aac:"audio/aac",wav:"audio/wav",flac:"audio/flac",webm:"audio/webm"}[e]||""}
 function audMB(n){n=+n||0;return n?(n/1048576).toFixed(n>10485760?0:1)+" MB":""}
+function dpEsc(t){return String(t).replace(/\\/g,"\\\\").replace(/'/g,"\\'")}
+function dpGet(q,fields){return gapi("GET","https://www.googleapis.com/drive/v3/files?pageSize=50&fields="+encodeURIComponent(fields)+"&q="+encodeURIComponent(q))}
+function dpResolve(){var c=gcfg();if(c.audFolder)return Promise.resolve(c.audFolder);var par="root",i=0;
+ function step(){if(i>=DPATH.length){gset({audFolder:par});return Promise.resolve(par)}
+  return dpGet("name='"+dpEsc(DPATH[i])+"' and mimeType='application/vnd.google-apps.folder' and '"+par+"' in parents and trashed=false","files(id,name)").then(function(r){var f=r&&r.files&&r.files[0];if(!f)return"";par=f.id;i++;return step()})}
+ return step()}
 function dpOv(){var el=document.getElementById("audpick");if(!el){el=document.createElement("div");el.id="audpick";document.body.appendChild(el);el.addEventListener("click",dpClick);el.addEventListener("keydown",function(e){if(e.key==="Enter"&&e.target.id==="dpq"){e.preventDefault();dpSearch()}})}return el}
 function dpDraw(){var el=dpOv();if(!DP.open){el.style.display="none";return}
- var h='<div class="tvbox" style="width:min(640px,100%);height:auto;max-height:92vh;overflow:auto"><div class="atkh"><b>Sound from Google Drive</b></div><div class="cdrow"><input id="dpq" value="'+esc(DP.q)+'" placeholder="Search by file name (leave empty to list all)" style="flex:1;min-width:160px" aria-label="Search Drive"><button class="pri" data-dp="go">Search</button></div>';
- if(DP.msg)h+='<div class="'+(/^(Downloading|Searching)/.test(DP.msg)?"mute":"bad")+'" style="margin:6px 0">'+esc(DP.msg)+'</div>';
- h+='<div style="margin:6px 0">'+(DP.items.length?DP.items.map(function(f,i){return'<div class="tprow"><span style="min-width:0;overflow:hidden;text-overflow:ellipsis"><b>'+esc(f.name)+'</b> <span class="mute">'+audMB(f.size)+'</span></span><span></span><button data-dp="use" data-i="'+i+'"'+(DP.busy?" disabled":"")+'>Use</button></div>'}).join(""):(DP.busy?'':'<div class="mute">No audio files found yet. Press Search.</div>'))+'</div>';
+ var where=DP.all?"Whole Drive":DPATH[DPATH.length-1]+DP.stack.map(function(x){return" / "+x.name}).join("");
+ var h='<div class="tvbox" style="width:min(640px,100%);height:auto;max-height:92vh;overflow:auto"><div class="atkh"><b>Sound from Google Drive</b></div><div class="mute">'+esc(where)+'</div><div class="cdrow">'+(DP.stack.length&&!DP.all?'<button data-dp="up">Up one folder</button>':'')+(DP.root?'<button data-dp="'+(DP.all?"home":"all")+'">'+(DP.all?"Back to "+esc(DPATH[DPATH.length-1]):"Search whole Drive")+'</button>':'')+'</div><div class="cdrow"><input id="dpq" value="'+esc(DP.q)+'" placeholder="Search by file name (empty lists everything)" style="flex:1;min-width:160px" aria-label="Search Drive"><button class="pri" data-dp="go">Search</button></div>';
+ if(DP.msg)h+='<div class="'+(/^(Downloading|Searching|Finding)/.test(DP.msg)?"mute":"bad")+'" style="margin:6px 0">'+esc(DP.msg)+'</div>';
+ h+='<div style="margin:6px 0">'+(DP.items.length?DP.items.map(function(f,i){var fo=f.mimeType==="application/vnd.google-apps.folder";return'<div class="tprow"><span style="min-width:0;overflow:hidden;text-overflow:ellipsis"><b>'+esc(f.name)+'</b> <span class="mute">'+(fo?"folder":audMB(f.size))+'</span></span><span></span><button data-dp="'+(fo?"open":"use")+'" data-i="'+i+'"'+(DP.busy?" disabled":"")+'>'+(fo?"Open":"Use")+'</button></div>'}).join(""):(DP.busy?'':'<div class="mute">Nothing here yet.</div>'))+'</div>';
  if(DP.next)h+='<div class="cdrow"><button data-dp="more"'+(DP.busy?" disabled":"")+'>Show more</button></div>';
  h+='<div class="cdrow" style="margin-top:8px"><button data-dp="close">Close</button></div></div>';el.innerHTML=h;el.style.display="flex"}
-function dpQuery(){var q="trashed=false and (mimeType contains 'audio/' or name contains '.mp3' or name contains '.ogg' or name contains '.m4a' or name contains '.wav' or name contains '.flac' or name contains '.opus')",t=DP.q.trim().replace(/\\/g,"\\\\").replace(/'/g,"\\'");if(t)q+=" and name contains '"+t+"'";return q}
+function dpQuery(){var au="mimeType contains 'audio/' or name contains '.mp3' or name contains '.ogg' or name contains '.m4a' or name contains '.wav' or name contains '.flac' or name contains '.opus'",t=DP.q.trim(),q;
+ if(DP.all)q="trashed=false and ("+au+")";else q="trashed=false and '"+DP.folder+"' in parents and (mimeType='application/vnd.google-apps.folder' or "+au+")";
+ if(t)q+=" and name contains '"+dpEsc(t)+"'";return q}
 function dpFetch(more){DP.busy=true;DP.msg="Searching...";if(!more){DP.items=[];DP.next=""}dpDraw();
- var u="https://www.googleapis.com/drive/v3/files?pageSize=50&orderBy="+encodeURIComponent("name")+"&fields="+encodeURIComponent("nextPageToken,files(id,name,size,mimeType)")+"&q="+encodeURIComponent(dpQuery())+(more&&DP.next?"&pageToken="+encodeURIComponent(DP.next):"");
- GC.silent=false;return gapi("GET",u).then(function(r){DP.items=DP.items.concat((r&&r.files)||[]);DP.next=(r&&r.nextPageToken)||"";DP.msg=DP.items.length?"":"No audio files matched.";DP.busy=false;dpDraw()},function(e){DP.busy=false;DP.msg="Could not read your Drive: "+String(e&&e.message||e).slice(0,140);dpDraw()})}
+ var u="https://www.googleapis.com/drive/v3/files?pageSize=50&orderBy="+encodeURIComponent(DP.all?"name":"folder,name")+"&fields="+encodeURIComponent("nextPageToken,files(id,name,size,mimeType)")+"&q="+encodeURIComponent(dpQuery())+(more&&DP.next?"&pageToken="+encodeURIComponent(DP.next):"");
+ GC.silent=false;return gapi("GET",u).then(function(r){DP.items=DP.items.concat((r&&r.files)||[]);DP.next=(r&&r.nextPageToken)||"";DP.msg="";DP.busy=false;dpDraw()},function(e){DP.busy=false;DP.msg="Could not read your Drive: "+String(e&&e.message||e).slice(0,140);if(!DP.all&&e&&e.status===404){gset({audFolder:""});DP.root=""}dpDraw()})}
 function dpSearch(){var q=document.getElementById("dpq");if(q)DP.q=q.value;dpFetch(false)}
 function dpUse(i){var f=DP.items[i];if(!f||DP.busy)return;DP.busy=true;DP.msg="Downloading "+f.name+"...";dpDraw();
  GC.silent=false;gToken().then(function(t){return fetch("https://www.googleapis.com/drive/v3/files/"+encodeURIComponent(f.id)+"?alt=media",{headers:{Authorization:"Bearer "+t}})}).then(function(r){if(!r.ok){if(r.status===401)GC.tok="";throw new Error("Google answered "+r.status)}return r.blob()}).then(function(b){var ty=audMime(f.name)||b.type||"audio/mpeg";return new Blob([b],{type:ty})}).then(function(blob){var id=uid();audPut(id,blob,function(ok){DP.busy=false;if(!ok){DP.msg="This browser could not store the file.";dpDraw();return}DP.open=false;dpDraw();audSet(DP.tg,{id:id,name:audName(f)});audUI()})}).catch(function(e){DP.busy=false;DP.msg="Download failed: "+String(e&&e.message||e).slice(0,140);dpDraw()})}
-function dpOpen(tg){DP.tg=tg;DP.open=true;DP.msg="";var c=gcfg();if(!c.aud){gset({aud:true});GC.tok="";GC.exp=0}dpFetch(false)}
-function dpClick(e){var el=document.getElementById("audpick");if(e.target===el){DP.open=false;dpDraw();return}var b=e.target.closest("[data-dp]");if(!b)return;var a=b.dataset.dp;if(a==="close"){DP.open=false;dpDraw()}else if(a==="go")dpSearch();else if(a==="more")dpFetch(true);else if(a==="use")dpUse(+b.dataset.i)}
+function dpOpen(tg){DP.tg=tg;DP.open=true;DP.q="";DP.items=[];DP.next="";DP.stack=[];DP.all=false;DP.msg="Finding your Ambient Sound folder...";DP.busy=true;dpDraw();var c=gcfg();if(!c.aud){gset({aud:true});GC.tok="";GC.exp=0}
+ GC.silent=false;dpResolve().then(function(id){DP.busy=false;if(id){DP.root=id;DP.folder=id;DP.msg="";dpFetch(false)}else{DP.root="";DP.all=true;DP.msg='The folder My Drive / Dungeons & Dragons / The Curse of Strahd / Ambient Sound was not found, so your whole Drive is shown.';dpFetch(false);DP.msg='The folder My Drive / Dungeons & Dragons / The Curse of Strahd / Ambient Sound was not found, so your whole Drive is shown.'}},function(e){DP.busy=false;DP.msg="Could not read your Drive: "+String(e&&e.message||e).slice(0,140);dpDraw()})}
+function dpClick(e){var el=document.getElementById("audpick");if(e.target===el){DP.open=false;dpDraw();return}var b=e.target.closest("[data-dp]");if(!b)return;var a=b.dataset.dp,f=DP.items[+b.dataset.i];
+ if(a==="close"){DP.open=false;dpDraw()}else if(a==="go")dpSearch();else if(a==="more")dpFetch(true);else if(a==="use")dpUse(+b.dataset.i);
+ else if(a==="open"&&f){DP.stack.push({id:f.id,name:f.name});DP.folder=f.id;DP.q="";dpFetch(false)}
+ else if(a==="up"){DP.stack.pop();DP.folder=DP.stack.length?DP.stack[DP.stack.length-1].id:DP.root;DP.q="";dpFetch(false)}
+ else if(a==="all"){DP.all=true;DP.q="";dpFetch(false)}
+ else if(a==="home"){DP.all=false;DP.folder=DP.stack.length?DP.stack[DP.stack.length-1].id:DP.root;DP.q="";dpFetch(false)}}
 document.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest('[data-aud="drive"]');if(b)dpOpen(b.dataset.loc)});
 /*AUD-END*/
 
