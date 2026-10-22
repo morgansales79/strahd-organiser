@@ -202,7 +202,7 @@ header{min-height:104px;padding:12px 18px!important;background:linear-gradient(9
 .mnr{padding:1px 4px;margin:1px 0}.mnr button{padding:2px 9px;min-height:30px}.mnr b{min-width:1.4em;text-align:center}.mnchips{display:flex;flex-wrap:wrap;gap:4px;margin:3px 0}.mnchip{border:1px solid var(--line);border-radius:999px;padding:1px 9px;font-size:.9rem}.mnm{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;align-items:center}#mnsel{flex:1;min-width:140px;width:auto}
 @media (max-width:760px){.nzg{grid-template-columns:1fr;grid-template-rows:55% 1fr}}
 .empty{color:var(--mute);padding:24px;border:1px dashed var(--line);border-radius:10px;text-align:center}
-.legp{margin-top:8px;border-top:1px dashed var(--line);padding-top:6px}.svctl{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px 18px;margin-top:10px}.svg1 .tl{display:block;font-size:.72rem;text-transform:uppercase;letter-spacing:.04em;color:var(--mute)}.clbox .sprow2{align-items:flex-end}.clbox .sprow2>button{min-height:44px;height:44px;box-sizing:border-box}.clbox .hpf input{min-height:44px;height:44px;box-sizing:border-box}.svr{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;border-top:1px solid var(--line);padding:8px 0}.svn{min-width:150px}.svc{font-size:.82rem;border-radius:8px;padding:2px 8px;border:1px solid var(--line)}.svc.warn{border-color:#c9a227;color:#e2c15a}.svc.bad{border-color:var(--acc);color:#e8798d}.svb{display:inline-flex;gap:6px;margin-left:auto}.cdrow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px}.cdchip{display:inline-flex;flex-wrap:wrap;gap:4px;align-items:center;border:1px solid var(--acc);border-radius:12px;padding:2px 4px 2px 9px;font-size:.8rem;max-width:100%}.cdchip button{padding:2px 8px;font-size:.75rem;min-height:30px}.cdadd{font-size:.78rem;padding:3px 10px;min-height:32px}
+.legp{margin-top:8px;border-top:1px dashed var(--line);padding-top:6px}.svbtns{display:flex;gap:6px}.svbtns button{flex:0 1 auto;min-height:36px;height:36px;padding:0 10px;font-size:.82rem;white-space:nowrap}.svcard h3{margin-bottom:0}.svs{font-size:.8rem;color:var(--mute);line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.svs b{color:var(--text)}.svs b.bad{color:#e0647a}.svs b.warn{color:#e0b04a}.svctl{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px 18px;margin-top:10px}.svg1 .tl{display:block;font-size:.72rem;text-transform:uppercase;letter-spacing:.04em;color:var(--mute)}.clbox .sprow2{align-items:flex-end}.clbox .sprow2>button{min-height:44px;height:44px;box-sizing:border-box}.clbox .hpf input{min-height:44px;height:44px;box-sizing:border-box}.svr{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;border-top:1px solid var(--line);padding:8px 0}.svn{min-width:150px}.svc{font-size:.82rem;border-radius:8px;padding:2px 8px;border:1px solid var(--line)}.svc.warn{border-color:#c9a227;color:#e2c15a}.svc.bad{border-color:var(--acc);color:#e8798d}.svb{display:inline-flex;gap:6px;margin-left:auto}.cdrow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px}.cdchip{display:inline-flex;flex-wrap:wrap;gap:4px;align-items:center;border:1px solid var(--acc);border-radius:12px;padding:2px 4px 2px 9px;font-size:.8rem;max-width:100%}.cdchip button{padding:2px 8px;font-size:.75rem;min-height:30px}.cdadd{font-size:.78rem;padding:3px 10px;min-height:32px}
 .pill{font-size:.75rem;border:1px solid var(--line);border-radius:99px;padding:1px 9px;color:var(--mute)}
 .pill.v{border-color:var(--acc2);color:var(--acc2)}
 @media (max-width:760px){.g2{grid-template-columns:1fr}}
@@ -497,7 +497,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=153;var APPLABEL="1.464";
+var APPV=158;var APPLABEL="1.469";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -2585,8 +2585,21 @@ function survRows(){var now=absH(),Sv=sv();return S.party.map(function(m){survEn
   return'<div class="svr"><b class="svn">'+esc(m.name||"Adventurer")+'</b>'+cell(xc,"Exhaustion",m.exh)+(Sv.food?cell(fc,"Ate",survHrs(m.fedAt)+" ago"):'')+(Sv.water?cell(wc,"Drank",survHrs(m.drAt)+" ago"):'')+(Sv.sleep?cell(ac,"Awake",survHrs(m.restAt)):'')+
    '<span class="svb"><button data-sv="mem" data-id="'+m.id+'">Manage</button></span></div>'}).join("")}
 function survCard(){var Sv=sv(),now=absH();if(!S.party.length)return'<div class="card"><h3>Survival and exhaustion</h3><div class="mute">Add party members to track their food, water, sleep and exhaustion.</div></div>';
- var bad=S.party.filter(function(m){survEnsure(m);return m.exh>0||now-m.fedAt>=24||now-m.drAt>=18||now-m.restAt>=16}).length;
- return'<div class="card"><h3>Survival and exhaustion</h3><div class="mute">'+(Sv.on?'Tracking on. Rations '+(Sv.rat||0)+', water '+(Sv.wat||0)+'. '+(bad?'<b>'+bad+' of '+S.party.length+' need attention.</b>':'Everyone is fine.'):'Tracking is off.')+'</div><div class="sprow2" style="margin-top:8px;flex-wrap:wrap"><button data-sv="allfood">Everyone eats</button><button data-sv="alldrink">Everyone drinks</button><button class="pri" data-sv="list">More controls</button></div></div>'}
+ var fh=function(x){return x<1?"under 1h":x<48?Math.floor(x)+"h":Math.floor(x/24)+"d"},nm=function(m){return esc((m.name||"Adventurer").replace(/\s+\d+$/,""))};
+ S.party.forEach(survEnsure);
+ var bad=S.party.filter(function(m){return m.exh>0||now-m.fedAt>=24||now-m.drAt>=18||now-m.restAt>=16}).length,
+  ex=S.party.filter(function(m){return m.exh>0}).sort(function(a,b){return b.exh-a.exh}),
+  mx=function(k){var b=S.party[0];S.party.forEach(function(m){if(now-m[k]>now-b[k])b=m});return b},
+  lines='';var sup=Sv.on?'Rations <b>'+(Sv.rat||0)+'</b> &middot; water <b>'+(Sv.wat||0)+'</b>':'Tracking is off';
+ if(Sv.on){var parts=[];
+  if(Sv.food){var f=mx("fedAt");parts.push('food '+fh(now-f.fedAt)+'')}
+  if(Sv.water){var w=mx("drAt");parts.push('water '+fh(now-w.drAt)+'')}
+  if(Sv.sleep){var a=mx("restAt");parts.push('awake '+fh(now-a.restAt)+'')}
+  var nx=[];if(Sv.food)nx.push(["food",24-(now-mx("fedAt").fedAt)]);if(Sv.water)nx.push(["water",24-(now-mx("drAt").drAt)]);if(Sv.sleep)nx.push(["sleep",16-(now-mx("restAt").restAt)]);
+  nx=nx.sort(function(x,y){return x[1]-y[1]})[0];
+  lines+='<div class="svs">'+sup+(nx?' &middot; '+(nx[1]<=0?'<b class="bad">'+nx[0]+' warning due</b>':'next warning: '+nx[0]+' in '+fh(nx[1])):'')+'</div><div class="svs">Exhaustion: '+(ex.length?'<b class="'+(ex[0].exh>=3?"bad":"warn")+'">'+ex.map(function(m){return nm(m)+' '+m.exh}).join(", ")+'</b>':'<b>none</b>')+'</div>'+
+   (parts.length?'<div class="svs">Longest: '+parts.join(" &middot; ")+'</div>':'')}else lines='<div class="svs">'+sup+'</div>';
+ return'<div class="card svcard"><h3>Survival and exhaustion</h3><div>'+lines+'</div><div class="svbtns"><button data-sv="allfood">Everyone eats</button><button data-sv="alldrink">Everyone drinks</button><button class="pri" data-sv="list">More'+(bad?' ('+bad+')':'')+'</button></div></div>'}
 function survBody(){var Sv=sv(),now=absH(),h='';
  var tg=function(k,l){return'<button data-sv="t'+k+'" class="'+(Sv[k]?"pri":"")+'">'+l+': '+(Sv[k]?"on":"off")+'</button>'};
  h+='<div class="cdrow">'+tg("on","Tracking")+tg("food","Food")+tg("water","Water")+tg("sleep","Sleep")+'</div>';
