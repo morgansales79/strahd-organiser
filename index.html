@@ -499,7 +499,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=177;var APPLABEL="1.512";
+var APPV=178;var APPLABEL="1.513";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -3150,7 +3150,7 @@ function hdWarn(){var el=document.getElementById("hdwarn");if(!el)return;var Sv=
   sl=Sv.sleep?S.party.filter(function(m){return now-m.restAt>=16}):[],
   L=function(a){return a.length>2?a.length+" members":a.map(nm).join(", ")};
   if(ex.length){var mx=Math.max.apply(null,ex.map(function(m){return m.exh}));h+='<b>&#9888; Exhaustion '+mx+'</b><span>'+L(ex)+'</span>'}
-  var o=[];if(fd.length)o.push("hungry: "+L(fd));if(wt.length)o.push("thirsty: "+L(wt));if(sl.length)o.push("needs sleep: "+L(sl));
+  var o=[];if(fd.length)o.push("Hungry: "+L(fd));if(wt.length)o.push("Thirsty: "+L(wt));if(sl.length)o.push("Needs sleep: "+L(sl));
   if(o.length)h+=(ex.length?'':'<b>&#9888; Survival</b>')+'<span>'+o.join(" &middot; ")+'</span>'}}catch(e){}
  el.innerHTML=h;el.hidden=!h}
 function hdClk(){var el=document.getElementById("hdclk");if(!el)return;var lc=(typeof SS!=="undefined"&&SS&&SS.loc)?'<span class="hdloc">'+esc(SS.loc)+'</span>':'';el.innerHTML=lc+'<b>Day '+S.day+'</b> '+tvClock(S.hour||0)+'<span>'+(clkNight()?"&#9790; ":"&#9788; ")+clkNext()+'</span>';hdWarn()}
