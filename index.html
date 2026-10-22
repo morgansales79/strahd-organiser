@@ -519,7 +519,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=183;var APPLABEL="1.520";
+var APPV=184;var APPLABEL="1.521";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -3062,7 +3062,7 @@ function tvView(){var T=S.trv,a=tvStart(),b=tvDest(),pts=tvPts(),leg=tvLeg(a,b,T
 document.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest("[data-tv]");if(!b)return;var a=b.dataset.tv,T=S.trv;
  if(a==="start"){if(tvAll().length>1)moOpen();else{tvRun();render();tvAnimOpen()}}else if(a==="anim")tvAnimOpen();else if(a==="go")tvGo(+b.dataset.i);else if(a==="clear"){T.res=null;ui.tvc=null;save();render()}
  else if(a==="follow"){T.start="";save();render()}else if(a==="wisp"){T.wisp=false;save();render()}
- else if(a==="arrive"&&T.res){var n=T.res.b;SS.sub=(T.res.sub&&SB[T.res.sub])?{t:n,id:T.res.sub}:null;T.sub="";if(S.locations.some(function(l){return l.name===n})){SS.loc=n;saveSess()}T.start=n;T.startFor=SS.loc||"";T.dest="";T.res=null;save();render()}});
+ else if(a==="arrive"&&T.res){var n=T.res.b;SS.sub=(T.res.sub&&SB[T.res.sub])?{t:n,id:T.res.sub}:null;T.sub="";if(S.locations.some(function(l){return l.name===n})){SS.loc=n;sbLoc();saveSess()}T.start=n;T.startFor=SS.loc||"";T.dest="";T.res=null;save();render()}});
 document.addEventListener("input",function(e){var el=e.target,d=el&&el.dataset;if(!d||!d.tvq||!S.trv)return;var T=S.trv,k=d.tvq,q=el.value.toLowerCase().trim(),pos=el.selectionStart;ui.tvq=ui.tvq||{start:"",dest:""};ui.tvq[k]=el.value;
  var cur=k==="start"?tvStart():tvDest(),ex=k==="dest"?tvStart():"",l=TRVM.pts.filter(function(p){return (!q||p.toLowerCase().indexOf(q)>-1)}).sort(function(a,b){return a.localeCompare(b)});
  if(l.length&&l.indexOf(cur)<0){tvSet(k,l[0]);save()}
@@ -3134,6 +3134,8 @@ function sbFt(a,b){var A=SB[a],B=SB[b];if(!A||!B||a===b)return 0;
 function sbHrs(a,b,mph){return sbFt(a,b)/(5280*(mph||3))}
 function sbMin(a,b,mph){var f=sbFt(a,b);return f?Math.max(1,Math.round(f/(88*(mph||3)))):0}
 function sbMinTxt(m){return m<1?"here":m+" min"}
+var SBLOC={E7:"Durst Manor"};
+function sbLoc(){var id=SS.sub&&SS.sub.id;if(id&&SBLOC[id])SS.loc=SBLOC[id];else if(SS.sub&&SS.loc==="Durst Manor")SS.loc=SS.sub.t}
 function lpTown(){var l=SS.loc||"";return SBTOWNS.indexOf(l)>-1?l:(SBALIAS[l]||"")}
 function lpHere(town){if(SS.sub&&SS.sub.t===town&&SB[SS.sub.id])return SS.sub.id;return SS.loc==="Durst Manor"?"E7":"SQ"}
 function lpMph(){return ui.lpace||3}
@@ -3143,7 +3145,7 @@ function lpPane(){var town=ui.lpt||lpTown()||SBTOWNS[0],here=lpHere(town),inT=lp
   '<div class="mute">'+(inT?'The party is at <b>'+esc(here==="SQ"?"the village square":sbLabel(here))+'</b>. Tap a destination to walk there: the clock advances by the walking time and no encounters are rolled.':'The party is at '+esc(SS.loc||"no set location")+'. Use the Travel tab to reach '+esc(town)+' first. Times below are from the village square.')+'</div>'+
   (ui.lpMsg?'<div class="lpmsg">'+esc(ui.lpMsg)+'</div>':'')+
   '<div class="lpg">'+top.map(btn).join("")+'</div><div class="mute" style="margin-top:2px">Church rooms (map E5)</div><div class="lpg">'+rooms.map(btn).join("")+'</div></div>'}
-function lpGo(id){var town=lpTown();if(!town||!SB[id])return;var here=lpHere(town),mn=sbMin(here,id,lpMph());if(!mn)return;clkAdv(mn/60);SS.sub={t:town,id:id};ui.lpSel="";
+function lpGo(id){var town=lpTown();if(!town||!SB[id])return;var here=lpHere(town),mn=sbMin(here,id,lpMph());if(!mn)return;clkAdv(mn/60);SS.sub={t:town,id:id};sbLoc();ui.lpSel="";
  ui.lpMsg="Walked to "+sbLabel(id)+" ("+mn+" min). It is now "+clkTxt()+".";save();render()}
 function lmPins(id,ctx,sel){var M=LMAPS[id],k=M.ps,t=lpTown(),here=t===M.town?lpHere(t):"",out='<g font-family="Georgia,\'Noto Serif\',\'Times New Roman\',serif" style="filter:drop-shadow(1px 2px 1.5px rgba(0,0,0,.5))">';
  SBL.forEach(function(r){var s=SB[r[0]];if(s.m!==id||s.h)return;var x=s.x,y=s.y,R=15*k,fs=15*k,lf=19*k,lab=s.id.replace(/^E5(?=[a-g])/,""),nm=s.id==="E7"?"Durst Manor":s.name,
@@ -3208,14 +3210,14 @@ function tvAnimDraw(){var A=TA,el=document.getElementById("tvanim");if(!A||!el)r
  else if(A.done)card='<div class="card" style="border-color:var(--acc)"><div><b>The party reaches '+esc(r.b)+'</b></div><div class="mute">Party location updated to '+esc(r.b)+'. The clock is now '+clkTxt()+'.</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="pri" data-ta="close">Close</button></div></div>';
  var st=TRVM.xy[TRVM.pts.indexOf(r.a)],en=TRVM.xy[TRVM.pts.indexOf(r.b)];
  el.innerHTML='<div class="tvbox"><div class="row" style="margin:0"><h3 style="margin:0">'+esc(r.a)+' to '+esc(r.b)+'</h3><div style="display:flex;gap:8px">'+(A.pause||A.done?'':'<button data-ta="skip">Skip ahead</button>')+'<button data-ta="close">Close</button></div></div><div class="tvmap"><img src="'+TVMAP+'" alt="Map of Barovia"><svg viewBox="0 0 1800 1155"><polyline points="'+pts+'" fill="none" stroke="#e23a3a" stroke-width="5" stroke-dasharray="12 9" stroke-linecap="round" stroke-linejoin="round" opacity=".95"/><circle cx="'+st[0]+'" cy="'+st[1]+'" r="9" fill="#fff" stroke="#5a1010" stroke-width="3"/><circle cx="'+en[0]+'" cy="'+en[1]+'" r="9" fill="#5a1010" stroke="#fff" stroke-width="3"/><circle id="tvmk" cx="'+st[0]+'" cy="'+st[1]+'" r="14" fill="#ffd24a" stroke="#5a1010" stroke-width="5"/></svg></div><div class="mute" id="tvtl"></div>'+card+'</div>';tvAnimTick()}
-function tvArrive(nm){var rr=S.trv.res;SS.sub=(rr&&rr.sub&&rr.b===nm&&SB[rr.sub])?{t:nm,id:rr.sub}:null;S.trv.sub="";SS.loc=nm;S.trv.start=nm;S.trv.startFor=SS.loc||"";S.trv.dest="";var r=S.trv.res;if(r&&!r.applied){r.applied=true;clkAdv(r.total||r.H||0)}save()}
+function tvArrive(nm){var rr=S.trv.res;SS.sub=(rr&&rr.sub&&rr.b===nm&&SB[rr.sub])?{t:nm,id:rr.sub}:null;S.trv.sub="";SS.loc=nm;sbLoc();S.trv.start=nm;S.trv.startFor=SS.loc||"";S.trv.dest="";var r=S.trv.res;if(r&&!r.applied){r.applied=true;clkAdv(r.total||r.H||0)}save()}
 function tvAnimClose(){var el=document.getElementById("tvanim");if(TA)cancelAnimationFrame(TA.raf);TA=null;if(el)el.style.display="none"}
 function tvAnimClick(e){var b=e.target.closest("[data-ta]"),A=TA;if(e.target.id==="tvanim"){return}if(!b||!A)return;var a=b.dataset.ta;
  if(a==="close")tvAnimClose();
  else if(a==="skip"){var n=A.r.enc[A.next];if(n){A.t=n.t;A.pause=true}else{A.t=A.total;A.done=true;tvArrive(A.r.b)}tvAnimDraw()}
  else if(a==="cont"){A.next++;A.pause=false;A.last=performance.now();tvAnimDraw()}
  else if(a==="go"){var en=A.r.enc[A.next];if(!en)return;tvAnimClose();tvLoad(en)}
- else if(a==="arrive"){var nm=A.r.b;SS.sub=(A.r.sub&&SB[A.r.sub])?{t:nm,id:A.r.sub}:null;if(S.locations.some(function(l){return l.name===nm})){SS.loc=nm;saveSess()}S.trv.start=nm;S.trv.startFor=SS.loc||"";S.trv.dest="";S.trv.res=null;save();tvAnimClose();render()}}
+ else if(a==="arrive"){var nm=A.r.b;SS.sub=(A.r.sub&&SB[A.r.sub])?{t:nm,id:A.r.sub}:null;if(S.locations.some(function(l){return l.name===nm})){SS.loc=nm;sbLoc();saveSess()}S.trv.start=nm;S.trv.startFor=SS.loc||"";S.trv.dest="";S.trv.res=null;save();tvAnimClose();render()}}
 document.addEventListener("keydown",function(e){if(e.key==="Escape"&&TA)tvAnimClose()});
 
 function tvPc(){var P=S.party||[];if(!P.length)return"a random character";var m=P[Math.floor(Math.random()*P.length)];return m.name||"a random character"}
