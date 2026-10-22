@@ -669,7 +669,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=195;var APPLABEL="1.580";
+var APPV=196;var APPLABEL="1.581";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -3273,7 +3273,6 @@ var SBL=[
 ["E4","Burgomaster's Mansion","vb",563,1471,"Ruined mansion behind a rusting iron fence, windows barred with planks. Kolyan lies in a coffin in a side drawing room.",["Ireena Kolyana","Ismark Kolyanovich","Kolyan Indirovich"]],
 ["E5","Church","vb",345,493,"Sagging stone-and-wood church on a rise under the Castle pillar. Claw-marked doors. Local map available.",["Donavich","Doru"]],
 ["E6","Cemetery","vb",366,257,"Iron-fenced graveyard behind the church. At midnight the March of the Dead rises from it.",[]],
-["E7","Durst Manor (haunted house)","vb",1104,751,"The haunted house, appendix B. See Durst Manor on the Locations tab.",[]],
 ["SQ","Village square","vb",640,915,"",[],1],
 ["E5a","Hall","ch",419,624,"10 ft wide, 20 ft long, unlit, smells of mildew. Four doors lead off it.",[]],
 ["E5b","Doru's Bedroom","ch",261,669,"Dirty, lightless; straw bed and a wooden holy symbol. Nothing of value.",[]],
@@ -3608,7 +3607,7 @@ function sbMinTxt(m){return m<1?"here":m+" min"}
 var SBLOC={E7:"Durst Manor"};
 function sbLoc(){var id=SS.sub&&SS.sub.id;if(id&&SBLOC[id])SS.loc=SBLOC[id];else if(SS.sub&&SS.loc==="Durst Manor")SS.loc=SS.sub.t}
 function lpTown(){var l=SS.loc||"";return SBTOWNS.indexOf(l)>-1?l:(SBALIAS[l]||"")}
-function lpHere(town){if(SS.sub&&SS.sub.t===town&&SB[SS.sub.id])return SS.sub.id;return town==="Village of Barovia"&&SS.loc==="Durst Manor"?"E7":town==="Vallaki"&&SS.loc==="Vistani Camp"?"N9c":town==="Krezk"&&SS.loc==="Abbey of Saint Markovia"?"S13":(SBHOME[town]||"SQ")}
+function lpHere(town){if(SS.sub&&SS.sub.t===town&&SB[SS.sub.id])return SS.sub.id;return town==="Vallaki"&&SS.loc==="Vistani Camp"?"N9c":town==="Krezk"&&SS.loc==="Abbey of Saint Markovia"?"S13":(SBHOME[town]||"SQ")}
 function lpMph(){return ui.lpace||3}
 function lpPane(){var town=lpTown();if(!town)return'<div class="lpane"><div class="row" style="margin:0"><h3 style="margin:0">Local destinations</h3><button data-lp="close">Close</button></div><div class="mute">The party\'s current location has no local places.</div></div>';var here=lpHere(town),inT=true,mph=lpMph(),subs=sbSubs(town),tm=sbTopMap(town),top=subs.filter(function(s){return SB[s.id].m===tm}),kids=Object.keys(LMAPS).filter(function(k){return LMAPS[k].parent&&LMAPS[k].town===town});
  var btn=function(s){var cur=inT&&s.id===here,mn=sbMin(here,s.id,mph),sel=ui.lpSel===s.id;return'<button class="'+(sel?"pri":"")+'" data-lp="go" data-id="'+s.id+'"'+(inT&&!cur?"":" disabled")+(cur?' aria-current="true"':"")+'><span>'+esc(sbLabel(s.id))+'</span><span class="mute">'+(cur?"You are here":sbMinTxt(mn))+'</span></button>'};
