@@ -235,13 +235,14 @@ button{transition:background-color .3s ease,border-color .3s ease,color .3s ease
 .cb .cl1{display:flex!important;flex-wrap:wrap!important;align-items:center;gap:6px}.cb .cl2>button{text-align:center!important;justify-content:center!important;display:inline-flex;align-items:center}.cb .cl1 .ntw{margin-left:auto}.cb .cl1 .ntw button{min-height:32px;padding:2px 12px;font-size:.85rem;white-space:nowrap}
 .cb .cl2{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.cb .cl2>button{flex:0 0 132px;min-width:132px;min-height:38px;padding:4px 8px;white-space:nowrap;text-align:center}.cb .cbody>.cl1{flex:1 1 100%!important}.cb .cbody>.cl2{flex:1 1 100%!important}.cb .cl2>.hpf+button,.cb .cl2>button:first-of-type{margin-left:8px}.cb .cl2>.hpf{flex:0 0 auto}
 .cb .wsb,.cb .slbar,.cb .sprow2{width:100%;box-sizing:border-box}.cb .wsb{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:8px;border:1px solid var(--line);border-radius:10px}.cb .wsb.on{border-color:var(--acc)}.cb .wsb>button{min-width:112px;min-height:36px}
+.hdr{display:flex;gap:8px;margin-left:auto;align-items:stretch;flex:none}.hdr .hdclk{margin-left:0!important}.hdwarn{border-color:#c0392b;color:#ffd9d4}.hdwarn[hidden]{display:none}.hdwarn{text-align:left;align-items:flex-start}@media(max-width:600px){.hdr{flex-direction:column;gap:4px;flex:1 1 auto;min-width:0}.hdwarn span{font-size:.7rem}}.hdwarn b{color:#ff8a7a}.hdclk .hdloc{opacity:.9;font-size:.8rem}
 .cb .atkrow{margin-top:0}.cb .atkrow button{min-width:96px}
 </style>
 </head>
 <body>
 <header>
   <div class="hdl"><h1>Curse of Strahd Organiser</h1><button id="syncdot" class="pill" hidden title="Tap to sync">Not synced</button></div>
-  <div id="hdclk" class="hdclk" title="Barovian clock"></div>
+  <div class="hdr"><div id="hdwarn" class="hdclk hdwarn" hidden title="Survival warnings"></div><div id="hdclk" class="hdclk" title="Barovian clock"></div></div>
 </header>
 <div id="bk"></div>
 <div id="nzov" hidden role="dialog" aria-modal="true" aria-label="Location notes"></div>
@@ -498,7 +499,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=175;var APPLABEL="1.510";
+var APPV=176;var APPLABEL="1.511";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -3140,7 +3141,19 @@ function moDown(e){if(!MO||e.target.closest("button,select,input"))return;var ro
 function clkAdv(h){var tot=Math.max(0,Math.round(((S.day||1)-1)*1440+(S.hour||0)*60+h*60));S.day=Math.floor(tot/1440)+1;S.hour=(tot%1440)/60}
 function clkTxt(){return"Day "+S.day+", "+tvClock(S.hour||0)}
 function clkNext(){var h=S.hour||0,n=clkNight(),d=n?(h>=19?24-h+6:6-h):19-h;return n?"Daybreak (06:00) in "+tvFmt(d):"Nightfall (19:00) in "+tvFmt(d)}
-function hdClk(){var el=document.getElementById("hdclk");if(!el)return;el.innerHTML='<b>Day '+S.day+'</b> '+tvClock(S.hour||0)+'<span>'+(clkNight()?"&#9790; ":"&#9788; ")+clkNext()+'</span>'}
+function hdWarn(){var el=document.getElementById("hdwarn");if(!el)return;var Sv=sv(),h="";
+ try{if(Sv.on&&S.party&&S.party.length){var now=absH();S.party.forEach(survEnsure);
+  var nm=function(m){return esc((m.name||"Adventurer").replace(/\s+\d+$/,""))},
+  ex=S.party.filter(function(m){return m.exh>0}),
+  fd=Sv.food?S.party.filter(function(m){return now-m.fedAt>=24}):[],
+  wt=Sv.water?S.party.filter(function(m){return now-m.drAt>=18}):[],
+  sl=Sv.sleep?S.party.filter(function(m){return now-m.restAt>=16}):[],
+  L=function(a){return a.length>2?a.length+" members":a.map(nm).join(", ")};
+  if(ex.length){var mx=Math.max.apply(null,ex.map(function(m){return m.exh}));h+='<b>&#9888; Exhaustion '+mx+'</b><span>'+L(ex)+'</span>'}
+  var o=[];if(fd.length)o.push("hungry: "+L(fd));if(wt.length)o.push("thirsty: "+L(wt));if(sl.length)o.push("needs sleep: "+L(sl));
+  if(o.length)h+=(ex.length?'':'<b>&#9888; Survival</b>')+'<span>'+o.join(" &middot; ")+'</span>'}}catch(e){}
+ el.innerHTML=h;el.hidden=!h}
+function hdClk(){var el=document.getElementById("hdclk");if(!el)return;var lc=(typeof SS!=="undefined"&&SS&&SS.loc)?'<span class="hdloc">&#128205; '+esc(SS.loc)+'</span>':'';el.innerHTML='<b>Day '+S.day+'</b> '+tvClock(S.hour||0)+'<span>'+(clkNight()?"&#9790; ":"&#9788; ")+clkNext()+'</span>'+lc;hdWarn()}
 function clkNight(){var h=S.hour||0;return h>=19||h<6}
 function clkHtml(){var bt=function(h,l){return'<button data-ck="adv" data-h="'+h+'">'+l+'</button>'};return'<div class="clk"><div class="clkbig"><b>Day '+S.day+'</b> <span>'+tvClock(S.hour||0)+'</span> <span class="mute">'+(clkNight()?"night":"day")+'</span></div><div class="clkbtn">'+bt(-24,"&minus;1 day")+bt(-1,"&minus;1 hr")+bt(-0.5,"&minus;30 min")+bt(0.5,"+30 min")+bt(1,"+1 hr")+bt(24,"+1 day")+'</div><label class="mute">Set time <input type="time" data-ck="set" value="'+tvClock(S.hour||0)+'"></label></div>'}
 document.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest('[data-ck="adv"]');if(!b)return;clkAdv(parseFloat(b.dataset.h));save();render()});
