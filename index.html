@@ -497,7 +497,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=151;var APPLABEL="1.462";
+var APPV=152;var APPLABEL="1.463";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -2584,20 +2584,22 @@ function survRows(){var now=absH(),Sv=sv();return S.party.map(function(m){survEn
   var cell=function(cls,l,t){return'<span class="svc '+cls+'"><span class="mute">'+l+'</span> '+t+'</span>'};
   return'<div class="svr"><b class="svn">'+esc(m.name||"Adventurer")+'</b>'+cell(xc,"Exhaustion",m.exh)+(Sv.food?cell(fc,"Ate",survHrs(m.fedAt)+" ago"):'')+(Sv.water?cell(wc,"Drank",survHrs(m.drAt)+" ago"):'')+(Sv.sleep?cell(ac,"Awake",survHrs(m.restAt)):'')+
    '<span class="svb"><button data-sv="mem" data-id="'+m.id+'">Manage</button></span></div>'}).join("")}
-function survCard(){var Sv=sv(),now=absH(),h='<div class="card" style="grid-column:1/-1"><h3>Survival and exhaustion</h3>';
+function survCard(){var Sv=sv(),now=absH();if(!S.party.length)return'<div class="card"><h3>Survival and exhaustion</h3><div class="mute">Add party members to track their food, water, sleep and exhaustion.</div></div>';
+ var bad=S.party.filter(function(m){survEnsure(m);return m.exh>0||now-m.fedAt>=24||now-m.drAt>=18||now-m.restAt>=16}).length;
+ return'<div class="card"><h3>Survival and exhaustion</h3><div class="mute">'+(Sv.on?'Tracking on. Rations '+(Sv.rat||0)+', water '+(Sv.wat||0)+'. '+(bad?'<b>'+bad+' of '+S.party.length+' need attention.</b>':'Everyone is fine.'):'Tracking is off.')+'</div><div style="margin-top:8px"><button class="pri" data-sv="list">Open survival controls</button></div></div>'}
+function survBody(){var Sv=sv(),now=absH(),h='';
  var tg=function(k,l){return'<button data-sv="t'+k+'" class="'+(Sv[k]?"pri":"")+'">'+l+': '+(Sv[k]?"on":"off")+'</button>'};
  h+='<div class="cdrow">'+tg("on","Tracking")+tg("food","Food")+tg("water","Water")+tg("sleep","Sleep")+'</div>';
- if(!S.party.length)return h+'<div class="mute" style="margin-top:6px">Add party members to track their food, water, sleep and exhaustion.</div></div>';
+ if(!S.party.length)return h+'<div class="mute" style="margin-top:6px">Add party members to track their food, water, sleep and exhaustion.</div>';
  var num=function(k,l){return'<label class="hpf"><span class="tl">'+l+'</span><input data-svn="'+k+'" inputmode="numeric" value="'+(Sv[k]||0)+'" style="width:84px" aria-label="'+l+'"></label>'};
  h+='<div class="svctl"><div class="svg1"><span class="tl">Supplies (person-days)</span><div class="sprow2">'+num("rat","Rations")+num("wat","Water")+'</div></div>'+
   '<div class="svg1"><span class="tl">Whole party</span><div class="sprow2"><button class="pri" data-sv="allfed">Everyone eats and drinks</button><button data-sv="allfood">Everyone eats</button><button data-sv="alldrink">Everyone drinks</button><button data-sv="allrest">Everyone has just woken up</button></div></div>'+
   '<div class="svg1"><span class="tl">Exhaustion, whole party</span><div class="sprow2"><button data-sv="allexh-">&minus;1 level</button><button data-sv="allexh+">+1 level</button><button data-sv="allexh0">Clear all</button></div></div></div>';
- var bad=S.party.filter(function(m){survEnsure(m);return m.exh>0||now-m.fedAt>=24||now-m.drAt>=18||now-m.restAt>=16}).length;
- h+='<div style="margin-top:8px"><button data-sv="list">Individual party members ('+S.party.length+')'+(bad?' &middot; '+bad+' need attention':'')+'</button></div>';
- h+='<details style="margin-top:8px"><summary class="mute">How it works</summary><div class="mute" style="margin-top:6px">Food: one meal a day. A character can go 3 plus their Constitution modifier days (at least 1) without food, then gains a level of exhaustion each further day. Water: one gallon a day. A full day with none gives a level of exhaustion. Sleep (optional rule): a warning after 16 hours awake, and after 24 hours without a long rest a Constitution save (DC 10, plus 5 for each extra day) or a level of exhaustion. A long rest removes one level if the character has eaten and drunk that day. Popups appear when the clock passes these points.</div><div style="margin-top:6px"><b>Exhaustion levels</b></div><ol class="mute" style="margin:4px 0 0 18px;padding:0">'+EXH.slice(1).map(function(t){return'<li>'+esc(t)+'</li>'}).join("")+'</ol></details></div>';
+ h+='<div style="margin-top:8px">'+survRows()+'</div>';
+ h+='<details style="margin-top:8px"><summary class="mute">How it works</summary><div class="mute" style="margin-top:6px">Food: one meal a day. A character can go 3 plus their Constitution modifier days (at least 1) without food, then gains a level of exhaustion each further day. Water: one gallon a day. A full day with none gives a level of exhaustion. Sleep (optional rule): a warning after 16 hours awake, and after 24 hours without a long rest a Constitution save (DC 10, plus 5 for each extra day) or a level of exhaustion. A long rest removes one level if the character has eaten and drunk that day. Popups appear when the clock passes these points.</div><div style="margin-top:6px"><b>Exhaustion levels</b></div><ol class="mute" style="margin:4px 0 0 18px;padding:0">'+EXH.slice(1).map(function(t){return'<li>'+esc(t)+'</li>'}).join("")+'</ol></details>';
  return h}
 var _cnDrawSv2=cnDraw;
-cnDraw=function(){var q=ui.cn||[],it=q[0];if(it&&it.t==="svlist"){var el0=cnOv();el0.innerHTML='<div class="clbox cnbox"><div class="atkh"><b>Party survival</b></div><div style="max-height:68vh;overflow:auto">'+survRows()+'</div><button class="pri" data-sv="pclose" style="margin-top:8px">Done</button></div>';el0.style.display="flex";return}
+cnDraw=function(){var q=ui.cn||[],it=q[0];if(it&&it.t==="svmain"){var el0=cnOv();el0.innerHTML='<div class="clbox cnbox" style="max-width:760px;width:94vw"><div class="atkh"><b>Survival and exhaustion</b></div><div style="max-height:70vh;overflow:auto">'+survBody()+'</div><button class="pri" data-sv="pclose" style="margin-top:8px">Done</button></div>';el0.style.display="flex";return}
  if(!it||it.t!=="svmem")return _cnDrawSv2();var m=survMem(it.id);if(!m){q.shift();cnDraw();return}survEnsure(m);var Sv=sv(),now=absH(),el=cnOv(),h='';
  h+='<div class="atkh"><b>'+esc(m.name||"Adventurer")+': survival</b></div>';
  h+='<div class="tgrow"><div class="sprow2"><b>Exhaustion</b><button data-sv="exh-" data-id="'+m.id+'" aria-label="Lower exhaustion">&minus;</button><b style="font-size:1.3rem;min-width:24px;text-align:center">'+m.exh+'</b><button data-sv="exh+" data-id="'+m.id+'" aria-label="Raise exhaustion">+</button><button data-sv="exh0" data-id="'+m.id+'">Clear</button></div>'+(m.exh?'<div class="mute">Level '+m.exh+': '+esc(EXH.slice(1,m.exh+1).join("; "))+'</div>':'<div class="mute">No exhaustion.</div>')+'</div>';
@@ -2605,12 +2607,12 @@ cnDraw=function(){var q=ui.cn||[],it=q[0];if(it&&it.t==="svlist"){var el0=cnOv()
  h+='<div class="tgrow"><div class="sprow2"><span>Last drank <b>'+survHrs(m.drAt)+'</b> ago</span><button class="pri" data-sv="drink" data-id="'+m.id+'">Drinks</button></div></div>';
  h+='<div class="tgrow"><div class="sprow2"><span>Awake for <b>'+survHrs(m.restAt)+'</b></span><button class="pri" data-sv="mrest" data-id="'+m.id+'">Has just woken up</button></div></div>';
  h+='<div class="tgrow"><div class="mute">Set the times by hand (hours ago)</div><div class="sprow2"><label class="hpf"><span class="tl">Ate</span><input id="svhf" inputmode="numeric" value="'+Math.floor(now-m.fedAt)+'" style="width:70px"></label><label class="hpf"><span class="tl">Drank</span><input id="svhd" inputmode="numeric" value="'+Math.floor(now-m.drAt)+'" style="width:70px"></label><label class="hpf"><span class="tl">Awake</span><input id="svhr" inputmode="numeric" value="'+Math.floor(now-m.restAt)+'" style="width:70px"></label><button data-sv="mset" data-id="'+m.id+'">Set</button></div></div>';
- h+=(it.from==="list"?'<button data-sv="back" style="margin-right:8px">Back to party list</button>':'')+'<button class="pri" data-sv="pclose">Done</button>';
+ h+=(it.from==="list"?'<button data-sv="back" style="margin-right:8px">Back to survival controls</button>':'')+'<button class="pri" data-sv="pclose">Done</button>';
  el.innerHTML='<div class="clbox cnbox"><div style="max-height:72vh;overflow:auto">'+h+'</div></div>';el.style.display="flex"};
 document.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest("[data-sv]");if(!b||b.tagName==="INPUT"||b.tagName==="SELECT")return;var x=b.dataset.sv,id=b.dataset.id,m=id?survMem(id):null,Sv=sv(),n=absH(),it=(ui.cn||[])[0];
- if(x==="list"){cnPush({t:"svlist"});return}
- if(x==="back"&&it&&it.t==="svmem"){ui.cn[0]={t:"svlist"};cnDraw();return}
- if(x==="mem"&&m){if(it&&it.t==="svlist"){ui.cn[0]={t:"svmem",id:m.id,from:"list"};cnDraw()}else cnPush({t:"svmem",id:m.id});return}
+ if(x==="list"){cnPush({t:"svmain"});return}
+ if(x==="back"&&it&&it.t==="svmem"){ui.cn[0]={t:"svmain"};cnDraw();return}
+ if(x==="mem"&&m){if(it&&it.t==="svmain"){ui.cn[0]={t:"svmem",id:m.id,from:"list"};cnDraw()}else cnPush({t:"svmem",id:m.id});return}
  if(x==="allfood"){S.party.forEach(function(p){survEat(p,"food")});save();render()}
  else if(x==="alldrink"){S.party.forEach(function(p){survEat(p,"water")});save();render()}
  else if(x==="allrest"){S.party.forEach(function(p){survEnsure(p);p.restAt=n});save();render()}
@@ -2618,7 +2620,7 @@ document.addEventListener("click",function(e){var b=e.target.closest&&e.target.c
  else if(x==="exh0"&&m){survSetExh(m,0);save();render()}
  else if(x==="mrest"&&m){survEnsure(m);m.restAt=n;save();render()}
  else if(x==="mset"&&m){var g=function(i){var v=parseFloat((document.getElementById(i)||{}).value);return isNaN(v)?null:Math.max(0,v)},f=g("svhf"),d=g("svhd"),r=g("svhr");if(f!==null)m.fedAt=n-f;if(d!==null)m.drAt=n-d;if(r!==null)m.restAt=n-r;m.starv=0;m.thirstLv=0;save();render()}
- if(it&&it.t==="svmem"&&x!=="pclose"&&x!=="mem")setTimeout(function(){cnDraw()},0)});
+ if(it&&(it.t==="svmem"||it.t==="svmain")&&x!=="pclose"&&x!=="mem"&&x!=="list")setTimeout(function(){cnDraw()},0)});
 document.addEventListener("change",function(e){var t=e.target;if(!t||!t.dataset||!t.dataset.svn)return;var k=t.dataset.svn,Sv=sv();Sv[k]=Math.max(0,parseInt(t.value,10)||0);save();render()});
 /*SURV2-END*/
 function restCard(){return'<div class="card"><h3>Rests</h3><div class="mute">Applies to everyone in the party tab: hit points, hit dice and spell slots.</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button data-a="restshort">Short rest</button><button class="pri" data-a="restlong">Long rest</button></div></div>'}
