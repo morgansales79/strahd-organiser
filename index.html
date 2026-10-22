@@ -531,7 +531,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=189;var APPLABEL="1.550";
+var APPV=190;var APPLABEL="1.551";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -3143,7 +3143,7 @@ LMAPS.in={name:"Blue Water Inn (N2)",img:IMG_IN,w:1454,h:2000,ft:0.185,scale:"On
 LMAPS.bm={name:"Burgomaster's Mansion (N3)",img:IMG_BM,w:1454,h:2000,ft:0.19,scale:"One square = 5 feet",town:"Vallaki",parent:"N3",back:"vl",det:1.15,ps:1.35,door:"D_bm",off:[[0, 1345], [0, 730], [0, 0]],fitw:1};
 LMAPS.wh={name:"Wachterhaus (N4)",img:IMG_WH,w:1454,h:2000,ft:0.19,scale:"One square = 5 feet",town:"Vallaki",parent:"N4",back:"vl",det:1.15,ps:1.35,door:"D_wh",off:[[0, 410], [0, 0], [0, 1445]],fitw:1};
 LMAPS.cm={name:"Coffin Maker's Shop (N6)",img:IMG_CM,w:1000,h:688,ft:0.217,scale:"One square = 5 feet",town:"Vallaki",parent:"N6",back:"vl",det:1.15,ps:1.1,door:"D_cm",off:[[0, 0], [500, 0]]};
-LMAPS.vc={name:"Vistani Camp (N9)",img:IMG_VC,w:1454,h:2000,ft:0.43,scale:"One square = 10 feet",town:"Vistani Camp",det:1.1,ps:1.35,fitw:1};
+LMAPS.vc={name:"Vistani Camp (N9)",img:IMG_VC,w:1454,h:2000,ft:0.43,scale:"One square = 10 feet",town:"Vallaki",parent:"N9",back:"vl",door:"D_vc",det:1.1,ps:1.35,fitw:1};
 [
 ["N1", "St. Andral's Church", "vl", 757, 600, "Slouching centuries-old stone church with a bulging steeple, cracked stained glass and a graveyard behind a wrought-iron fence. Same layout as the Barovia church (no undercroft). Dedicated to the Morninglord; the bones of St. Andral have been stolen. Packed with frightened townsfolk at night.", ["Father Lucian Petrovich", "Yeska", "Milivoj", "Willemina Rikalova"], 0, 0],
 ["N2", "Blue Water Inn", "vl", 1170, 570, "Vallaki's main gathering place, run by the Martikov family, secret wereravens and Keepers of the Feather. Food, wine and beds. Rictavio is its only long-term guest. Local map available.", ["Urwin Martikov", "Danika Dorakova", "Rictavio (Rudolph van Richten)", "Szoldar Szoldarovich", "Yevgeni Krushkin", "Nikolai Wachter", "Karl Wachter"], 0, 0],
@@ -3229,8 +3229,9 @@ LMAPS.vc={name:"Vistani Camp (N9)",img:IMG_VC,w:1454,h:2000,ft:0.43,scale:"One s
 ["N9g", "Wagon of Gambling Vistani", "vc", 933, 934, "There are three of these wagons at the camp. Loud voices and laughter spill from this barrel-topped wagon. Each of these wagons contains three Vistani (CN male and female human bandits). The Vistani are playing a dice game for favors, since they have no money.", [], 0, 0],
 ["N9h", "Vistani Family Wagon", "vc", 910, 708, "There are three of these wagons at the camp. This barrel-topped wagon is filled with the raucous screams and laughter of children. Each of these wagons contains one Vistani adult (male or female human commoner) and 1d4 + 1 Vistani children (male and female human noncombatants).", [], 0, 0],
 ["N9i", "Vistani Treasure Wagon", "vc", 746, 621, "Two iron padlocks secure the door of this barrel-topped wagon. The Vistani keep all their treasure in this wagon. The door to the wagon has two locks, each of which requires a different key. Luvash carries one key, Arrigal the other.", [], 0, 0]].forEach(function(r){SBL.push(r);SB[r[0]]={id:r[0],name:r[1],m:r[2],x:r[3],y:r[4],desc:r[5],npcs:r[6],h:!!r[7],fl:r[8]||0}});
+[["N9","Vistani Camp","vl",167,1006,"Permanent camp of the Vistani and their dusk elf allies in the woods southwest of town, about a mile outside the walls. Luvash and Arrigal lead; Luvash's daughter Arabelle is missing and half the camp is searching. Dusk elf leader Kasimir Velikov lives at the base of the hill. Local map available.",["Luvash","Arrigal","Alexei","Kasimir Velikov"],0,0],["D_vc","Camp edge","vc",746,1470,"",[],1,0]].forEach(function(r){SBL.push(r);SB[r[0]]={id:r[0],name:r[1],m:r[2],x:r[3],y:r[4],desc:r[5],npcs:r[6],h:!!r[7],fl:r[8]||0}});
 SB.N7.side="l";SB.N3.side="l";SB.N6.side="l";
-var SBTOWNS=["Village of Barovia","Vallaki","Vistani Camp"],SBALIAS={"Durst Manor":"Village of Barovia"},SBHOME={"Village of Barovia":"SQ","Vallaki":"N8","Vistani Camp":"N9c"};
+var SBTOWNS=["Village of Barovia","Vallaki"],SBALIAS={"Durst Manor":"Village of Barovia","Vistani Camp":"Vallaki"},SBHOME={"Village of Barovia":"SQ","Vallaki":"N8"};
 function sbTopMap(t){var k;for(k in LMAPS)if(LMAPS[k].town===t&&!LMAPS[k].parent)return k;return""}
 function sbTown(id){var s=SB[id];return s?LMAPS[s.m].town:""}
 function sbSubs(town){return SBL.filter(function(r){return!r[7]&&LMAPS[r[2]].town===town}).map(function(r){return SB[r[0]]})}
@@ -3251,7 +3252,7 @@ function sbMinTxt(m){return m<1?"here":m+" min"}
 var SBLOC={E7:"Durst Manor"};
 function sbLoc(){var id=SS.sub&&SS.sub.id;if(id&&SBLOC[id])SS.loc=SBLOC[id];else if(SS.sub&&SS.loc==="Durst Manor")SS.loc=SS.sub.t}
 function lpTown(){var l=SS.loc||"";return SBTOWNS.indexOf(l)>-1?l:(SBALIAS[l]||"")}
-function lpHere(town){if(SS.sub&&SS.sub.t===town&&SB[SS.sub.id])return SS.sub.id;return town==="Village of Barovia"&&SS.loc==="Durst Manor"?"E7":(SBHOME[town]||"SQ")}
+function lpHere(town){if(SS.sub&&SS.sub.t===town&&SB[SS.sub.id])return SS.sub.id;return town==="Village of Barovia"&&SS.loc==="Durst Manor"?"E7":town==="Vallaki"&&SS.loc==="Vistani Camp"?"N9c":(SBHOME[town]||"SQ")}
 function lpMph(){return ui.lpace||3}
 function lpPane(){var town=lpTown();if(!town)return'<div class="lpane"><div class="row" style="margin:0"><h3 style="margin:0">Local destinations</h3><button data-lp="close">Close</button></div><div class="mute">The party\'s current location has no local places.</div></div>';var here=lpHere(town),inT=true,mph=lpMph(),subs=sbSubs(town),tm=sbTopMap(town),top=subs.filter(function(s){return SB[s.id].m===tm}),kids=Object.keys(LMAPS).filter(function(k){return LMAPS[k].parent&&LMAPS[k].town===town});
  var btn=function(s){var cur=inT&&s.id===here,mn=sbMin(here,s.id,mph),sel=ui.lpSel===s.id;return'<button class="'+(sel?"pri":"")+'" data-lp="go" data-id="'+s.id+'"'+(inT&&!cur?"":" disabled")+(cur?' aria-current="true"':"")+'><span>'+esc(sbLabel(s.id))+'</span><span class="mute">'+(cur?"You are here":sbMinTxt(mn))+'</span></button>'};
