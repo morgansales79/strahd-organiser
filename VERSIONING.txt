@@ -99,3 +99,4 @@ Current: 1.571 (build 194)
 1.590 (build 205) - Travel page: Go to nearest road button (animated walk to the closest road, party location set to Roaming / Other).
 1.591 (build 206) - Leaving on a journey sets the party to Roaming / Other straight away (stops the old location's ambient sound); closing the travel map refreshes the Location pane.
 1.592 (build 207) - Survival: a long rest taken during a journey now resets the sleep timer; the needs-sleep warning re-arms after any rest.
+1.593 (build 208) - Ambient audio: stray looping copies (from the loop crossfade) can no longer keep playing after the location changes.
