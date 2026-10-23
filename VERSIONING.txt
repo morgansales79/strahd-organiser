@@ -104,3 +104,4 @@ Current: 1.571 (build 194)
 1.595 (build 210) - Every pin on the main map is now a travel destination: new locations and travel routes for Svalich Woods, River Ivlis (x2), Lake Zarovich, 5 Mad Mage markers, plus the crossroads, Tser Falls, Black Carriage Fork and both gates as locations.
 1.596 (build 211) - Night ambient sound: each location can have an alternative night sound (19:00 to 06:00); falls back to the day sound, plus a default night sound.
 1.597 (build 212) - Long rest dialog: 'Ate before resting' and 'Drank before resting' ticks per character, so the rest hours do not trigger hunger/thirst exhaustion pop-ups.
+1.598 (build 213) - The Barovian clock now advances live while the party travels (instead of jumping on arrival); closing a journey early leaves the clock where it got to.
