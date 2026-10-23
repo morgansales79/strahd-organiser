@@ -106,3 +106,4 @@ Current: 1.571 (build 194)
 1.597 (build 212) - Long rest dialog: 'Ate before resting' and 'Drank before resting' ticks per character, so the rest hours do not trigger hunger/thirst exhaustion pop-ups.
 1.598 (build 213) - The Barovian clock now advances live while the party travels (instead of jumping on arrival); closing a journey early leaves the clock where it got to.
 1.599 build 214 - Minor locations tab (178 sub-locations, filter by major location, notes/NPCs/quests/enemies/audio per minor, sublocation audio on the local map)
+1.600 (build 215) - Enemies & NPCs section renamed to Statblocks.
