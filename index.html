@@ -671,7 +671,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=219;var APPLABEL="1.604";
+var APPV=220;var APPLABEL="1.605";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return!l.parent&&l.status!=="Not visited"}).length,mnAll=S.locations.filter(function(l){return l.parent}),mnVis=mnAll.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -2767,6 +2767,23 @@ document.addEventListener("click",function(e){var b=e.target.closest&&e.target.c
   if(x==="sa"){var inp=document.getElementById("svin"+i3),v=parseInt(inp&&inp.value,10);if(isNaN(v)){if(inp)inp.focus();return}ok=v>=r2.dc;r2.res=(ok?"Passed":"Failed")+" with "+v}else{ok=x==="sp";r2.res=ok?"Passed":"Failed"}
   r2.ok=ok;if(!ok){survSetExh(m2,(m2.exh||0)+1);r2.res+=", now exhaustion level "+m2.exh}save();render();cnDraw()}});
 /*SURV-END*/
+/* survival popups: no duplicates, no stale rows, snooze after Done */
+function svXOwed(r){var m=survMem(r.id);if(!m)return 0;survEnsure(m);var now=absH();return r.kind==="food"?Math.floor((now-m.fedAt)/24)-survGrace(m)-(m.starv||0):Math.floor((now-m.drAt)/24)-(m.thirstLv||0)}
+function svStale(it){var now=absH(),Sv=sv(),any;if(!it||!/^sv/.test(it.t||""))return false;
+ if(!Sv.on)return true;
+ if(it.t==="svexh"){if(it.rows.some(function(r){return r.res}))return false;it.rows=it.rows.filter(function(r){var o=svXOwed(r);if(o>0)r.n=o;return o>0});return!it.rows.length}
+ if(it.t==="sveat"){if(Object.keys(it.done||{}).length)return false;var food=it.kind==="food";it.ids=it.ids.filter(function(id){var m=survMem(id);if(!m)return false;survEnsure(m);return food?now-m.fedAt>=24:now-m.drAt>=18});return!it.ids.length}
+ if(it.t==="svsleep"){it.ids=it.ids.filter(function(id){var m=survMem(id);return m&&now-m.restAt>=16});return!it.ids.length}
+ if(it.t==="svsave"){if(it.rows.some(function(r){return r.res}))return false;it.rows=it.rows.filter(function(r){var m=survMem(r.id);return m&&now-m.restAt>=24});return!it.rows.length}
+ return false}
+var _cnPushSv=cnPush;
+cnPush=function(it){if(it&&/^sv/.test(it.t||"")){var Sv=sv(),now=absH(),q=ui.cn=ui.cn||[];
+  if(it.t==="svexh"){Sv.xs=Sv.xs||{};it.rows=it.rows.filter(function(r){var t=Sv.xs[r.id+"|"+r.kind+"|"+r.n];return!(t!=null&&now-t<4&&now>=t)});if(!it.rows.length)return}
+  for(var i=0;i<q.length;i++){var o=q[i];if(o.t===it.t&&o.kind===it.kind&&!Object.keys(o.done||{}).length&&!(o.rows||[]).some(function(r){return r.res})){q[i]=it;cnDraw();return}}}
+ _cnPushSv.apply(this,arguments)};
+var _cnDrawF=cnDraw;
+cnDraw=function(){var q=ui.cn=ui.cn||[],i;for(i=q.length-1;i>=0;i--)if(svStale(q[i]))q.splice(i,1);return _cnDrawF.apply(this,arguments)};
+document.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest('[data-sv="pclose"]');if(!b)return;var it=(ui.cn||[])[0],Sv=sv();if(it&&it.t==="svexh"){Sv.xs=Sv.xs||{};it.rows.forEach(function(r){if(!r.res)Sv.xs[r.id+"|"+r.kind+"|"+r.n]=absH()})}},true);
 /*SURV2-START*/
 function survRows(){var now=absH(),Sv=sv();return S.party.map(function(m){survEnsure(m);var f=now-m.fedAt,w=now-m.drAt,a=now-m.restAt,g=survGrace(m),
   fc=f>=24*g?"bad":f>=24?"warn":"ok",wc=w>=24?"bad":w>=18?"warn":"ok",ac=a>=24?"bad":a>=16?"warn":"ok",xc=m.exh>=3?"bad":m.exh>0?"warn":"ok";
