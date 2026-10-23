@@ -671,7 +671,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=217;var APPLABEL="1.602";
+var APPV=218;var APPLABEL="1.603";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return!l.parent&&l.status!=="Not visited"}).length,mnAll=S.locations.filter(function(l){return l.parent}),mnVis=mnAll.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -3626,7 +3626,7 @@ LMAPS.tp={name:"Tsolenka Pass (T)",img:IMG_TP,w:1200,h:1650,ft:0.38,scale:"One s
 ["T8", "Stone Bridge", "tp", 413, 517, "10 ft wide, 90 ft long, 500 ft above the Luna River. A cloaked rider on a charcoal horse (a manifestation of Strahd) warns the party and disperses to ash on any interaction. The Roc of Mount Ghakis attacks here crossing east to west.", [], 0, 0],
 ["T9", "Eastern Arch", "tp", 480, 347, "One statue crumbled to the horse's hindquarters. Empty 10 ft guard posts. Beyond it the pass runs 3 miles then forks: north to the Amber Temple, south around Mount Ghakis to the mists.", [], 0, 0]].forEach(function(r){SBL.push(r);SB[r[0]]={id:r[0],name:r[1],m:r[2],x:r[3],y:r[4],desc:r[5],npcs:r[6],h:!!r[7],fl:r[8]||0}});
 SB.X16.side="l";SB.X2a.side="l";SB.X32.side="l";SB.N7.side="l";SB.Q1.side="l";SB.S12.side="l";SB.S12d.side="l";SB.S10.side="l";SB.S15a.side="l";SB.S15b.side="l";SB.S15c.side="l";SB.S15d.side="l";SB.Q6.side="l";SB.N3.side="l";SB.N6.side="l";
-var SBTOWNS=["Village of Barovia","Vallaki","Old Bonegrinder","Argynvostholt","Krezk","Wizard of Wines","Yester Hill","Werewolf Den","Amber Temple","Tsolenka Pass"],SBALIAS={"Durst Manor":"Village of Barovia","Vistani Camp":"Vallaki","Abbey of Saint Markovia":"Krezk"},SBHOME={"Village of Barovia":"SQ","Vallaki":"N8","Old Bonegrinder":"O1","Argynvostholt":"Q2","Krezk":"S2","Wizard of Wines":"W2","Yester Hill":"Y1","Werewolf Den":"Z1","Amber Temple":"X1","Tsolenka Pass":"T1"};
+var SBTOWNS=["Village of Barovia","Vallaki","Old Bonegrinder","Argynvostholt","Krezk","Wizard of Wines","Yester Hill","Werewolf Den","Amber Temple","Tsolenka Pass"],SBALIAS={"Vistani Camp":"Vallaki","Abbey of Saint Markovia":"Krezk"},SBHOME={"Village of Barovia":"SQ","Vallaki":"N8","Old Bonegrinder":"O1","Argynvostholt":"Q2","Krezk":"S2","Wizard of Wines":"W2","Yester Hill":"Y1","Werewolf Den":"Z1","Amber Temple":"X1","Tsolenka Pass":"T1"};
 function sbTopMap(t){var k;for(k in LMAPS)if(LMAPS[k].town===t&&!LMAPS[k].parent)return k;return""}
 function sbTown(id){var s=SB[id];return s?LMAPS[s.m].town:""}
 function sbSubs(town){return SBL.filter(function(r){return!r[7]&&LMAPS[r[2]].town===town}).map(function(r){return SB[r[0]]})}
@@ -3644,7 +3644,7 @@ function sbFt(a,b){var A=SB[a],B=SB[b];if(!A||!B||a===b)return 0;if(A.m===B.m)re
 function sbHrs(a,b,mph){return sbFt(a,b)/(5280*(mph||3))}
 function sbMin(a,b,mph){var f=sbFt(a,b);return f?Math.max(1,Math.round(f/(88*(mph||3)))):0}
 function sbMinTxt(m){return m<1?"here":m+" min"}
-var SBLOC={E7:"Durst Manor"};
+var SBLOC={};
 function sbLoc(){var id=SS.sub&&SS.sub.id;if(id&&SBLOC[id])SS.loc=SBLOC[id];else if(SS.sub&&SS.loc==="Durst Manor")SS.loc=SS.sub.t}
 function lpTown(){var l=SS.loc||"";return SBTOWNS.indexOf(l)>-1?l:(SBALIAS[l]||"")}
 function lpHere(town){if(SS.sub&&SS.sub.t===town&&SB[SS.sub.id])return SS.sub.id;return town==="Vallaki"&&SS.loc==="Vistani Camp"?"N9c":town==="Krezk"&&SS.loc==="Abbey of Saint Markovia"?"S13":(SBHOME[town]||"SQ")}
