@@ -671,7 +671,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=211;var APPLABEL="1.596";
+var APPV=212;var APPLABEL="1.597";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -2716,8 +2716,13 @@ function survCheck(){var Sv=sv();if(!Sv.on||!S.party.length||SV_RESTING)return;v
  if(ex.length)cnPush({t:"svexh",rows:ex});
  save()}
 var _clkAdvS=clkAdv;clkAdv=function(h){_clkAdvS.apply(this,arguments);if(h>0)survCheck()};
+var _restLongOpenS=restLongOpen;
+restLongOpen=function(){_restLongOpenS.apply(this,arguments);var Sv=sv();if(!Sv.on||!(Sv.food||Sv.water))return;var first=null;
+ S.party.forEach(function(m){var cb=document.querySelector('[data-rl="'+m.id+'"]'),lb=cb&&cb.closest("label");if(!lb)return;if(!first)first=lb;
+  lb.insertAdjacentHTML("afterend",'<div class="mute" style="margin:-2px 0 6px 28px;display:flex;gap:14px;flex-wrap:wrap">'+(Sv.food?'<label class="chk"><input type="checkbox" class="yn" data-rlf="'+m.id+'"><span>Ate before resting</span></label>':'')+(Sv.water?'<label class="chk"><input type="checkbox" class="yn" data-rlw="'+m.id+'"><span>Drank before resting</span></label>':'')+'</div>')});
+ if(first)first.insertAdjacentHTML("beforebegin",'<div class="mute" style="margin:6px 0">Tick &ldquo;ate&rdquo; or &ldquo;drank&rdquo; for anyone who did before settling down; it resets their food or water timer to the start of the rest, so the 8 hours do not trigger exhaustion.</div>')};
 var _restLongS=restLong;
-restLong=function(){var ids=S.party.filter(function(m){var cb=document.querySelector('[data-rl="'+m.id+'"]');return cb&&cb.checked}).map(function(m){return m.id});SV_RESTING=true;
+restLong=function(){var _n0=absH();S.party.forEach(function(m){var f=document.querySelector('[data-rlf="'+m.id+'"]'),w=document.querySelector('[data-rlw="'+m.id+'"]');if(f&&f.checked){survEnsure(m);m.fedAt=_n0}if(w&&w.checked){survEnsure(m);m.drAt=_n0}});var ids=S.party.filter(function(m){var cb=document.querySelector('[data-rl="'+m.id+'"]');return cb&&cb.checked}).map(function(m){return m.id});SV_RESTING=true;
  try{_restLongS.apply(this,arguments)}finally{SV_RESTING=false}
  var Sv=sv(),now=absH(),lines=[];
  if(Sv.on&&Sv.sleep||true){ids.forEach(function(id){var m=survMem(id);if(!m)return;survEnsure(m);m.restAt=now;var fed=!Sv.food||now-m.fedAt<24,wet=!Sv.water||now-m.drAt<24;
