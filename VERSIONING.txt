@@ -108,3 +108,4 @@ Current: 1.571 (build 194)
 1.599 build 214 - Minor locations tab (178 sub-locations, filter by major location, notes/NPCs/quests/enemies/audio per minor, sublocation audio on the local map)
 1.600 (build 215) - Enemies & NPCs section renamed to Statblocks.
 1.601 (build 216) - Long rest: ticking Ate/Drank before resting now uses up a ration/waterskin and clears hunger/thirst counters; all long-rest eat/drink combinations tested.
+1.602 (build 217) - Long rest box: ate/drank pre-ticked for anyone who needs it (if supplies), warnings for who needs to eat/drink; low rations/water (under 3 days for the party) warnings in long rest, dashboard and when supplies drop.
