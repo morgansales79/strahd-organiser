@@ -124,3 +124,4 @@ ROLLBACK POINT: 1.610 build 225 (git tag v1.610-stable, copy strahd-organiser-v1
 1.614 build 229: Purse: electrum removed, Change coins (convert between pp/gp/sp/cp), cash-in price modifiers -10/-5/base/+5/+10% when selling items.
 1.615 build 230: QR code on the Players link panel now sits behind a Show QR code dropdown.
 1.616 build 231: removed the Add 4 test characters button.
+1.617 build 232: Purse history stamps show weekday, full date and time with seconds; history shows up to 300 entries.
