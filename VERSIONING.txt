@@ -122,3 +122,4 @@ ROLLBACK POINT: 1.610 build 225 (git tag v1.610-stable, copy strahd-organiser-v1
 1.612 build 227: Treasure moved from its own tab to a third tab on the Spells/Equipment page.
 1.613 build 228: Party Purse app: always dark, no typed-name option when the party list loads, keyboard closes on Enter/Done instead of moving to the next box.
 1.614 build 229: Purse: electrum removed, Change coins (convert between pp/gp/sp/cp), cash-in price modifiers -10/-5/base/+5/+10% when selling items.
+1.615 build 230: QR code on the Players link panel now sits behind a Show QR code dropdown.
