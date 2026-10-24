@@ -119,3 +119,4 @@ Current: 1.571 (build 194)
 1.610 build 225: Long rest screen redesigned as a table with checkboxes (Rests, Character, HP, Hit dice, Ate, Drank) and inline warnings.
 ROLLBACK POINT: 1.610 build 225 (git tag v1.610-stable, copy strahd-organiser-v1.610-stable.html) - last version before companion app work.
 1.611 build 226: Treasure tab (shared party purse + treasure items, live via Firebase) and the Party Purse phone app (companion.html).
+1.612 build 227: Treasure moved from its own tab to a third tab on the Spells/Equipment page.

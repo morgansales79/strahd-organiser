@@ -555,7 +555,7 @@ var QUESTS=[
 ["Dalvan's Letter", "Roaming / Other", "Svalich Woods (chapter 2, area C): Dalvan Olensky's body holds Kolyan Indirovich's Letter (version 2, appendix F). Five dire wolves arrive after 5 rounds of howling."],
 ["Defeat Strahd von Zarovich","Castle Ravenloft",""]
 ];
-var TABS=["Dashboard","Active Session","Party","Treasure","Locations","NPCs","Quests","Enemies","Spells","Encounter","Travel","Map","Strahd","Sessions"];
+var TABS=["Dashboard","Active Session","Party","Locations","NPCs","Quests","Enemies","Spells","Encounter","Travel","Map","Strahd","Sessions"];
 var MOODS=["Curious","Amused","Courteous","Obsessed","Wary","Angry","Hunting"];
 var QST=["Not started","Active","Done"],LST=["Not visited","Visited","Cleared"];
 var uid=function(){return Math.random().toString(36).slice(2,10)};
@@ -671,7 +671,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=226;var APPLABEL="1.611";
+var APPV=227;var APPLABEL="1.612";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return!l.parent&&l.status!=="Not visited"}).length,mnAll=S.locations.filter(function(l){return l.parent}),mnVis=mnAll.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -1446,8 +1446,8 @@ function sessions(){
 function render(){
  try{hdClk();downCheck()}catch(e){}
  if(ui.tab==="Active Session")setTimeout(spThumbs,0);
- document.getElementById("nav").innerHTML=TABS.filter(function(t){return t!=="NPCs"}).map(function(t){return'<button data-a="tab" data-t="'+t+'" class="'+(t===ui.tab||(t==="Locations"&&(ui.tab==="NPCs"||ui.tab==="Minor"))?"on":"")+'">'+(t==="Spells"?"Spells/Equipment":t==="Enemies"?"Statblocks":t==="Locations"?"Locations &amp; NPCs":t==="Map"?"Maps":t==="Treasure"?puLabel():t)+'</button>'}).join("")+'<button data-a="gcopen" class="navcalc">Calculator</button>';
- var v={Dashboard:dash,Party:party,Treasure:puView,Locations:function(){return lnBar()+locations()},Minor:function(){return lnBar()+locations(true)},NPCs:function(){return lnBar()+entities("npcs","NPCs","NPC")},Map:mapView,Quests:function(){return entities("quests","Quests","quest")},Enemies:enemies,Encounter:encounter,"Travel":tvView,Spells:spView,"Active Session":sessView,Strahd:strahd,Sessions:sessions}[ui.tab];
+ document.getElementById("nav").innerHTML=TABS.filter(function(t){return t!=="NPCs"}).map(function(t){return'<button data-a="tab" data-t="'+t+'" class="'+(t===ui.tab||(t==="Locations"&&(ui.tab==="NPCs"||ui.tab==="Minor"))?"on":"")+'">'+(t==="Spells"?"Spells/Equipment"+puNavN():t==="Enemies"?"Statblocks":t==="Locations"?"Locations &amp; NPCs":t==="Map"?"Maps":t)+'</button>'}).join("")+'<button data-a="gcopen" class="navcalc">Calculator</button>';
+ var v={Dashboard:dash,Party:party,Locations:function(){return lnBar()+locations()},Minor:function(){return lnBar()+locations(true)},NPCs:function(){return lnBar()+entities("npcs","NPCs","NPC")},Map:mapView,Quests:function(){return entities("quests","Quests","quest")},Enemies:enemies,Encounter:encounter,"Travel":tvView,Spells:spView,"Active Session":sessView,Strahd:strahd,Sessions:sessions}[ui.tab];
  document.getElementById("main").innerHTML=(ui.rs?'<div class="card" style="margin-bottom:14px"><h3>Replace everything with this backup?</h3><div class="mute">Your current organiser data will be overwritten.</div><div style="display:flex;gap:8px"><button class="pri" data-a="rsok">Replace</button><button data-a="rscancel">Cancel</button></div></div>':"")+v();
  document.getElementById("bk").innerHTML=ui.bk?'<div class="card" style="max-width:1160px;margin:16px auto 0"><div class="row" style="margin:0"><div><h3>Backup created</h3><div class="mute">Copy the text into a file and save it with a .json extension. Use Restore file to load it later.</div></div><div style="display:flex;gap:8px"><button data-a="copy">Copy backup</button><button data-a="closebk">Close</button></div></div><textarea id="bkt" readonly style="min-height:140px;font-family:monospace;font-size:12px">'+esc(ui.bk)+'</textarea></div>':""}
 /*SESS-START*/
@@ -2082,7 +2082,7 @@ function clAtks(c){var out=[],m=tgMemb(c);
  return out}
 /* equipment tab */
 function eqS(){ui.eq=ui.eq||{q:"",cat:"",form:null,imp:null,n:60};return ui.eq}
-function eqTabs(){return'<div class="sprow2" style="margin-bottom:8px"><button class="'+(ui.spTab!=="equip"?"pri":"")+'" data-eq="tab" data-v="spells">Spells</button><button class="'+(ui.spTab==="equip"?"pri":"")+'" data-eq="tab" data-v="equip">Equipment</button></div>'}
+function eqTabs(){return'<div class="sprow2" style="margin-bottom:8px"><button class="'+(ui.spTab!=="equip"&&ui.spTab!=="treasure"?"pri":"")+'" data-eq="tab" data-v="spells">Spells</button><button class="'+(ui.spTab==="equip"?"pri":"")+'" data-eq="tab" data-v="equip">Equipment</button><button class="'+(ui.spTab==="treasure"?"pri":"")+'" data-eq="tab" data-v="treasure">'+puLabel()+'</button></div>'}
 var EQ_CATS=["Simple Melee","Simple Ranged","Martial Melee","Martial Ranged","Light Armor","Medium Armor","Heavy Armor","Shield","Ammunition","Adventuring Gear","Spellcasting Focus","Equipment Pack","Tools","Mounts and Tack","Vehicles","Trade Goods","Services and Lifestyle","Magic Item (Weapon)","Magic Item (Armor)","Magic Item (Wondrous item)","Magic Item (Ring)","Magic Item (Rod)","Magic Item (Staff)","Magic Item (Wand)","Magic Item (Potion)","Magic Item (Scroll)","Custom"];
 function eqFiltered(){var f=eqS(),q=f.q.trim().toLowerCase();return eqAll().filter(function(x){if(f.cat==="Magic"){if(!/^Magic/.test(x.c))return false}else if(f.cat==="Weapons"){if(!/Simple|Martial/.test(x.c))return false}else if(f.cat==="Armor"){if(!/Armor|Shield/.test(x.c)||/^Magic/.test(x.c))return false}else if(f.cat&&x.c!==f.cat)return false;if(!q)return true;return(x.n+" "+x.c+" "+(x.pr||"")+" "+(x.dt||"")).toLowerCase().indexOf(q)>-1})}
 function eqRow(x){return'<div class="eqr"><div class="eqn"><b>'+esc(x.n)+'</b><span class="mute">'+esc(x.c)+(x.rar?" &middot; "+esc(x.rar):"")+(x.att?" &middot; attunement":"")+'</span></div><div class="eqs mute">'+[x.cost,x.wt,x.dmg?x.dmg+" "+x.dt:"",x.ac].filter(function(v){return v&&v!=="-"}).map(esc).join(" &middot; ")+'</div>'+(x.pr?'<div class="eqp mute">'+esc(x.pr)+'</div>':'')+(x.custom?'<button class="del" data-eq="del" data-id="'+x.id+'">Delete</button>':'')+'</div>'}
@@ -2096,7 +2096,7 @@ function eqImpHtml(){var I=eqS().imp;if(!I)return"";
 function eqView(){var f=eqS();
  return'<div class="row"><h2>Equipment</h2><div class="sphd"><input data-eq="q" value="'+esc(f.q)+'" placeholder="Search equipment" aria-label="Search equipment" style="max-width:220px"><select data-eq="cat" aria-label="Category"><option value="">All categories</option><option value="Weapons"'+(f.cat==="Weapons"?" selected":"")+'>All weapons</option><option value="Armor"'+(f.cat==="Armor"?" selected":"")+'>All armor</option><option value="Magic"'+(f.cat==="Magic"?" selected":"")+'>All magic items</option>'+EQ_CATS.map(function(c){return'<option'+(f.cat===c?" selected":"")+'>'+c+'</option>'}).join("")+'</select><button class="pri" data-eq="add">Add item</button><button data-eq="file">Import file (image or PDF)</button><button data-eq="cam">Take photo</button></div></div>'+
  '<input type="file" id="eqfile" accept="image/*,application/pdf" hidden><input type="file" id="eqcam" accept="image/*" capture="environment" hidden>'+eqFormHtml()+'<div id="eqimp">'+eqImpHtml()+'</div><div id="eqlist">'+eqListHtml()+'</div><p class="mute" style="margin-top:16px;font-size:12px">Weapons, armor, gear, tools, mounts and magic items from the 5e rules (SRD 5.1 and the Dungeon Master\'s Guide). Anything missing can be added with Add item or imported from a photo or PDF.</p>'}
-var _spView0=spView;spView=function(){return eqTabs()+(ui.spTab==="equip"?eqView():_spView0())};
+var _spView0=spView;spView=function(){return eqTabs()+(ui.spTab==="treasure"?puView():ui.spTab==="equip"?eqView():_spView0())};
 document.addEventListener("input",function(e){var el=e.target,d=el&&el.dataset;if(!d)return;
  if(d.eq==="q"){eqS().q=el.value;eqS().n=60;var l=document.getElementById("eqlist");if(l)l.innerHTML=eqListHtml()}
  else if(d.eqf2&&eqS().form&&el.tagName!=="SELECT")eqS().form[d.eqf2]=el.value;
@@ -6299,10 +6299,12 @@ function puStore(){return{get:function(k){try{return localStorage.getItem("cos-p
 function puCat(){var out=[],seen={};try{eqAll().forEach(function(x){if(x.c==="Services and Lifestyle")return;out.push({n:x.n,c:x.c,gp:puParseCost(x.cost)})})}catch(e){}
  [10,50,100,500,1000,5000].forEach(function(g){out.push({n:"Gemstone ("+g.toLocaleString("en-GB")+" gp)",c:"Treasure",gp:g})});[25,250,750,2500,7500].forEach(function(g){out.push({n:"Art object ("+g.toLocaleString("en-GB")+" gp)",c:"Treasure",gp:g})});
  ["Holy Symbol of Ravenkind","Sunsword","Tome of Strahd","Icon of Ravenloft","Gulthias Staff"].forEach(function(n){out.push({n:n,c:"Curse of Strahd treasure",gp:0})});return out}
-var PUA=puMake({store:puStore(),code:function(){return S.pu&&S.pu.code||""},who:function(){return"DM"},el:function(){return document.getElementById("pumain")},items:puCat,onData:function(){if(ui.tab==="Treasure")puSeen();else puBadge()}});
+var PUA=puMake({store:puStore(),code:function(){return S.pu&&S.pu.code||""},who:function(){return"DM"},el:function(){return document.getElementById("pumain")},items:puCat,onData:function(){if(puOn())puSeen();else puBadge()}});
 function puUnseen(){var P=PUA.P,n=0;Object.keys(P.log||{}).forEach(function(k){var e=P.log[k];if(e&&e.t>(P.seen||0)&&e.who&&e.who!=="DM"&&e.k!=="void")n++});return n}
+function puOn(){return ui.tab==="Spells"&&ui.spTab==="treasure"}
+function puNavN(){var n=S.pu&&S.pu.code?puUnseen():0;return n?" ("+n+")":""}
 function puLabel(){var n=S.pu&&S.pu.code?puUnseen():0;return"Treasure"+(n?" ("+n+")":"")}
-function puBadge(){var b=document.querySelector('#nav [data-t="Treasure"]');if(b)b.textContent=puLabel()}
+function puBadge(){var b=document.querySelector('#nav [data-t="Spells"]');if(b)b.textContent="Spells/Equipment"+puNavN();var c=document.querySelector('[data-eq="tab"][data-v="treasure"]');if(c)c.textContent=puLabel()}
 function puSeen(){var P=PUA.P,m=P.seen||0;Object.keys(P.log||{}).forEach(function(k){var e=P.log[k];if(e&&e.t>m)m=e.t});if(m!==P.seen){P.seen=m;PUA.save()}puBadge()}
 function puRoster(){var c=S.pu&&S.pu.code;if(!c||c.length<8)return;var names=S.party.map(function(m){return String(m.name||"").trim()}).filter(Boolean),sig=c+"|"+names.join("|"),g=puStore();if(g.get("rsig")===sig)return;puPut(c,"roster",names).then(function(){g.set("rsig",sig)},function(){})}
 function puStart(){var c=S.pu&&S.pu.code;if(!c)return;if(PU_LOADED!==c){PUA.load();PU_LOADED=c}PUA.draw();PU_TRY=Date.now();PUA.sync().then(function(){puSeen()});puRoster()}
@@ -6318,7 +6320,7 @@ document.addEventListener("click",function(e){var b=e.target.closest&&e.target.c
  else if(a==="copy"){var m=document.getElementById("pumsg"),t=puLink();(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(function(){if(m)m.textContent="Link copied."},function(){if(m)m.textContent="Press and hold the link to copy it."})}
  else if(a==="send"){try{navigator.share({title:"Party purse",url:puLink()})}catch(x){}}
  else if(a==="newcode"){if(confirm("Make a new party code?\n\nPlayers will need the new link, and the current purse and treasure list will no longer be shown here. This cannot be undone.")){S.pu={code:puNewCode()};save();PU_LOADED="";render()}}});
-setInterval(function(){var c=S.pu&&S.pu.code;if(!c||document.hidden)return;var fast=ui.tab==="Treasure";if(Date.now()-PU_TRY>=(fast?4000:20000)){PU_TRY=Date.now();PUA.sync();puRoster()}},2000);
+setInterval(function(){var c=S.pu&&S.pu.code;if(!c||document.hidden)return;var fast=puOn();if(Date.now()-PU_TRY>=(fast?4000:20000)){PU_TRY=Date.now();PUA.sync();puRoster()}},2000);
 if(S.pu&&S.pu.code){PUA.load();PU_LOADED=S.pu.code}
 
 /*PURSE-END*/
