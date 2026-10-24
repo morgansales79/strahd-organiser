@@ -128,3 +128,4 @@ ROLLBACK POINT: 1.610 build 225 (git tag v1.610-stable, copy strahd-organiser-v1
 1.618 build 233: Ammo tracking (arrows, crossbow bolts, sling stones) per character under Equipment; each attack with a matching weapon uses one; low-ammo warnings below 25.
 1.619 build 234: Ammo boxes line up (short labels, top-aligned, shorter placeholder and warning).
 1.620 build 235 - rigorous audit: layout fixes (dashboard survival, spell/equip filters, quests search, map tabs/box, sticky rest footers, larger long-rest checkboxes)
+1.621 build 236 - encounter fixes: travel-only filter keyed by name (night table was wrong), 2-per-12h rule, extra dice (gems, wereraven hours, berserker/werewolf stealth)
