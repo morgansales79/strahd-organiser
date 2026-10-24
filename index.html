@@ -671,7 +671,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=232;var APPLABEL="1.617";
+var APPV=233;var APPLABEL="1.618";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return!l.parent&&l.status!=="Not visited"}).length,mnAll=S.locations.filter(function(l){return l.parent}),mnVis=mnAll.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -1767,7 +1767,7 @@ function clTier(m){var l=parseInt(m.level,10)||1;return l>=17?17:l>=11?11:l>=5?5
 var CL_TYPES=["","bludgeoning","piercing","slashing","acid","cold","fire","force","lightning","necrotic","poison","psychic","radiant","thunder"];
 function clOv(id){var el=document.getElementById(id);if(!el){el=document.createElement("div");el.id=id;document.body.appendChild(el);el.addEventListener("click",function(e){if(e.target===el)clHide(id)})}return el}
 function clHide(id){var el=document.getElementById(id);if(el)el.style.display="none";if(id==="hitov")ui.ht=null;if(id==="castov")ui.cs=null}
-function clBtns(c){if(c.kind!=="pc")return"";var m=tgMemb(c),h='',a=clAtks(c);a.forEach(function(x,i){h+='<button class="pri'+(x.np?" nprof":"")+'" data-cl="hit" data-id="'+c.id+'" data-i="'+i+'"'+(x.np?' title="Not proficient with this weapon"':'')+'>'+esc(x.n)+'</button>'});if(!a.length)h+='<button class="pri" data-cl="hit" data-id="'+c.id+'">Hit</button>';if(m&&pcSpC(m)&&!c.wsOn)h+='<button class="pri" data-cl="spell" data-id="'+c.id+'">Spell</button>';return'<span class="actg">'+h+'</span>'}
+function clBtns(c){if(c.kind!=="pc")return"";var m=tgMemb(c),h='',a=clAtks(c);a.forEach(function(x,i){h+='<button class="pri'+(x.np?" nprof":"")+'" data-cl="hit" data-id="'+c.id+'" data-i="'+i+'"'+(x.np?' title="Not proficient with this weapon"':'')+'>'+esc(x.n)+amTag(m,x.n)+'</button>'});if(!a.length)h+='<button class="pri" data-cl="hit" data-id="'+c.id+'">Hit</button>';if(m&&pcSpC(m)&&!c.wsOn)h+='<button class="pri" data-cl="spell" data-id="'+c.id+'">Spell</button>';return'<span class="actg">'+h+'</span>'}
 function clSlotBtn(c){var m=tgMemb(c);if(!m||!m.moon||!c.wsOn)return"";return'<button data-cl="slotheal" data-id="'+c.id+'">Slot heal</button>'}
 function clTgtRows(list,type,sel,kind,fxType,magic){return list.map(function(x){var fx=fxType?tgFactor(x,fxType,magic):{f:1,w:""};
  return'<label class="chk clrow"><input type="'+type+'" name="clt" data-clc="tgt" data-id="'+x.id+'"'+(sel[x.id]?" checked":"")+'><span><b>'+esc(x.name)+'</b> <span class="mute">'+(x.wsOn?"beast "+esc(x.wsHp):esc(x.hp||"?"))+'/'+esc(x.wsOn?x.wsMax:(x.max||"?"))+(x.ac?' &middot; AC '+esc(x.ac):'')+(x.kind==="pc"?' &middot; party':'')+(fx.w?' &middot; '+fx.w:'')+'</span></span></label>'}).join("")}
@@ -1821,7 +1821,7 @@ function clHitGo(){var T=ui.ht,c=T&&clCmb(T.cid),tg=T&&clCmb(T.tgt);if(!c||!tg){
  var bonus=[];clPend(c.id).forEach(function(e){if(T.off&&T.off[e.id])return;var r=spDiceRoll(e.dice),ty=e.type||T.type,f2=ty?tgFactor(tg,ty,true):{f:1,w:""},d2=Math.floor(r.total*f2.f);
   ui.cl={src:c.id,what:e.n+" +"+e.dice+(ty?" ("+ty+")":"")+(f2.w?" ["+f2.w+"]":"")};dmgTo(tg,d2);ui.cl=null;bonus.push(e.n+" +"+d2);
   if(e.once)S.cpend=S.cpend.filter(function(x){return x.id!==e.id})});
- clHide("hitov");save();render();if(bonus.length)clTurnToast("Bonus damage added: "+esc(bonus.join(", ")));clActDone(c,"atk")}
+ amUse(c,T.what);clHide("hitov");save();render();if(bonus.length)clTurnToast("Bonus damage added: "+esc(bonus.join(", ")));clActDone(c,"atk")}
 /* cast */
 var CL_HEAL={"Cure Wounds":function(L,md){return L+"d8+"+md},"Healing Word":function(L,md){return L+"d4+"+md},"Mass Cure Wounds":function(L,md){return Math.max(1,L-2)+"d8+"+md},"Mass Healing Word":function(L,md){return Math.max(1,L-2)+"d4+"+md},"Prayer of Healing":function(L,md){return L+"d8+"+md},"Aura of Vitality":function(){return"2d6"},"Heal":function(){return"70"},"Mass Heal":function(){return"700"}};
 function clCastOpen(id){ui.cs={cid:id,spk:"",mode:"",slot:"",free:false,sel:{},amt:"",dice:"",roll:"",err:"",q:""};clCastDraw()}
@@ -1927,7 +1927,7 @@ document.addEventListener("click",function(e){var b=e.target.closest&&e.target.c
  if(e.target.closest&&e.target.closest("#hdcmb")){clReview(false);return}
  b=e.target.closest&&e.target.closest("[data-clc]");if(!b)return;var k=b.dataset.clc,T=ui.ht,Cs=ui.cs,V=ui.clv;
  if(k==="ht-go")clHitGo();else if(k==="ht-x")clHide("hitov");
- else if(k==="ht-miss"&&T){var c=clCmb(T.cid),tg=clCmb(T.tgt);if(c&&tg){clAdd({k:"miss",srcId:c.id,tgtId:tg.id,what:T.what.trim()||"Attack"});S.cpend=(S.cpend||[]).filter(function(e){return!(e.cid===c.id&&e.endsMiss&&!(T.off&&T.off[e.id]))});clHide("hitov");save();render();clActDone(c,"atk")}}
+ else if(k==="ht-miss"&&T){var c=clCmb(T.cid),tg=clCmb(T.tgt);if(c&&tg){clAdd({k:"miss",srcId:c.id,tgtId:tg.id,what:T.what.trim()||"Attack"});S.cpend=(S.cpend||[]).filter(function(e){return!(e.cid===c.id&&e.endsMiss&&!(T.off&&T.off[e.id]))});amUse(c,T.what);clHide("hitov");save();render();clActDone(c,"atk")}}
  else if(k==="pe-end"){S.cpend=(S.cpend||[]).filter(function(e){return e.id!==b.dataset.id});save();if(T)clHitDraw()}
  else if(k==="ht-roll"&&T){var di=document.querySelector('[data-clc="ht-dice"]'),da=document.getElementById("clhamt");if(di)T.dice=di.value;if(da)T.amt=da.value;var ex=String(T.dice||"").trim()||((String(T.hint||"").match(/\d*d\d+(?:\s*[+\u2212-]\s*\d+)?/)||[""])[0]).replace(/\u2212/g,"-");if(!ex){T.err="Type dice such as 1d8+3, or type the damage.";clHitDraw();return}T.dice=ex;var rr0=spDiceRoll(ex);T.amt=String(rr0.total);T.err="";T.rtxt=ex+": "+rr0.txt+" = "+rr0.total;clHitDraw()}
  else if(k==="pick"&&Cs){Cs.spk=b.dataset.k;Cs.mode="";Cs.amt="";Cs.dice="";Cs.roll="";Cs.sel={};Cs.err="";clCastDraw()}
@@ -2019,7 +2019,7 @@ function eqFind(name){var n=String(name||"").trim().toLowerCase();if(!n)return n
 function eqWeapons(){return eqAll().filter(function(x){return/Weapon|Melee|Ranged/.test(x.c)&&(x.dmg||/^Weapon|Magic Item \(Weapon\)/.test(x.c)||x.custom)||(x.custom&&x.dmg)})}
 function eqIsWeapon(x){return!!x&&(/Simple|Martial|Weapon/.test(x.c)||(!!x.dmg&&!/Ammunition/.test(x.c)&&!/Adventuring|Gear|Pack/.test(x.c)))}
 function eqNorm(e){e=(e&&typeof e==="object")?e:{};var a3=function(v){var o=Array.isArray(v)?v.slice(0,3):[];while(o.length<3)o.push("");return o.map(function(x){return str(x)})};
- var b=Array.isArray(e.b)?e.b.slice(0,3):[];while(b.length<3)b.push(0);return{w:a3(e.w),b:b.map(function(x){return Math.max(0,Math.min(3,parseInt(x,10)||0))}),dual:!!e.dual,armor:str(e.armor),shield:str(e.shield),att:a3(e.att),ab:Math.max(0,Math.min(3,parseInt(e.ab,10)||0)),sb:Math.max(0,Math.min(3,parseInt(e.sb,10)||0))}}
+ var b=Array.isArray(e.b)?e.b.slice(0,3):[];while(b.length<3)b.push(0);return{w:a3(e.w),b:b.map(function(x){return Math.max(0,Math.min(3,parseInt(x,10)||0))}),dual:!!e.dual,armor:str(e.armor),shield:str(e.shield),att:a3(e.att),ab:Math.max(0,Math.min(3,parseInt(e.ab,10)||0)),sb:Math.max(0,Math.min(3,parseInt(e.sb,10)||0)),am:amNorm(e.am)}}
 function pcEq(m){m.eq=eqNorm(m.eq);return m.eq}
 function eqHint(m,w,bonus,two){var it=eqFind(w);if(!it)return{dice:"",t:"",txt:""};var pr=it.pr||"",ranged=/Ranged/.test(it.c)||(/Ammunition/.test(pr)),fin=/Finesse/.test(pr),sm=pcMod(m,"str"),dx=pcMod(m,"dex"),md=ranged?dx:fin?Math.max(sm,dx):sm,tot=md+(bonus||0);
  var d=it.dmg||"",vm=/Versatile \(([^)]+)\)/.exec(pr);if(two&&vm)d=vm[1];return{dice:d,t:it.dt,txt:d?d+(tot?(tot>0?"+":"")+tot:"")+(it.dt?" "+it.dt:""):""}}
@@ -2028,12 +2028,26 @@ function eqPool(f){var all=eqAll();if(/^w\d$/.test(f))return all.filter(eqIsWeap
  if(f==="shield")return all.filter(function(x){return/Shield/.test(x.c)||/shield/i.test(x.n)});return all.filter(function(x){return/^Magic/.test(x.c)&&!/Potion|Scroll/.test(x.c)})}
 function eqSlot(m,f,l,v){return'<div style="flex:1;min-width:200px"><div class="tl">'+l+'</div><div style="display:flex;gap:6px"><button class="eqpb'+(/^(w\d|armor|shield)$/.test(f)&&eqProfOf(m,v)===false?" nprof":"")+'" data-eqp="'+f+'" data-id="'+m.id+'" style="flex:1;text-align:left;justify-content:flex-start">'+(v?esc(v)+(/^(w\d|armor|shield)$/.test(f)?eqNpHtml(m,v):""):'<span class="mute">Search and choose&hellip;</span>')+'</button>'+(v?'<button class="del" data-eqp="x:'+f+'" data-id="'+m.id+'" aria-label="Clear">&times;</button>':'')+'</div></div>'}
 function eqSel(m,f,v){return'<label class="f">Magic<select data-eqm="'+m.id+'" data-eqf="'+f+'">'+[0,1,2,3].map(function(b){return'<option value="'+b+'"'+(v===b?" selected":"")+'>'+(b?"+"+b:"None")+'</option>'}).join("")+'</select></label>'}
+/* ammunition tracking */
+function am1(v){if(v===null||v===undefined||String(v).trim()==="")return null;var n=parseInt(v,10);return isNaN(n)?null:Math.max(0,Math.min(9999,n))}
+function amNorm(a){a=(a&&typeof a==="object")?a:{};return{arrows:am1(a.arrows),bolts:am1(a.bolts),stones:am1(a.stones)}}
+var AM_LAB={arrows:"Arrows",bolts:"Crossbow bolts",stones:"Sling stones"};
+function amKind(name){var n=String(name||"").toLowerCase().replace(/ \(2h\)$/,"");if(/crossbow/.test(n))return"bolts";if(/bow\b/.test(n))return"arrows";if(/\bsling\b/.test(n))return"stones";return""}
+function amTag(m,name){var k=amKind(name);if(!m||!k)return"";var v=pcEq(m).am[k];if(v===null)return"";return' <span style="font-weight:400;opacity:.9">('+(v<25?"⚠ ":"")+v+' '+AM_LAB[k].toLowerCase().replace("crossbow ","")+')</span>'}
+function amUse(c,what){try{var m=tgMemb(c),k=amKind(what);if(!m||!k)return;var am=pcEq(m).am,b=am[k];if(b===null)return;var nm=AM_LAB[k].toLowerCase();
+ if(b<=0){cnPush({t:"note",title:"Out of "+nm,msg:'<b>'+esc(c.name)+'</b> has no '+esc(nm)+' left.'});return}
+ am[k]=b-1;var a=b-1;
+ if(a===0)cnPush({t:"note",title:"Out of "+nm,msg:'<b>'+esc(c.name)+'</b> has just used the last of their '+esc(nm)+'.'});
+ else if((b>=25&&a<25)||a===10||a===5)cnPush({t:"note",title:"Low on "+nm,msg:'<b>'+esc(c.name)+'</b> has only <b>'+a+'</b> '+esc(nm)+' left (below 25).'})}catch(e){}}
+function amLowList(){var o=[];S.party.forEach(function(m){var am=pcEq(m).am;["arrows","bolts","stones"].forEach(function(k){if(am[k]!==null&&am[k]<25)o.push((m.name||"Adventurer")+": "+am[k]+" "+AM_LAB[k].toLowerCase()+" left")})});return o}
+document.addEventListener("change",function(e){var el=e.target,d=el&&el.dataset;if(!d||!d.amk)return;var m=S.party.find(function(x){return x.id===d.amid});if(!m)return;pcEq(m).am[d.amk]=am1(el.value);save();render()});
 function pcEqUI(m){var e=pcEq(m),id=m.id,h='<details class="pcx" open><summary><b>Equipment</b> <span class="mute">weapons, armor and attuned items change AC, abilities and attacks</span></summary>';
  var n=e.dual?3:2,i;h+='<div class="sprow2" style="flex-wrap:wrap">';
  for(i=0;i<n;i++)h+='<div style="display:flex;gap:6px;align-items:flex-end;flex:1;min-width:250px">'+eqSlot(m,"w"+i,"Weapon "+(i+1),e.w[i])+eqSel(m,"b"+i,e.b[i])+'</div>';
  h+='</div><label class="chk"><input type="checkbox" class="yn" data-eqm="'+id+'" data-eqf="dual"'+(e.dual?" checked":"")+'><span>Dual wielder (third active weapon)</span></label>';
  h+='<div class="sprow2" style="flex-wrap:wrap"><div style="display:flex;gap:6px;align-items:flex-end;flex:1;min-width:250px">'+eqSlot(m,"armor","Armor",e.armor)+eqSel(m,"ab",e.ab)+'</div><div style="display:flex;gap:6px;align-items:flex-end;flex:1;min-width:250px">'+eqSlot(m,"shield","Shield",e.shield)+eqSel(m,"sb",e.sb)+'</div></div>';
  h+='<div class="sprow2" style="flex-wrap:wrap">'+[0,1,2].map(function(k){return eqSlot(m,"att"+k,"Attuned item "+(k+1),e.att[k])}).join("")+'</div>';
+ h+='<div class="sprow2" style="flex-wrap:wrap">'+["arrows","bolts","stones"].map(function(k){var v=e.am[k];return'<label class="f" style="flex:1;min-width:100px">'+AM_LAB[k]+'<input type="number" inputmode="numeric" min="0" data-amk="'+k+'" data-amid="'+id+'" value="'+(v===null?"":v)+'" placeholder="not tracked">'+(v!==null&&v<25?'<span class="bad">\u26a0 Low: only '+v+' left</span>':'')+'</label>'}).join("")+'</div>';
  var fx=eqEffects(m);h+='<div class="mute" style="margin-top:6px"><b>Effects:</b> '+(fx.lines.length?fx.lines.map(esc).join("; "):"none from equipment yet")+'</div>';
  return h+'</details>'}
 /* equipment effects on stats */
