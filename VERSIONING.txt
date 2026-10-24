@@ -116,3 +116,4 @@ Current: 1.571 (build 194)
 1.607 (build 222) - Travel page: Local travel button moved next to the Travel and Encounter tables buttons.
 1.608 (build 223) - Travel: optional 'Stop at points of interest' - the journey pauses at each POI passed, with Stop here (party moves there, original destination kept) or Continue.
 1.609 (build 224) - Rest dialogs: encounter rules now come from the party's current location (own table / safe / road / wilderness) instead of the manual safe/road/wilderness choice.
+1.610 build 225: Long rest screen redesigned as a table with checkboxes (Rests, Character, HP, Hit dice, Ate, Drank) and inline warnings.
