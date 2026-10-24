@@ -675,7 +675,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=236;var APPLABEL="1.621";
+var APPV=237;var APPLABEL="1.622";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return!l.parent&&l.status!=="Not visited"}).length,mnAll=S.locations.filter(function(l){return l.parent}),mnVis=mnAll.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -1812,8 +1812,8 @@ function clHitDraw(){var T=ui.ht;if(!T)return;var c=clCmb(T.cid);if(!c){clHide("
  var sel={};sel[T.tgt]=true;var fx=tg&&T.type?tgFactor(tg,T.type,T.magic):{f:1,w:""},el=clOv("hitov");
  T.off=T.off||{};var pl=clPend(c.id),ph=pl.length?'<div class="cllist">'+pl.map(function(e){return'<div class="clrow"><label class="chk"><input type="checkbox" data-clc="pe-on" data-id="'+e.id+'"'+(T.off[e.id]?"":" checked")+'><span><b>'+esc(e.n)+'</b>: add '+esc(e.dice)+(e.type?" "+esc(e.type):"")+' on this hit'+(e.note?'<span class="mute"> &middot; '+esc(e.note)+'</span>':'')+'</span></label><button data-clc="pe-end" data-id="'+e.id+'">End spell</button></div>'}).join("")+'</div>':'';
  el.innerHTML='<div class="clbox"><div class="atkh"><b>'+esc(c.name)+' hits&hellip;</b></div>'+(T.hint?'<div class="mute">Damage to roll: <b>'+esc(T.hint)+'</b>. Type in what the player rolled.</div>':'')+ph+(tl.length?'<div class="cllist">'+clTgtRows(tl,"radio",sel,"",T.type,T.magic)+'</div>':'<div class="mute">There are no enemies in the encounter.</div>')+
- '<div class="sprow2"><label class="hpf"><span class="tl">Damage</span><input id="clhamt" data-clc="ht-amt" inputmode="numeric" value="'+esc(T.amt)+'" placeholder="8 or 5+3" style="width:110px"></label><label class="hpf"><span class="tl">Or roll dice</span><input data-clc="ht-dice" value="'+esc(T.dice)+'" placeholder="1d8+3" style="width:110px"></label><button data-clc="ht-roll">Roll</button></div>'+
- '<div class="sprow2"><input data-clc="ht-what" value="'+esc(T.what)+'" placeholder="Weapon or attack (optional)" style="flex:1"><select data-clc="ht-type" aria-label="Damage type">'+CL_TYPES.map(function(t){return'<option value="'+t+'"'+(T.type===t?" selected":"")+'>'+(t||"Damage type (optional)")+'</option>'}).join("")+'</select></div>'+
+ '<div class="sprow2"><label class="hpf"><span class="tl">Damage</span><input id="clhamt" data-clc="ht-amt" enterkeyhint="done" inputmode="numeric" value="'+esc(T.amt)+'" placeholder="8 or 5+3" style="width:110px"></label><label class="hpf"><span class="tl">Or roll dice</span><input data-clc="ht-dice" enterkeyhint="done" value="'+esc(T.dice)+'" placeholder="1d8+3" style="width:110px"></label><button data-clc="ht-roll">Roll</button></div>'+
+ '<div class="sprow2"><input data-clc="ht-what" enterkeyhint="done" value="'+esc(T.what)+'" placeholder="Weapon or attack (optional)" style="flex:1"><select data-clc="ht-type" aria-label="Damage type">'+CL_TYPES.map(function(t){return'<option value="'+t+'"'+(T.type===t?" selected":"")+'>'+(t||"Damage type (optional)")+'</option>'}).join("")+'</select></div>'+
  (/^(bludgeoning|piercing|slashing)$/.test(T.type)?'<label class="chk"><input type="checkbox" class="yn" data-clc="ht-magic"'+(T.magic?" checked":"")+'><span>Magical weapon</span></label>':'')+
  (fx.w?'<div class="mute">'+esc(tg.name)+' is '+fx.w+' to '+esc(T.type)+', so the damage is adjusted automatically.</div>':'')+(T.rtxt?'<div class="mute">'+esc(T.rtxt)+'</div>':'')+(T.err?'<div style="color:#c0334d">'+esc(T.err)+'</div>':'')+
  '<div style="display:flex;gap:8px"><button class="pri" data-clc="ht-go" style="flex:1">Apply hit</button><button data-clc="ht-miss">Miss</button><button data-clc="ht-x">Cancel</button></div></div>';el.style.display="flex"}
@@ -6357,6 +6357,8 @@ setInterval(function(){var c=S.pu&&S.pu.code;if(!c||document.hidden)return;var f
 if(S.pu&&S.pu.code){PUA.load();PU_LOADED=S.pu.code}
 
 /*PURSE-END*/
+document.addEventListener("focusin",function(e){var t=e.target;if(t&&t.tagName==="INPUT"&&/^(numeric|decimal)$/.test(t.getAttribute("inputmode")||"")&&t.getAttribute("enterkeyhint")!=="next"&&t.closest&&t.closest(".clbox,.modal,[role=dialog],.pubox,.ov"))t.setAttribute("enterkeyhint","done")});
+document.addEventListener("keydown",function(e){var t=e.target;if(e.key==="Enter"&&t&&t.tagName==="INPUT"&&t.getAttribute("enterkeyhint")==="done"&&t.type!=="checkbox"&&t.type!=="radio"&&t.type!=="search"){e.preventDefault();t.blur()}});
 render();
 try{var gb=gcfg();if(gb.autoStart&&gb.fileId&&navigator.onLine!==false)setTimeout(function(){gRun(true)},1500)}catch(e){}
 </script>
