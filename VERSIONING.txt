@@ -132,3 +132,4 @@ ROLLBACK POINT: 1.610 build 225 (git tag v1.610-stable, copy strahd-organiser-v1
 1.622 build 237 - Return closes keyboard on hit popup damage/dice/weapon fields and numeric popup inputs
 1.623 build 238 - Loot popup (DMG individual/hoard tables, per-creature rules, 1-3 lootable cap, confirm before purse) and Butcher (Survival, meat/hides)
 1.624 build 239 - Loot tables tab on Statblocks page with enemy lists; incorporeal/spirits carry no coins
+1.625 build 240 - loot: gems/art conversion and common magic items on humanoids (toggle)

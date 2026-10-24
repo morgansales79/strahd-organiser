@@ -676,7 +676,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=239;var APPLABEL="1.624";
+var APPV=240;var APPLABEL="1.625";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return!l.parent&&l.status!=="Not visited"}).length,mnAll=S.locations.filter(function(l){return l.parent}),mnVis=mnAll.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -6395,8 +6395,16 @@ function ltRollInd(){var gs=ltGroups().filter(function(g){return ltOn(g)}),res={
  gs.forEach(function(g){var pool=g.dead.filter(function(c){return!c.lt});if(!pool.length)return;var n=pool.length,k=n>3?ltD(3):n,pick=ltShuffle(pool).slice(0,k);pool.forEach(function(c){if(pick.indexOf(c)<0)res.skip.push(c.id)});
   res.log.push(g.name+": "+n+" defeated"+(n>3?", so only "+k+" can be looted (d3 rolled)":""));
   pick.forEach(function(c){var tb=LOOTD.ind[g.info.band],r=ltD(100),row=ltFind(tb,r),d={cp:ltDice(row[2]),sp:ltDice(row[3]),ep:ltDice(row[4]),gp:ltDice(row[5]),pp:ltDice(row[6])};
-   d.sp+=d.ep*5;var txt=[];["pp","gp","sp","cp"].forEach(function(u){if(d[u]){tot[u]+=d[u];txt.push(d[u]+" "+u)}});if(d.ep)txt.push("(electrum converted to silver)");res.log.push(c.name+" (CR "+g.info.cr+", d100 = "+(r===100?"00":r)+"): "+(txt.join(", ")||"nothing"));res.creatures.push(c.id)})});
- if(tot.pp||tot.gp||tot.sp||tot.cp)res.lines.push({kind:"coin",d:tot,on:true,note:"Loot"});
+   d.sp+=d.ep*5;var extra=[],V=d.pp*10+d.gp+d.sp/10+d.cp/100,rich=!ui.lt||ui.lt.rich!==false;
+   if(rich){
+    if(V>=10&&ltD(6)<=2){var left=V,its=0,kinds=ltShuffle(["gem","art"]),conv=[],ki=0;
+     while(left>=10&&its<4&&ki<4){var kind=kinds[ki%2],tiers=(kind==="gem"?[10,50,100,500,1000,5000]:[25,250,750,2500,7500]).filter(function(x){return x<=left});ki++;if(!tiers.length)continue;
+      var tv=tiers[tiers.length-1],cnt=Math.min(5,Math.floor(left/tv)),j;for(j=0;j<cnt;j++){var nm=ltTreasure(kind,tv);ltAddItem(res.lines,ltCap(nm),tv,1,kind==="gem"?"Gemstone":"Art object");conv.push(nm+" ("+tv+" gp)")}left-=cnt*tv;its+=cnt}
+     if(conv.length){d={cp:0,sp:0,gp:0,pp:0};var lg=Math.floor(left);d.gp=lg;d.sp=Math.round((left-lg)*10);extra.push("carries "+conv.length+" gem/art item"+(conv.length>1?"s":"")+" instead of most of its coins: "+conv.join(", "))}}
+    if((g.info.type==="humanoid"||g.info.type==="giant")&&ltCrNum(g.info.cr)>0){var pr=ltD(100),tbs=g.info.band==="0-4"?["A",""]:g.info.band==="5-10"?["A","B"]:g.info.band==="11-16"?["B","C"]:["C","D"],tbl=pr<=10?tbs[0]:pr<=15?tbs[1]:"";
+     if(tbl){var it=ltMagic(tbl);ltAddItem(res.lines,it.name,it.val,1,"Magic item, "+it.rar+(it.att?" (attunement)":"")+" (table "+it.tb+")",{magic:1});extra.push("also carries "+it.name+" (d100 "+pr+", table "+tbl+")")}}}
+   var txt=[];["pp","gp","sp","cp"].forEach(function(u){if(d[u]){tot[u]+=d[u];txt.push(d[u]+" "+u)}});if(d.ep)txt.push("(electrum converted to silver)");res.log.push(c.name+" (CR "+g.info.cr+", d100 = "+(r===100?"00":r)+"): "+(txt.join(", ")||"no coins")+(extra.length?"; "+extra.join("; "):""));res.creatures.push(c.id)})});
+ if(tot.pp||tot.gp||tot.sp||tot.cp)res.lines.unshift({kind:"coin",d:tot,on:true,note:"Loot"});
  res.empty=!res.log.length;return res}
 function ltRollHoard(band){var H=LOOTD.H[band],res={src:"Treasure hoard, challenge "+band,lines:[],log:[],creatures:[]},u=["cp","sp","ep","gp","pp"],d={cp:0,sp:0,gp:0,pp:0},i;
  for(i=0;i<5;i++){var a=ltDice(H.c[i]);if(!a)continue;if(u[i]==="ep"){d.sp+=a*5;res.log.push("Electrum "+a+" converted to "+(a*5)+" sp")}else{d[u[i]]+=a;res.log.push(a+" "+u[i]+" ("+H.c[i].replace("*"," x ")+")")}}
@@ -6420,7 +6428,7 @@ function ltResHtml(){var R=ui.lt&&ui.lt.res;if(!R)return'';
  var n=R.lines.length;h+=(ui.lt.msg?'<div class="pubad">'+esc(ui.lt.msg)+'</div>':'')+'<div class="sprow2"><button class="pri" data-lt="add"'+(n?'':' disabled')+'>Add ticked to Party Purse</button><button data-lt="again">Roll again</button></div></div>';return h}
 function ltDraw(){if(!ui.lt)return;var el=clOv("lootov"),gs=ltGroups(),nb=gs.filter(function(g){return g.info.butch&&g.dead.some(function(c){return!c.bt})}).length;
  var bands=["0-4","5-10","11-16","17+"],hb=ui.lt.band||"0-4";
- el.innerHTML='<div class="clbox wide"><div class="atkh"><b>Loot</b></div><div class="mute">Treasure is worked out from the Dungeon Master&rsquo;s Guide tables for each creature&rsquo;s challenge rating. Nothing reaches the purse until you confirm.</div><div style="display:flex;flex-direction:column;gap:8px">'+ltGrpList()+'</div>'+
+ el.innerHTML='<div class="clbox wide"><div class="atkh"><b>Loot</b></div><div class="mute">Treasure is worked out from the Dungeon Master&rsquo;s Guide tables for each creature&rsquo;s challenge rating. Nothing reaches the purse until you confirm.</div><label class="chk"><input type="checkbox" class="yn" data-lt="rich"'+(ui.lt.rich!==false?" checked":"")+'><span>Gems, art objects and potions as well as coins <span class="mute">(DMG-style: coins may be carried as gems or art, and some humanoids carry a common item)</span></span></label><div style="display:flex;flex-direction:column;gap:8px">'+ltGrpList()+'</div>'+
  ltResHtml()+
  '<div class="rsfoot"><div class="sprow2"><button class="pri" data-lt="roll"'+(gs.length?'':' disabled')+'>Roll loot</button><button data-lt="butch"'+(nb?'':' disabled title="No butcherable defeated enemies"')+'>Butcher&hellip;</button><label class="hpf"><span class="tl">Treasure hoard</span><select data-lti="band" aria-label="Hoard challenge band" style="width:auto">'+bands.map(function(b){return'<option value="'+b+'"'+(b===hb?" selected":"")+'>Challenge '+b+'</option>'}).join("")+'</select></label><button data-lt="hoard">Roll hoard</button><button data-lt="close">Close</button></div></div></div>';el.style.display="flex"}
 function ltOpen(){ui.lt={res:null,ov:{},band:"0-4",msg:""};if(!ui.lt.band||ltGroups().length){var gs=ltGroups(),mx=0;gs.forEach(function(g){var n=ltCrNum(g.info.cr);if(n>mx)mx=n});ui.lt.band=ltBand(mx)}ltDraw()}
@@ -6470,6 +6478,7 @@ document.addEventListener("click",function(e){var b=e.target.closest&&e.target.c
  if(a==="hoard"&&L){L.res=ltRollHoard(L.band);L.msg="";ltDraw();return}
  if(a==="on"&&L&&L.res){var ln=L.res.lines[+b.dataset.i];if(ln)ln.on=b.checked;return}
  if(a==="ov"&&L){L.ov[b.dataset.k]=b.checked;ltDraw();return}
+ if(a==="rich"&&L){L.rich=b.checked;return}
  if(a==="add"&&L&&L.res){if(ltAddAll(L.res,"lt")){L.res=null;L.msg="";ltDraw();render()}else ltDraw();return}
  if(a==="butch"){ltBtOpen();return}
  if(a==="bclose"){ui.bt=null;clHide("butov");ltDraw();return}
@@ -6500,7 +6509,7 @@ function ltEnemyBands(){var out={"0-4":[],"5-10":[],"11-16":[],"17+":[]},butch=[
   if(i.coins)out[i.band].push(lab);else if(i.butch)butch.push(lab);else none.push(lab)});
  return{b:out,butch:butch,none:none}}
 function ltList(a){return a.length?a.map(function(x){return'<span class="pill">'+esc(x)+'</span>'}).join(" "):'<span class="mute">None in your enemy list.</span>'}
-function lootTab(){var D=LOOTD,eb=ltEnemyBands(),h='<div class="row"><h2>Loot tables</h2><div style="flex:1;max-width:260px"><input data-ui="q" value="'+esc(ui.q)+'" placeholder="Search enemies" aria-label="Search enemies"></div></div><div class="mute" style="margin-bottom:8px">The Dungeon Master&rsquo;s Guide treasure tables used by the Loot button. Each table lists the enemies in your Enemies and NPC statblocks that roll on it. Electrum is converted to silver (5 sp each) when loot is added.</div>';
+function lootTab(){var D=LOOTD,eb=ltEnemyBands(),h='<div class="row"><h2>Loot tables</h2><div style="flex:1;max-width:260px"><input data-ui="q" value="'+esc(ui.q)+'" placeholder="Search enemies" aria-label="Search enemies"></div></div><div class="mute" style="margin-bottom:8px">The Dungeon Master&rsquo;s Guide treasure tables used by the Loot button. Each table lists the enemies in your Enemies and NPC statblocks that roll on it. Electrum is converted to silver (5 sp each) when loot is added. Following the DMG note that coins can be swapped for gemstones or art objects of equal value, about one humanoid in three that carries 10 gp or more holds it as gems or art instead, and about one in ten also carries an item from the common magic item table for its challenge rating (potions of healing are the most likely). Turn this off in the Loot window for strict coins only.</div>';
  h+='<div class="card"><h3>How enemies are matched</h3><div class="mute">Humanoids and giants carry individual treasure. Monstrosities, undead, fiends and similar creatures do too, but only with an Intelligence of 8 or more. Beasts, swarms, oozes, plants and constructs carry no coins. In groups of more than 3, only 1 to 3 can be looted. Beasts (and low-Intelligence monstrosities) can be butchered for meat and hides instead. Dragons use the hoard tables. You can override any of this with the &ldquo;Carries treasure&rdquo; switch in the Loot window.</div></div>';
  ["0-4","5-10","11-16","17+"].forEach(function(b){var rows=D.ind[b];
   h+='<div class="card"><h3>Individual treasure: challenge '+b+'</h3><div style="overflow:auto"><table class="tvt"><thead><tr><th>d100</th><th>CP</th><th>SP</th><th>EP</th><th>GP</th><th>PP</th></tr></thead><tbody>'+rows.map(function(r){return'<tr><td>'+(r[0]===r[1]?r[0]:r[0]+"–"+(r[1]===100?"00":r[1]))+'</td>'+[2,3,4,5,6].map(function(i){return'<td>'+(r[i]?esc(ltFmt(r[i])):"—")+'</td>'}).join("")+'</tr>'}).join("")+'</tbody></table></div><div><b>Enemies that roll on this table</b></div><div style="display:flex;gap:6px;flex-wrap:wrap">'+ltList(eb.b[b])+'</div></div>'});
