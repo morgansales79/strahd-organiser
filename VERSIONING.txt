@@ -138,3 +138,4 @@ ROLLBACK POINT: 1.610 build 225 (git tag v1.610-stable, copy strahd-organiser-v1
 1.628 build 243 - Loot tables tab: extras table (gems, items, arrows, bolts, rations) with enemy lists
 1.629 build 244 - waterskins: full/total skins, 2 per person-day, Fill all skins
 1.630 build 245 - raw meat supply (from butchering), cook into rations on rests, controls
+1.631 build 246 - raw meat spoils after 2 days; cooking capped at 8 portions per long rest, 2 per short rest
