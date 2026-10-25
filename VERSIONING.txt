@@ -134,3 +134,4 @@ ROLLBACK POINT: 1.610 build 225 (git tag v1.610-stable, copy strahd-organiser-v1
 1.624 build 239 - Loot tables tab on Statblocks page with enemy lists; incorporeal/spirits carry no coins
 1.625 build 240 - loot: gems/art conversion and common magic items on humanoids (toggle)
 1.626 build 241 - loot: ammo for bow/crossbow enemies, rations from human enemies
+1.627 build 242 - loot tables: electrum replaced by silver at value
