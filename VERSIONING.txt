@@ -143,3 +143,4 @@ ROLLBACK POINT: 1.610 build 225 (git tag v1.610-stable, copy strahd-organiser-v1
 1.633 build 248 - Butcher button on the combat bar next to Loot; defeated enemies hidden from hit popup and hostile spell targets
 1.634 build 249 - Butcher button on the End of combat screen
 1.635 build 250 - Butcher button removed from Loot window; Loot disabled when no enemy carries treasure (no override); butchering uses typed player Survival totals, no rolling or modifier
+1.636 build 251 - exhaustion: reduced speed and max HP shown on party sheet, banner, disadvantage reminder pop-ups for butcher checks, saves, sleep saves and hit rolls
