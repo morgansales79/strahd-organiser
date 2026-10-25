@@ -140,3 +140,4 @@ ROLLBACK POINT: 1.610 build 225 (git tag v1.610-stable, copy strahd-organiser-v1
 1.630 build 245 - raw meat supply (from butchering), cook into rations on rests, controls
 1.631 build 246 - raw meat spoils after 2 days; cooking capped at 8 portions per long rest, 2 per short rest
 1.632 build 247 - random encounter checks while butchering (stationary, wilderness/road/location rules, result card with Go to encounter)
+1.633 build 248 - Butcher button on the combat bar next to Loot; defeated enemies hidden from hit popup and hostile spell targets
