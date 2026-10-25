@@ -676,7 +676,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=246;var APPLABEL="1.631";
+var APPV=247;var APPLABEL="1.632";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return!l.parent&&l.status!=="Not visited"}).length,mnAll=S.locations.filter(function(l){return l.parent}),mnVis=mnAll.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -3342,9 +3342,9 @@ function restEncRoll(hours,rv){var T=S.trv,out=[],found=[],i,thr=rv.loc===1?18:1
   var ms=tvMons(e),hint=e[4]||"";if(e[1]==="Trinket"){var tr=1+Math.floor(Math.random()*100);hint="A random character finds: "+TVTK[Math.floor((tr-1)/2)]+" (d100 roll "+tr+", Gothic Trinkets)"}
   found.push(t);out.push(tvDress({t:t,text:tvText(e,ms),hint:hint,mons:ms},e))}
  save();ui.rsEnc=out;return out}
-function restEncOut(list,rv){if(rv.loc===2)return'<div class="mute" style="margin:8px 0">Safe: no encounter checks.</div>';
- if(!list.length)return'<div class="mute" style="margin:8px 0">No random encounter while resting'+(rv.loc===3?' in '+esc(rv.tbl||"this location"):'')+'.</div>';
- return list.map(function(e,i){return'<div class="card" style="margin:8px 0;border-color:var(--acc)"><div><b>Random encounter, '+tvFmt(e.t)+' into the rest</b> <span class="mute">('+(rv.loc===3?esc(rv.tbl||"location table"):(rv.night?"night":"day")+', '+(rv.loc===1?"road":"wilderness"))+')</span></div><div style="font-size:1.05em"><b>'+esc(e.text)+'</b></div>'+tvXHtml(e)+(e.mons.length?'<div><button class="pri" data-rs="goenc" data-i="'+i+'">Go to encounter</button></div>':'')+'</div>'}).join("")}
+function restEncOut(list,rv,what){if(rv.loc===2)return'<div class="mute" style="margin:8px 0">Safe: no encounter checks.</div>';
+ if(!list.length)return'<div class="mute" style="margin:8px 0">No random encounter while '+(what?"butchering":"resting")+(rv.loc===3?' in '+esc(rv.tbl||"this location"):'')+'.</div>';
+ return list.map(function(e,i){return'<div class="card" style="margin:8px 0;border-color:var(--acc)"><div><b>Random encounter, '+tvFmt(e.t)+' into the '+(what||"rest")+'</b> <span class="mute">('+(rv.loc===3?esc(rv.tbl||"location table"):(rv.night?"night":"day")+', '+(rv.loc===1?"road":"wilderness"))+')</span></div><div style="font-size:1.05em"><b>'+esc(e.text)+'</b></div>'+tvXHtml(e)+(e.mons.length?'<div><button class="pri" data-rs="goenc" data-i="'+i+'">Go to encounter</button></div>':'')+'</div>'}).join("")}
 function restGoEnc(b){var e=ui.rsEnc&&ui.rsEnc[+b.dataset.i];if(!e)return;
  var el=document.getElementById("restov");if(el)el.style.display="none";tvLoad(e)}
 document.addEventListener("input",function(e){var r=e.target.dataset&&e.target.dataset.rsl;if(!r)return;if(r==="locr"){var d=document.querySelector("[data-rsday]");if(d)d.style.display=+e.target.value>1?"none":"";return}var v=document.querySelector('[data-rslv="'+r+'"]');if(!v)return;if(r==="time")v.textContent=(e.target.value==="1"?"Night":"Day")+" (picks the Barovia day or night encounter table)"});
@@ -6463,7 +6463,7 @@ function ltBtGroups(){return ltGroups().filter(function(g){return g.info.butch&&
 function ltBtOpen(){var gs=ltBtGroups();if(!gs.length)return;var sv=ui.ltSurv||{},pc=(S.party[0]&&S.party[0].name)||"";ui.bt={key:gs[0].key,n:1,mode:"both",pc:pc,mod:sv[pc]!=null?sv[pc]:0,clock:true,scale:true,rolls:null,msg:""};ltBtDraw()}
 function ltBtCalc(){var B=ui.bt,g=ltBtGroups().filter(function(x){return x.key===B.key})[0];if(!g)return null;var f=B.scale?(LT_SIZE[g.info.size]||1):1,out=[],meat=0,hide={};
  (B.rolls||[]).forEach(function(r){var q=ltQual(r.tot),mt=B.mode!=="hide"?Math.round([0,2,4,6][q]*f):0,hv=B.mode!=="meat"?[0,.5,1,2][q]*f:0;r.q=q;r.meat=mt;r.hide=hv;meat+=mt;if(B.mode!=="meat"&&q>0){hide[q]=hide[q]||{n:0,v:hv};hide[q].n++}});return{g:g,f:f,meat:meat,hide:hide}}
-function ltBtDraw(){var B=ui.bt;if(!B)return;var el=clOv("butov"),gs=ltBtGroups(),g=gs.filter(function(x){return x.key===B.key})[0];if(!g){ui.bt=null;el.style.display="none";return}
+function ltBtDraw(){var B=ui.bt;if(!B)return;var tm0=document.querySelector('#butov [data-rsl="time"]');if(tm0)B.night=tm0.value==="1";var el=clOv("butov"),gs=ltBtGroups(),g=gs.filter(function(x){return x.key===B.key})[0];if(!g){ui.bt=null;el.style.display="none";return}
  var avail=g.dead.filter(function(c){return!c.bt}).length;B.n=Math.max(1,Math.min(avail,B.n||1));var hrs=B.n*(B.mode==="both"?2:1),cal=ltBtCalc(),sv=ui.ltSurv||{};
  var opt=function(v,l){return'<button data-lt="bmode" data-v="'+v+'" class="'+(B.mode===v?"pri":"")+'">'+l+'</button>'};
  var h='<div class="clbox wide"><div class="atkh"><b>Butcher</b></div><div class="mute">One Wisdom (Survival) check per animal. It takes 1 hour per animal for meat or for hides, 2 hours for both.</div>'+
@@ -6479,6 +6479,7 @@ function ltBtDraw(){var B=ui.bt;if(!B)return;var el=clOv("butov"),gs=ltBtGroups(
   B.rolls.forEach(function(r,i){h+='<div style="display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap"><b style="min-width:80px;padding-bottom:12px">'+esc(g.name)+' '+(i+1)+'</b><span class="mute">d20 '+r.d+'</span><label class="hpf"><span class="tl">Check total</span><input data-lti="btot" data-i="'+i+'" inputmode="numeric" value="'+r.tot+'" style="width:84px"></label><span><b>'+LT_QUAL[r.q]+'</b>'+(B.mode!=="hide"?', '+r.meat+' meat':'')+(B.mode!=="meat"?', hide '+(r.hide?r.hide+' gp':'worthless'):'')+'</span></div>'});
   var hl=Object.keys(cal.hide).map(function(q){return cal.hide[q].n+' '+LT_QUAL[q].toLowerCase()+' hide'+(cal.hide[q].n>1?"s":"")}).join(", ");
   h+='<div><b>Total:</b> '+(B.mode!=="hide"?cal.meat+' portion'+(cal.meat===1?"":"s")+' of raw meat (added to the raw meat supply; it rots if not cooked within 2 days)':'')+(B.mode==="both"?' and ':'')+(B.mode!=="meat"?(hl||'no usable hides'):'')+'</div><div class="mute">1 portion of raw meat is one day&rsquo;s ration for one character once cooked.</div>'+(B.msg?'<div class="pubad">'+esc(B.msg)+'</div>':'')+'</div>'}
+ h+='<label class="chk" style="margin:8px 0"><input type="checkbox" class="yn" data-lt="benc"'+(B.enc!==false?" checked":"")+'><span>Check for random encounters while butchering</span></label>'+(B.enc!==false?restEncUi(B.night!=null?B.night:clkNight()).replace("while resting","while butchering").replace("Resting at","Butchering at"):'');
  h+='<div class="rsfoot"><div class="sprow2">'+(B.rolls&&cal?'<button class="pri" data-lt="badd">Add to supplies and purse</button>':'<button class="pri" data-lt="broll">Roll Survival checks</button>')+'<button data-lt="bclose">Back to loot</button></div></div></div>';el.innerHTML=h;el.style.display="flex"}
 function ltBtRoll(){var B=ui.bt,i;B.rolls=[];for(i=0;i<B.n;i++){var d=ltD(20);B.rolls.push({d:d,tot:d+(parseInt(B.mod,10)||0)})}B.msg="";ltBtDraw()}
 function ltBtAdd(){var B=ui.bt,C=ltBtCalc();if(!C||!B.rolls)return;if(Object.keys(C.hide).length&&!ltPurseOk()){B.msg="The party purse isn't set up yet, so the hides can't be added. Open Spells/Equipment, then Treasure, and make one first.";ltBtDraw();return}
@@ -6486,10 +6487,14 @@ function ltBtAdd(){var B=ui.bt,C=ltBtCalc();if(!C||!B.rolls)return;if(Object.key
  if(C.meat>0)rawAdd(C.meat)
  Object.keys(C.hide).forEach(function(q){var o=C.hide[q];PUA.add({k:"item",id:puKey(),name:nm+" hide ("+LT_QUAL[q]+")",qty:o.n,val:o.v,note:note})});
  var left=B.n;C.g.dead.forEach(function(c){if(left>0&&!c.bt){c.bt=true;left--}});
- var hrs=B.n*(B.mode==="both"?2:1);if(B.clock)clkAdv(hrs);
+ var hrs=B.n*(B.mode==="both"?2:1),encL=[],encRv=null;if(B.enc!==false){encRv=restEncRead();encL=restEncRoll(hrs,encRv)}
+ var sumTxt=B.n+" "+nm.toLowerCase()+" butchered for "+(B.mode==="both"?"meat and hides":B.mode==="meat"?"meat":"hides")+", taking "+hrs+" hour"+(hrs>1?"s":"")+(C.meat>0?"; "+C.meat+" portion"+(C.meat===1?"":"s")+" of raw meat added":"")+".";
+ if(B.clock)clkAdv(hrs);
  try{if(SS&&SS.log)SS.log.unshift({t:"Day "+S.day+" "+tvClock(S.hour||0),x:"Butchered "+B.n+" "+nm.toLowerCase()+" for "+(B.mode==="both"?"meat and hides":B.mode==="meat"?"meat":"hides")+" ("+hrs+" h)."})}catch(e){}
  if(B.pc){ui.ltSurv=ui.ltSurv||{};ui.ltSurv[B.pc]=parseInt(B.mod,10)||0;saveUi()}
- save();ui.bt=null;clHide("butov");ltDraw();render()}
+ save();ui.bt=null;ui.btRes={sum:sumTxt,list:encL,rv:encRv};ltBtResDraw();render()}
+function ltBtResDraw(){var R=ui.btRes;if(!R)return;var el=clOv("butov");el.innerHTML='<div class="clbox wide"><div class="atkh"><b>Butchery finished</b></div><div>'+esc(R.sum)+'</div>'+(R.rv?restEncOut(R.list,R.rv,"butchering"):'<div class="mute">No encounter check was made.</div>')+'<div class="rsfoot"><div class="sprow2"><button class="pri" data-lt="bdone">Done</button></div></div></div>';el.style.display="flex"}
+document.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest('[data-rs="goenc"]');if(b&&document.getElementById("butov")&&ui.btRes){clHide("butov");clHide("lootov");ui.btRes=null;ui.lt=null}});
 document.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest("[data-lt]");if(!b)return;var a=b.dataset.lt,L=ui.lt,B=ui.bt;
  if(a==="open"){ltOpen();return}
  if(a==="close"){ui.lt=null;clHide("lootov");render();return}
@@ -6505,6 +6510,8 @@ document.addEventListener("click",function(e){var b=e.target.closest&&e.target.c
  if(a==="bmode"&&B){B.mode=b.dataset.v;B.rolls=null;ltBtDraw();return}
  if(a==="bclock"&&B){B.clock=b.checked;ltBtDraw();return}
  if(a==="bscale"&&B){B.scale=b.checked;ltBtDraw();return}
+ if(a==="benc"&&B){B.enc=b.checked;ltBtDraw();return}
+ if(a==="bdone"){ui.btRes=null;clHide("butov");ltDraw();return}
  if(a==="broll"&&B){ltBtRoll();return}
  if(a==="badd"&&B){ltBtAdd();return}});
 document.addEventListener("input",function(e){var t=e.target,k=t.dataset&&t.dataset.lti;if(!k)return;var L=ui.lt,B=ui.bt;
