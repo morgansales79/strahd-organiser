@@ -1,7 +1,7 @@
 Display version (APPLABEL in the app) is 1.MM.
 Major update (new feature set): bump the first decimal place (1.10 -> 1.20 -> 1.30).
 Minor update (fixes, small tweaks): bump the second decimal place (1.10 -> 1.11 -> 1.12).
-Current: 1.571 (build 194)
+Current: 1.639 (build 254)
 1.180 (build 102): five new Active Session panes: Travel, Marching order, Combat controls, Rests and time, Party health.
 1.181 (build 103): fade-outs match fade-in speed (.48s); panes, Panes popup and Enemies/NPC sub-tabs fade.
 1.190 (build 104): five spells added from D&D Beyond page (Abi-Dalzim's, Absorb Elements, Aganazzar's, Air Bubble, Alustriel's).
@@ -146,3 +146,4 @@ ROLLBACK POINT: 1.610 build 225 (git tag v1.610-stable, copy strahd-organiser-v1
 1.636 build 251 - exhaustion: reduced speed and max HP shown on party sheet, banner, disadvantage reminder pop-ups for butcher checks, saves, sleep saves and hit rolls
 1.637 build 252 - real-time clock x2 (paused in combat, travel, idle 10 min, background), combat 6s per round, hourly filterable time log via Options pane
 1.638 build 253 - spell mechanics: Sleep and Color Spray use a hit point pool (lowest HP first, undead/charm-immune/elves skipped, Unconscious/Blinded applied, damage wakes sleepers); Command, Tasha's Hideous Laughter, Banishment, Slow, Web, Entangle, Bane, Hypnotic Pattern and Power Word Stun now apply conditions with rules notes; Bane and Slow modify app-rolled attacks, saves and AC; spell end clears its conditions; turn-start reminders
+1.639 build 254 - spells added: Suggestion, Mass Suggestion, Compulsion, Enthrall, Eyebite, Contagion, Hunger of Hadar, Dissonant Whispers (saves, conditions and tracker); tablet pass: Damage/Heal calculator no longer opens off-screen when the page is scrolled, Enemies search box restored, clearer red text, bigger labels and tap targets, sound panel sliders; offline cache registration restored (it was lost in 1.570) and Get the latest app version keeps saved map pictures
