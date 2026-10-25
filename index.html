@@ -676,7 +676,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=248;var APPLABEL="1.633";
+var APPV=249;var APPLABEL="1.634";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return!l.parent&&l.status!=="Not visited"}).length,mnAll=S.locations.filter(function(l){return l.parent}),mnVis=mnAll.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -1924,7 +1924,7 @@ function clRevDraw(){var V=ui.clv;if(!V)return;var el=clOv("clov"),lg=S.clog||[]
  h+='<div class="atkh"><b>'+(V.end?"End of combat":"Combat review")+'</b></div><div class="sprow2"><button class="'+(V.tab==="log"?"pri":"")+'" data-clc="tab" data-v="log">Log ('+lg.length+')</button><button class="'+(V.tab==="report"?"pri":"")+'" data-clc="tab" data-v="report">Report</button></div>';
  if(V.tab==="log"){var last=0;h+=lg.length?'<div class="cllog">'+lg.map(function(e){var hd=e.r!==last?'<div class="clrnd">Round '+e.r+'</div>':'';last=e.r;return hd+'<div class="clent"><span>'+clLine(e)+'</span><button class="del" data-clc="del" data-id="'+e.id+'" title="Removes this entry only. HP is not changed." aria-label="Remove entry">&times;</button></div>'}).join("")+'</div>':'<div class="mute">Nothing has been recorded yet. Use Hit and Spell on a party member, group damage, or the monster attack buttons.</div>'}
  else h+=clReport();
- h+='<div style="display:flex;gap:8px;flex-wrap:wrap">'+(V.end?'<button class="pri" data-clc="finish">Finish combat</button><button data-lt="open">Loot&hellip;</button><button data-clc="keep">Keep fighting</button>':'<button data-clc="save">Add report to session log</button><button class="pri" data-clc="x">Close</button>')+'</div>';
+ h+='<div style="display:flex;gap:8px;flex-wrap:wrap">'+(V.end?'<button class="pri" data-clc="finish">Finish combat</button><button data-lt="open">Loot&hellip;</button><button data-lt="butch">Butcher&hellip;</button><button data-clc="keep">Keep fighting</button>':'<button data-clc="save">Add report to session log</button><button class="pri" data-clc="x">Close</button>')+'</div>';
  el.innerHTML='<div class="clbox wide">'+h+'</div>';el.style.display="flex"}
 function clFinish(){S.cpend=[];S.fx=[];var t=clReportText();try{if(SS&&SS.log)SS.log.unshift({t:"Day "+S.day+" "+tvClock(S.hour||0),x:t})}catch(e){}S.clog=[];S.round=1;S.turnId="";ui.turnAtk=null;clHide("clov");ui.clv=null;save();render()}
 /* events */
