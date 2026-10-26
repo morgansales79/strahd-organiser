@@ -267,6 +267,8 @@ label.chk::after{content:"";position:absolute;inset:-5px -4px;z-index:-1}
 .rtsw{width:32px;height:32px;min-width:32px!important;min-height:32px!important}
 .spr{width:34px;height:34px}
 }
+.actg button:disabled,.cb.slp .atkrow button:disabled{opacity:.35;cursor:not-allowed;text-decoration:none}
+.cb.slp .atkrow button.spinfo{opacity:1}
 </style>
 </head>
 <body>
@@ -704,7 +706,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=254;var APPLABEL="1.639";
+var APPV=255;var APPLABEL="1.640";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return!l.parent&&l.status!=="Not visited"}).length,mnAll=S.locations.filter(function(l){return l.parent}),mnVis=mnAll.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -1360,7 +1362,7 @@ function multiLim(en){var t=multiText(en),out={N:multiN(en),lim:{},has:!!t};if(!
  var W={one:1,two:2,three:3,four:4,five:5,six:6},names=actList(en).map(function(a){return a.name.toLowerCase().replace(/\s*\(.*$/,"")}),y,re1=/\b(one|two|three|four|five|six|\d)\s+with\s+(?:its|his|her|their|the|a|an)?\s*([a-z'][a-z' -]*?)(?=\s+(?:and|or|attacks?)\b|[,.;:(]|$)/gi,re2=/\b(one|two|three|four|five|six|\d)\s+([a-z'][a-z' -]*?)\s+attacks?\b/gi,re3=/\b(one|two|three|four|five|six)\s+of\s+which\s+(?:can|may)\s+be\s+(?:a|an|with)?\s*(?:its\s+|his\s+|her\s+)?([a-z][a-z -]*?)(?=\s+attack|[,.;:(]|$)/gi;
  function add(cnt,w){var c=W[String(cnt).toLowerCase()]||parseInt(cnt,10)||0,k=String(w).toLowerCase().trim().replace(/(es|s)$/,"");if(!c||!k||/^(melee|ranged|weapon|spell)$/.test(k))return;names.forEach(function(nm){var base=nm.replace(/(es|s)$/,"");if(nm.indexOf(k)>-1||(base.length>2&&k.indexOf(base)>-1)){out.lim[nm]=Math.max(out.lim[nm]||0,c)}})}
  while((y=re1.exec(t)))add(y[1],y[2]);while((y=re2.exec(t)))add(y[1],y[2]);while((y=re3.exec(t)))add(y[1],y[2]);return out}
-function atkOff(c,x){if(S.turnId!==c.id||x.kind==="info")return"";var en=wsEnOf(c),ml=multiLim(en),T=ui.turnAtk&&ui.turnAtk.id===c.id?ui.turnAtk:{n:0,by:{}},nm=String(x.name).toLowerCase().replace(/\s*\(.*$/,"");
+function atkOff(c,x){if(x.kind!=="info"&&cndHas(c,["Unconscious"]))return"Asleep or unconscious";if(S.turnId!==c.id||x.kind==="info")return"";var en=wsEnOf(c),ml=multiLim(en),T=ui.turnAtk&&ui.turnAtk.id===c.id?ui.turnAtk:{n:0,by:{}},nm=String(x.name).toLowerCase().replace(/\s*\(.*$/,"");
  if(T.n>=ml.N)return"All "+ml.N+" attack"+(ml.N>1?"s":"")+" used this turn";var l=ml.lim[nm];if(l&&((T.by||{})[nm]||0)>=l)return x.name+" limit ("+l+") reached";return""}
 function tgCount(add){var k=tgCur(),T=ui.tg;if(!k||!T||k.at.noCount)return;var cur=ui.turnAtk&&ui.turnAtk.id===S.turnId?ui.turnAtk:{id:S.turnId,n:0};if(S.turnId!==k.mc.id)return;ui.turnAtk=cur;cur.by=cur.by||{};var nmk=String(k.at.name).toLowerCase().replace(/\s*\(.*$/,"");if(T.base===undefined){T.base=cur.n;T.baseBy=cur.by[nmk]||0}cur.n=T.base+add;cur.by[nmk]=T.baseBy+add}
 function tgTurnDone(){var k=tgCur();if(!k||S.turnId!==k.mc.id)return false;var en=wsEnOf(k.mc),n=multiN(en),c=ui.turnAtk&&ui.turnAtk.id===k.mc.id?ui.turnAtk.n:0;return c>=n}
@@ -1742,7 +1744,7 @@ function pcSpList(m,keys,map,what){var by={};keys.forEach(function(k){var sp=map
  var lvs=Object.keys(by).map(Number).sort(function(a,b){return a-b});
  if(!lvs.length)return'<div class="mute">Nothing added yet.</div>';
  return lvs.map(function(l){return'<div class="mute" style="margin-top:6px"><b>'+(l?"Level "+l:"Cantrips")+'</b></div>'+by[l].sort(function(a,b){return a.n.localeCompare(b.n)}).map(function(sp){
-  return'<details class="spit"><summary><b>'+esc(sp.n)+'</b><span class="mute">'+(sp.cc?" · concentration":"")+(sp.rt?" · ritual":"")+'</span></summary><div class="mute">'+esc(sp.s||"")+' · '+spInfo(sp)+'</div><div class="spt">'+esc(sp.x||"")+(sp.h?"\n\n"+esc(sp.h):"")+'</div><div class="sprow2">'+(sp.dm?'<button data-a="splcast" data-spk="'+esc(sp.k)+'">Cast on creatures</button>':'')+'<button class="del" data-sx="rm" data-id="'+m.id+'" data-w="'+what+'" data-k="'+esc(sp.k)+'">Remove</button></div></details>'}).join("")}).join("")}
+  return'<details class="spit"><summary><b>'+esc(sp.n)+'</b><span class="mute">'+(sp.cc?" · concentration":"")+(sp.rt?" · ritual":"")+'</span></summary><div class="mute">'+esc(sp.s||"")+' · '+spInfo(sp)+'</div><div class="spt">'+esc(sp.x||"")+(sp.h?"\n\n"+esc(sp.h):"")+'</div><div class="sprow2">'+(sp.dm?'<button data-a="splcast" data-spk="'+esc(sp.k)+'">Cast on creatures</button>':'')+''+(what==="kn"&&pcAutoSp(m)?'':'<button class="del" data-sx="rm" data-id="'+m.id+'" data-w="'+what+'" data-k="'+esc(sp.k)+'">Remove</button>')+'</div></details>'}).join("")}).join("")}
 function pcSpAdd(m,what,opts,ph){var id=m.id;
  return'<div class="sprow2"><input list="dl-'+id+'-'+what+'" id="spi-'+id+'-'+what+'" placeholder="'+ph+'" aria-label="'+ph+'" style="flex:1;min-width:140px"><datalist id="dl-'+id+'-'+what+'">'+opts.map(function(sp){return'<option value="'+esc(sp.n)+'">'+(sp.l?"Level "+sp.l:"Cantrip")+'</option>'}).join("")+'</datalist><button class="pri" data-sx="add" data-id="'+id+'" data-w="'+what+'">Add</button></div>'}
 function pcSpellsUI(m){var c=pcSpC(m);if(!c)return"";
@@ -1754,7 +1756,7 @@ function pcSpellsUI(m){var c=pcSpC(m);if(!c)return"";
  var prOpts=prSrc.filter(function(sp){return pr.indexOf(sp.k)<0});
  h+='<details class="pcx" open><summary class="pcxh"><b>Spells</b><span class="mute">'+esc(c.cls)+(c.learn?'':' · prepares from the '+esc(c.list)+' list')+'</span></summary>';
  h+='<label class="chk"><input type="checkbox" class="yn" data-sx="all" data-id="'+m.id+'"'+(ui2?" checked":"")+'><span>Show spells from every class</span></label>';
- if(c.learn||c.cant){h+='<div class="pcxh" style="margin-top:6px"><b>'+(c.book?"Spellbook":c.learn?"Spells known":"Cantrips known")+'</b><span class="mute">'+kn.length+' added</span></div>'+pcSpList(m,kn,map,"kn")+pcSpAdd(m,"kn",knOpts,c.learn?"Add a spell"+(c.cant?" or cantrip":""):"Add a cantrip")}
+ if(c.learn||c.cant||pcAutoSp(m)){h+='<div class="pcxh" style="margin-top:6px"><b>'+(c.book?"Spellbook":c.learn?"Spells known":pcAutoSp(m)?"All "+esc(c.cls)+" spells you can cast":"Cantrips known")+'</b><span class="mute">'+kn.length+(pcAutoSp(m)?' (added automatically)':' added')+'</span></div>'+pcSpList(m,kn,map,"kn")+(pcAutoSp(m)?'':pcSpAdd(m,"kn",knOpts,c.learn?"Add a spell"+(c.cant?" or cantrip":""):"Add a cantrip"))}
  var max=pcPrepMax(m,c),cnt=pr.length;
  h+='<div class="pcxh" style="margin-top:10px"><b>Prepared spells</b><span class="mute"'+(max&&cnt>max?' style="color:var(--acct)"':'')+'>'+cnt+(max?' / '+max:'')+' prepared</span></div>'+pcSpList(m,pr,map,"pr")+pcSpAdd(m,"pr",prOpts,c.learn?"Add from "+(c.book?"your spellbook":"your known spells"):"Add a prepared spell");
  return h+'</details>'}
@@ -6898,6 +6900,18 @@ var CL_FN={clEyeNew:clEyeNew,clHhAdd:clHhAdd};
 
 document.addEventListener("focusin",function(e){var t=e.target;if(t&&t.tagName==="INPUT"&&/^(numeric|decimal)$/.test(t.getAttribute("inputmode")||"")&&t.getAttribute("enterkeyhint")!=="next"&&t.closest&&t.closest(".clbox,.modal,[role=dialog],.pubox,.ov"))t.setAttribute("enterkeyhint","done")});
 document.addEventListener("keydown",function(e){var t=e.target;if(e.key==="Enter"&&t&&t.tagName==="INPUT"&&t.getAttribute("enterkeyhint")==="done"&&t.type!=="checkbox"&&t.type!=="radio"&&t.type!=="search"){e.preventDefault();t.blur()}});
+/*AUTOSP-START*/
+function pcAutoSp(m){var c=pcSpC(m);return c&&c.prep&&!c.learn?c:null}
+function pcAutoSync(){var ch=false,all=null;S.party.forEach(function(m){var c=pcAutoSp(m);if(!c)return;
+ var sl=pcSlots(m),mx=0;sl.max.forEach(function(n,i){if(n)mx=i+1});all=all||spAll();m.kn=sarr(m.kn);
+ all.forEach(function(sp){if((sp.cl||[]).indexOf(c.list)<0)return;if(sp.l===0?!c.cant:sp.l>mx)return;if(m.kn.indexOf(sp.k)<0){m.kn.push(sp.k);ch=true}})});
+ if(ch)save()}
+var _rAs=render;render=function(){try{pcAutoSync()}catch(e){}return _rAs.apply(this,arguments)};
+/*AUTOSP-END*/
+/*SLP-START*/
+var _encSlp=encCard;encCard=function(c,cur){var h=_encSlp(c,cur);return cndHas(c,["Unconscious"])?h.replace('<div class="cb','<div class="cb slp'):h};
+var _clBtnsSlp=clBtns;clBtns=function(c){var h=_clBtnsSlp(c);return h&&cndHas(c,["Unconscious"])?h.replace(/<button /g,'<button disabled title="Asleep or unconscious" '):h};
+/*SLP-END*/
 render();
 try{var gb=gcfg();if(gb.autoStart&&gb.fileId&&navigator.onLine!==false)setTimeout(function(){gRun(true)},1500)}catch(e){}
 </script>
