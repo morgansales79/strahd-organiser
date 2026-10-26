@@ -1,7 +1,7 @@
 Display version (APPLABEL in the app) is 1.MM.
 Major update (new feature set): bump the first decimal place (1.10 -> 1.20 -> 1.30).
 Minor update (fixes, small tweaks): bump the second decimal place (1.10 -> 1.11 -> 1.12).
-Current: 1.641 (build 256)
+Current: 1.642 (build 257)
 1.180 (build 102): five new Active Session panes: Travel, Marching order, Combat controls, Rests and time, Party health.
 1.181 (build 103): fade-outs match fade-in speed (.48s); panes, Panes popup and Enemies/NPC sub-tabs fade.
 1.190 (build 104): five spells added from D&D Beyond page (Abi-Dalzim's, Absorb Elements, Aganazzar's, Air Bubble, Alustriel's).
@@ -149,3 +149,4 @@ ROLLBACK POINT: 1.610 build 225 (git tag v1.610-stable, copy strahd-organiser-v1
 1.639 build 254 - spells added: Suggestion, Mass Suggestion, Compulsion, Enthrall, Eyebite, Contagion, Hunger of Hadar, Dissonant Whispers (saves, conditions and tracker); tablet pass: Damage/Heal calculator no longer opens off-screen when the page is scrolled, Enemies search box restored, clearer red text, bigger labels and tap targets, sound panel sliders; offline cache registration restored (it was lost in 1.570) and Get the latest app version keeps saved map pictures
 1.640 build 255 - clerics, druids, paladins and artificers get every spell on their class list (up to their top slot level) added to their sheet automatically; sleeping or unconscious combatants have their attack and Hit/Spell buttons greyed out
 1.641 build 256 - cantrips known limit per class and level (picked, not automatic, for clerics, druids and artificers), separate bonus cantrips list, spell lists collapse into drop-downs so character panes are shorter; levelled class spells stay automatic
+1.642 build 257 - spell class lists corrected from the book lists (Faerie Fire, Divination, Arcane Eye, Create Food and Water, Meld Into Stone and others), full Artificer list, 17 missing Tasha's spells, known-spell casters (bard, sorcerer, warlock, ranger, Eldritch Knight, Arcane Trickster) get spells-known limits and cast from their known list, Always prepared & extra list with domain, oath and circle spells added by level, multiclass casters use the class with most levels and per-class spell levels, hit dice tracked per die size, concentration rule text, monster stat typos, aarakocra speed, drow and mountain dwarf proficiencies
