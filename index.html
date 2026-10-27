@@ -715,7 +715,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=260;var APPLABEL="1.645";
+var APPV=261;var APPLABEL="1.646";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return!l.parent&&l.status!=="Not visited"}).length,mnAll=S.locations.filter(function(l){return l.parent}),mnVis=mnAll.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -2857,7 +2857,7 @@ function rawAdd(n){var Sv=sv();Sv.rb.push({n:n,t:absH()});Sv.raw=Sv.rb.reduce(fu
 function rawTake(n){var Sv=sv(),left=n;Sv.rb.sort(function(a,b){return a.t-b.t});Sv.rb.forEach(function(x){var u=Math.min(x.n,left);x.n-=u;left-=u});Sv.rb=Sv.rb.filter(function(x){return x.n>0});Sv.raw=Sv.rb.reduce(function(a,x){return a+x.n},0);return n-left}
 function rawSet(n){var Sv=sv();n=Math.max(0,n);if(n>Sv.raw)rawAdd(n-Sv.raw);else rawTake(Sv.raw-n)}
 function rawOld(){var Sv=sv();if(!Sv.rb.length)return"";var o=Math.min.apply(null,Sv.rb.map(function(x){return x.t})),h=Math.max(0,Math.ceil(48-(absH()-o)));return"the oldest rots in "+(h>=24?Math.floor(h/24)+" d "+(h%24)+" h":h+" h")}
-function cookUi(cap){var Sv=sv(),n=Math.max(1,S.party.length);if(!Sv.on||!Sv.food||!(Sv.raw>0))return"";var def=(Sv.rat||0)<n,mx=Math.min(Sv.raw,cap||8);return'<div class="card" style="margin:8px 0;gap:6px"><div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap"><label class="chk"><input type="checkbox" class="yn" id="cook"'+(def?" checked":"")+'><span><b>Cook raw meat into rations</b></span></label><label class="hpf"><span class="tl">Portions (up to '+mx+')</span><input id="cookn" data-cap="'+(cap||8)+'" inputmode="numeric" value="'+Math.min(mx,def?Math.max(1,n-(Sv.rat||0)):mx)+'" style="width:90px" aria-label="Portions to cook"></label></div><div class="mute">Raw meat: '+Sv.raw+' ('+esc(rawOld())+'). There is time to cook up to '+(cap||8)+' portions in this rest. One portion becomes one ration. Raw meat that is not cooked within 2 days rots and is thrown away.</div></div>'}
+function cookUi(cap){var Sv=sv(),n=Math.max(1,S.party.length);if(!Sv.on||!Sv.food)return"";if(!(Sv.raw>0))return'<div class="card" style="margin:8px 0;gap:6px"><b>Cook raw meat into rations</b><div class="mute">No raw meat to cook. Add some under Raw meat in the Supplies panel (for example after hunting) and the cook option will be ready here, up to '+(cap||8)+' portions per rest.</div></div>';var def=(Sv.rat||0)<n,mx=Math.min(Sv.raw,cap||8);return'<div class="card" style="margin:8px 0;gap:6px"><div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap"><label class="chk"><input type="checkbox" class="yn" id="cook"'+(def?" checked":"")+'><span><b>Cook raw meat into rations</b></span></label><label class="hpf"><span class="tl">Portions (up to '+mx+')</span><input id="cookn" data-cap="'+(cap||8)+'" inputmode="numeric" value="'+Math.min(mx,def?Math.max(1,n-(Sv.rat||0)):mx)+'" style="width:90px" aria-label="Portions to cook"></label></div><div class="mute">Raw meat: '+Sv.raw+' ('+esc(rawOld())+'). There is time to cook up to '+(cap||8)+' portions in this rest. One portion becomes one ration. Raw meat that is not cooked within 2 days rots and is thrown away.</div></div>'}
 function cookRaw(){var cb=document.getElementById("cook");if(!cb||!cb.checked)return;var Sv=sv(),cn=document.getElementById("cookn"),cap=cn?parseInt(cn.dataset.cap,10)||8:8,n=Math.max(0,Math.min(Sv.raw||0,cap,parseInt(cn&&cn.value,10)||0));if(!n)return;n=rawTake(n);Sv.rat=(Sv.rat||0)+n;save()}
 function survEnsure(m){var n=absH();if(m.fedAt===null||m.fedAt===undefined)m.fedAt=n;if(m.drAt===null||m.drAt===undefined)m.drAt=n;if(m.restAt===null||m.restAt===undefined)m.restAt=n;m.exh=m.exh||0}
 function survGrace(m){return Math.max(1,3+pcMod(m,"con"))}
@@ -2906,6 +2906,19 @@ function survCheck(){var Sv=sv();if(!Sv.on||!S.party.length||SV_RESTING)return;v
  if(ex.length)cnPush({t:"svexh",rows:ex});
  save()}
 var _clkAdvS=clkAdv;clkAdv=function(h){_clkAdvS.apply(this,arguments);if(h>0)survCheck()};
+/*SOON-START*/
+function survSoon(){var Sv=sv();if(!Sv.on||!S.party.length||SV_RESTING)return;var now=absH(),al=Sv.al=Sv.al||{},f=[],w=[],z=[];
+ S.party.forEach(function(m){survEnsure(m);
+  if(Sv.food){var e=now-m.fedAt,k=Math.floor((e+2)/24);if(k>=1&&e<24*k){var a="pf|"+m.id+"|"+k;if(!al[a]){al[a]=now;f.push(m.name||"Adventurer")}}}
+  if(Sv.water){var hh=now-m.drAt,j=Math.floor((hh+2-18)/24);if(j>=0&&hh<18+24*j){var b="pw|"+m.id+"|"+j;if(!al[b]){al[b]=now;w.push(m.name||"Adventurer")}}}
+  if(Sv.sleep){var aw=now-m.restAt;if(aw<14)delete al["ps|"+m.id];else if(aw<16){var c="ps|"+m.id;if(!al[c]){al[c]=now;z.push(m.name||"Adventurer")}}}});
+ var lst=function(a){return a.map(function(n){return'<b>'+esc(n)+'</b>'}).join(", ")};
+ if(f.length)cnPush({t:"note",title:"The party needs to eat within 2 hours",msg:lst(f)+(f.length===1?" needs":" need")+" a meal within about 2 hours.<div class=\"mute\" style=\"margin-top:6px\">Rations left: "+(Sv.rat||0)+(Sv.raw>0?", raw meat "+Sv.raw+" (cook it during a rest)":"")+".</div>"});
+ if(w.length)cnPush({t:"note",title:"The party needs to drink within 2 hours",msg:lst(w)+(w.length===1?" needs":" need")+" a drink within about 2 hours.<div class=\"mute\" style=\"margin-top:6px\">Full waterskins left: "+(Sv.wat||0)+".</div>"});
+ if(z.length)cnPush({t:"note",title:"The party needs to sleep within 2 hours",msg:lst(z)+(z.length===1?" has":" have")+" been awake for 14 hours and will need sleep in about 2 hours."});
+ if(f.length||w.length||z.length)save()}
+var _clkAdvW=clkAdv;clkAdv=function(h){_clkAdvW.apply(this,arguments);if(h>0)survSoon()};
+/*SOON-END*/
 /*CT-START*/
 var CT={last:Date.now(),idle:Date.now(),acc:{},cr:null,why:"Running"};
 function ctCfg(){if(!S.ct||typeof S.ct!=="object")S.ct={on:true,x:2};if(!(S.ct.x>0))S.ct.x=2;return S.ct}

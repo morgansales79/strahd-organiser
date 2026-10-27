@@ -1,7 +1,7 @@
 Display version (APPLABEL in the app) is 1.MM.
 Major update (new feature set): bump the first decimal place (1.10 -> 1.20 -> 1.30).
 Minor update (fixes, small tweaks): bump the second decimal place (1.10 -> 1.11 -> 1.12).
-Current: 1.645 (build 260)
+Current: 1.646 (build 261)
 1.180 (build 102): five new Active Session panes: Travel, Marching order, Combat controls, Rests and time, Party health.
 1.181 (build 103): fade-outs match fade-in speed (.48s); panes, Panes popup and Enemies/NPC sub-tabs fade.
 1.190 (build 104): five spells added from D&D Beyond page (Abi-Dalzim's, Absorb Elements, Aganazzar's, Air Bubble, Alustriel's).
@@ -154,3 +154,5 @@ ROLLBACK POINT: 1.610 build 225 (git tag v1.610-stable, copy strahd-organiser-v1
 1.644 build 259 - data accuracy pass checked against the printed books. Monster stat blocks: Black Bear to-hit and Perception, Blink Dog and Spider passive Perception, Priest speed and Religion, Lich Arcana, Assassin sneak attack, Gynosphinx claw, Solar Slaying Longbow, missing skill lines (Swarm of Ravens, Spy, Half-Red Dragon Veteran), deafened condition immunities restored, Ice Devil cold immunity, swarms immune to grappled, Crocodile and Giant Wasp speeds, Change Shape for bronze, gold and silver dragons, Lamia and mephit innate spell lists. Spells: Arms of Hadar takes half damage on a successful save, Crown of Madness, Cause Fear and Charm Monster now ask for the save and apply the condition, Melf's Acid Arrow and Nystul's Magic Aura listed under their book names, SRD-style duplicate names hidden from the Spells tab, printed durations for Prestidigitation, Thaumaturgy, Etherealness and Transmute Rock
 
 1.645 build 260 - NPC notes pop-out. Every NPC card on the NPCs tab has a Pop out notes button that opens the notes in a full-screen window like the location notes (view and edit, light and dark, Escape to close). Location notes pages now list a Notes button for each NPC at that location, and only those NPCs. The same Notes buttons appear on Locations tab NPC rows and in the Active Session NPC pane. The NPC window also has quick stats, location, a Met toggle, buttons for the other NPCs at the same place and a Location notes shortcut
+
+1.646 build 261 - Long rest and short rest always show the Cook raw meat into rations option (with a hint when there is no raw meat). New two-hour warnings: a popup 2 hours before each character needs to eat (24 h since the last meal), drink (18 h without water) or sleep (16 h awake), once per cycle, only for the systems that are switched on
