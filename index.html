@@ -722,7 +722,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=262;var APPLABEL="1.647";
+var APPV=263;var APPLABEL="1.648";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return!l.parent&&l.status!=="Not visited"}).length,mnAll=S.locations.filter(function(l){return l.parent}),mnVis=mnAll.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -3259,7 +3259,7 @@ document.addEventListener("change",function(e){
  var r=new FileReader();r.onload=function(){try{var d=norm(JSON.parse(r.result));ui.rs=d;render()}catch(x){alert("That file is not a valid organiser backup.")}};r.readAsText(f)});
 /*MAPS-START*/
 var MP={meta:null,db:null},MV={open:false,loc:"",i:0,url:"",s:1,x:0,y:0,iw:1,ih:1,ptr:{},d0:0};
-function mpMeta(){if(!MP.meta){try{MP.meta=JSON.parse(localStorage.getItem("cos-maps-meta")||"{}")}catch(e){MP.meta={}}}return MP.meta}
+function mpMeta(){if(!MP.meta){try{MP.meta=JSON.parse(localStorage.getItem("cos-maps-meta")||"{}")}catch(e){MP.meta={}}var M=MP.meta,mm=[],ch=0;[1,2,3,4,5].forEach(function(i){var o=M["madmage"+i];if(o){ch=1;(o||[]).forEach(function(q){if(q&&!mm.some(function(z){return z.id===q.id})){q.ok=false;mm.push(q)}});delete M["madmage"+i]}});if(ch){M.madmage=(M.madmage||[]).concat(mm.filter(function(q){return !(M.madmage||[]).some(function(z){return z.id===q.id})}));try{localStorage.setItem("cos-maps-meta",JSON.stringify(M))}catch(e){}}}return MP.meta}
 function mpSave(){try{localStorage.setItem("cos-maps-meta",JSON.stringify(MP.meta||{}))}catch(e){}}
 function mpList(n){return mpMeta()[gnk(n)]||[]}
 function mpDb(){return MP.db||(MP.db=new Promise(function(res,rej){try{var q=indexedDB.open("cos-maps",1);q.onupgradeneeded=function(){q.result.createObjectStore("b")};q.onsuccess=function(){res(q.result)};q.onerror=function(){rej(q.error)}}catch(e){rej(e)}}))}
@@ -3299,7 +3299,8 @@ function mpExport(docId,order){
   return ch.then(function(){return m})})})}
 function mpSyncAll(secs,st,order){
  var meta=mpMeta(),got=0,fail=0,plan=[],rm=[],c=gcfg(),redo=false;try{redo=!localStorage.getItem("cos-mapfix174")}catch(e){}
- secs.forEach(function(sec){var k=gnk(sec.name);if(!k||!S.locations.some(function(L){return gnk(L.name)===k}))return;
+ var cs=[],ci={};secs.forEach(function(sec){var k=gnk(sec.name);if(k&&ci[k]!==undefined){var t=cs[ci[k]];t.maps=(t.maps||[]).concat((sec.maps||[]).filter(function(w){return !(t.maps||[]).some(function(z){return z.id===w.id})}))}else{if(k)ci[k]=cs.length;cs.push({name:sec.name,maps:(sec.maps||[]).slice()})}});
+ cs.forEach(function(sec){var k=gnk(sec.name);if(!k||!S.locations.some(function(L){return gnk(L.name)===k}))return;
   var want=sec.maps||[],cur=meta[k]||[],next=[];
   want.forEach(function(w){var ex=cur.filter(function(q){return q.id===w.id})[0];
    if(ex&&ex.ok&&!redo){ex.name=w.name;next.push(ex);return}if(ex)ex.ok=false;
@@ -4391,7 +4392,7 @@ function syncDevice(){
    if(R<L)return drvPush(f.id,L+1).then(function(){gLog("Sent this device's data to Google.");return"ok"});
    GC.conf={fileId:f.id,rev:R,p:p};return"conflict"})})}
 /* ---- Google Doc <-> location notes ---- */
-function gnk(s){var k=String(s||"").toLowerCase().replace(/[^a-z0-9]+/g,"");return k==="deathhouse"?"durstmanor":k}
+function gnk(s){var k=String(s||"").toLowerCase().replace(/[^a-z0-9]+/g,"");return k==="deathhouse"?"durstmanor":/^madmage[1-5]$/.test(k)?"madmage":k}
 function gtrim(s){return String(s||"").replace(/\r/g,"").replace(/\s+$/,"")}
 function gLines(t){return gtrim(t).split("\n").map(function(l){
  var m=l.match(/^([ \t]*)([\u2022\u25CF\u25CB\u25AA\-\*\u2013]|\d+[.)])[ \t]+(.*)$/);
