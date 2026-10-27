@@ -1,7 +1,7 @@
 Display version (APPLABEL in the app) is 1.MM.
 Major update (new feature set): bump the first decimal place (1.10 -> 1.20 -> 1.30).
 Minor update (fixes, small tweaks): bump the second decimal place (1.10 -> 1.11 -> 1.12).
-Current: 1.648 (build 263)
+Current: 1.649 (build 264)
 1.180 (build 102): five new Active Session panes: Travel, Marching order, Combat controls, Rests and time, Party health.
 1.181 (build 103): fade-outs match fade-in speed (.48s); panes, Panes popup and Enemies/NPC sub-tabs fade.
 1.190 (build 104): five spells added from D&D Beyond page (Abi-Dalzim's, Absorb Elements, Aganazzar's, Air Bubble, Alustriel's).
@@ -160,3 +160,5 @@ ROLLBACK POINT: 1.610 build 225 (git tag v1.610-stable, copy strahd-organiser-v1
 1.647 build 262 - The five Mad Mage locations are merged into one Mad Mage location. All five Mad Mage map pins stay on the travel map and still work as travel points; arriving at any of them puts the party at Mad Mage. Existing saves are merged automatically: your own notes, visited status, monsters, NPCs, quests and the session location move to the merged location
 
 1.648 build 263 - Fixes location pictures for the merged Mad Mage location. Pictures synced from the Google Doc tabs Mad Mage 1 to 5 now all show on the single Mad Mage location, and older saved picture entries are merged and re-downloaded on the next sync.
+
+1.649 build 264 - Maps now live on the device. Sync no longer downloads, replaces or removes map pictures unless you tick the new setting in Sync > Settings. Every location page has an Add map / Add picture button to add pictures from the tablet (including Durst Manor), and the map viewer has Add picture and Remove. Existing saved maps are kept, and Mad Mage 1 to 5 pictures were carried over to the merged Mad Mage.

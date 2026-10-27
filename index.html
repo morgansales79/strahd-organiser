@@ -722,7 +722,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=263;var APPLABEL="1.648";
+var APPV=264;var APPLABEL="1.649";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return!l.parent&&l.status!=="Not visited"}).length,mnAll=S.locations.filter(function(l){return l.parent}),mnVis=mnAll.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -1537,7 +1537,7 @@ function spBody(id){
  if(id==="dice"){
   return'<div class="spcol"><div class="sprow">'+[4,6,8,10,12,20,100].map(function(d){return'<button data-sp="roll" data-d="'+d+'">d'+d+'</button>'}).join("")+'</div><div class="sprow"><label class="hpf"><span class="tl">Count</span><input id="spdn" value="'+spDice.n+'" inputmode="numeric"></label><label class="hpf"><span class="tl">Bonus</span><input id="spdm" value="'+spDice.mod+'" inputmode="numeric"></label><select id="spdmode" style="width:auto" aria-label="Roll mode"><option value="n">Normal</option><option value="a"'+(spDice.mode==="a"?" selected":"")+'>Advantage</option><option value="d"'+(spDice.mode==="d"?" selected":"")+'>Disadvantage</option></select></div><div id="spdout" class="spdout">'+spDiceOut()+'</div></div>'}
 if(id==="maps"){var ml=mpList(ln);
-  return ml.length?'<div class="spmaps">'+ml.map(function(m,i){return'<button class="spmap" data-sp="mapopen" data-i="'+i+'" aria-label="Open map '+esc(m.name||("Map "+(i+1)))+'"><span class="spmi">'+(m.ok?'<img data-mpi="'+i+'" alt="">':'<em class="mute">Not downloaded yet</em>')+'</span><span>'+esc(m.name||("Map "+(i+1)))+'</span></button>'}).join("")+'</div>':'<div class="mute">No maps for '+esc(ln)+'. Add pictures under the location\'s heading in the Google Doc, then Sync.</div>'}
+  return ml.length?'<div class="spmaps">'+ml.map(function(m,i){return'<button class="spmap" data-sp="mapopen" data-i="'+i+'" aria-label="Open map '+esc(m.name||("Map "+(i+1)))+'"><span class="spmi">'+(m.ok?'<img data-mpi="'+i+'" alt="">':'<em class="mute">Not downloaded yet</em>')+'</span><span>'+esc(m.name||("Map "+(i+1)))+'</span></button>'}).join("")+'<button data-sp="mapadd">Add picture</button></div>':'<div class="mute">No maps for '+esc(ln)+'.</div><button data-sp="mapadd">Add map</button>'}
  if(id==="notes"){return'<textarea class="spta" data-sp-notes="1" placeholder="Session notes (kept on this device)" aria-label="Session notes">'+esc(SS.notes)+'</textarea>'}
  if(id==="log"){return'<div class="sprow"><input id="splog" placeholder="Add a log entry" aria-label="Log entry" style="flex:1"><button class="pri" data-sp="logadd">Add</button></div>'+(SS.log.length?SS.log.map(function(e,i){return'<div class="spit"><div class="sprow"><span class="mute" style="flex:none">'+esc(e.t)+'</span><span style="flex:1">'+esc(e.x)+'</span><button class="del" data-sp="logdel" data-i="'+i+'" aria-label="Delete entry">×</button></div></div>'}).join(""):'<div class="mute">Nothing logged yet.</div>')}
 
@@ -1638,7 +1638,7 @@ document.addEventListener("click",function(e){var b=e.target.closest("[data-sp]"
  else if(a==="close"){SS.on[b.dataset.id]=0;saveSess();render()}
  else if(a==="roll")spRoll(+b.dataset.d);
  else if(a==="addmon")spAddMon(b.dataset.id);
- else if(a==="mapopen")mpOpen(spLocName(),+b.dataset.i);
+ else if(a==="mapopen")mpOpen(spLocName(),+b.dataset.i);else if(a==="mapadd")mpPick(spLocName());
  else if(a==="day"){S.day=Math.max(1,S.day+(+b.dataset.d));save();render()}
  else if(a==="logadd"){var li=document.getElementById("splog"),tx=li&&li.value.trim();if(!tx)return;SS.log.unshift({t:"Day "+S.day+" "+tvClock(S.hour||0),x:tx});saveSess();render()}
  else if(a==="logdel"){SS.log.splice(+b.dataset.i,1);saveSess();render()}});
@@ -3259,7 +3259,7 @@ document.addEventListener("change",function(e){
  var r=new FileReader();r.onload=function(){try{var d=norm(JSON.parse(r.result));ui.rs=d;render()}catch(x){alert("That file is not a valid organiser backup.")}};r.readAsText(f)});
 /*MAPS-START*/
 var MP={meta:null,db:null},MV={open:false,loc:"",i:0,url:"",s:1,x:0,y:0,iw:1,ih:1,ptr:{},d0:0};
-function mpMeta(){if(!MP.meta){try{MP.meta=JSON.parse(localStorage.getItem("cos-maps-meta")||"{}")}catch(e){MP.meta={}}var M=MP.meta,mm=[],ch=0;[1,2,3,4,5].forEach(function(i){var o=M["madmage"+i];if(o){ch=1;(o||[]).forEach(function(q){if(q&&!mm.some(function(z){return z.id===q.id})){q.ok=false;mm.push(q)}});delete M["madmage"+i]}});if(ch){M.madmage=(M.madmage||[]).concat(mm.filter(function(q){return !(M.madmage||[]).some(function(z){return z.id===q.id})}));try{localStorage.setItem("cos-maps-meta",JSON.stringify(M))}catch(e){}}}return MP.meta}
+function mpMeta(){if(!MP.meta){try{MP.meta=JSON.parse(localStorage.getItem("cos-maps-meta")||"{}")}catch(e){MP.meta={}}var M=MP.meta,mm=[],ch=0,mv=[];[1,2,3,4,5].forEach(function(i){var o=M["madmage"+i];if(o){ch=1;(o||[]).forEach(function(q){if(q&&!mm.some(function(z){return z.id===q.id})){mv.push(["madmage"+i+"|"+q.id,"madmage|"+q.id]);mm.push(q)}});delete M["madmage"+i]}});if(ch){M.madmage=(M.madmage||[]).concat(mm.filter(function(q){return !(M.madmage||[]).some(function(z){return z.id===q.id})}));try{localStorage.setItem("cos-maps-meta",JSON.stringify(M))}catch(e){}setTimeout(function(){mv.forEach(function(p){mpTx("readonly",function(st){return st.get(p[0])}).then(function(b){if(b)return mpTx("readwrite",function(st){return st.put(b,p[1])})}).catch(function(){})})},0)}}return MP.meta}
 function mpSave(){try{localStorage.setItem("cos-maps-meta",JSON.stringify(MP.meta||{}))}catch(e){}}
 function mpList(n){return mpMeta()[gnk(n)]||[]}
 function mpDb(){return MP.db||(MP.db=new Promise(function(res,rej){try{var q=indexedDB.open("cos-maps",1);q.onupgradeneeded=function(){q.result.createObjectStore("b")};q.onsuccess=function(){res(q.result)};q.onerror=function(){rej(q.error)}}catch(e){rej(e)}}))}
@@ -3297,7 +3297,7 @@ function mpExport(docId,order){
   return pick.then(function(list){var m={},ch=Promise.resolve();
   list.forEach(function(e,i){ch=ch.then(function(){return mpUnzip(buf,e).then(function(b){m[order[i]]=b})})});
   return ch.then(function(){return m})})})}
-function mpSyncAll(secs,st,order){
+function mpSyncAll(secs,st,order){if(!gcfg().mapsDl)return Promise.resolve();
  var meta=mpMeta(),got=0,fail=0,plan=[],rm=[],c=gcfg(),redo=false;try{redo=!localStorage.getItem("cos-mapfix174")}catch(e){}
  var cs=[],ci={};secs.forEach(function(sec){var k=gnk(sec.name);if(k&&ci[k]!==undefined){var t=cs[ci[k]];t.maps=(t.maps||[]).concat((sec.maps||[]).filter(function(w){return !(t.maps||[]).some(function(z){return z.id===w.id})}))}else{if(k)ci[k]=cs.length;cs.push({name:sec.name,maps:(sec.maps||[]).slice()})}});
  cs.forEach(function(sec){var k=gnk(sec.name);if(!k||!S.locations.some(function(L){return gnk(L.name)===k}))return;
@@ -3305,7 +3305,7 @@ function mpSyncAll(secs,st,order){
   want.forEach(function(w){var ex=cur.filter(function(q){return q.id===w.id})[0];
    if(ex&&ex.ok&&!redo){ex.name=w.name;next.push(ex);return}if(ex)ex.ok=false;
    var ent={id:w.id,name:w.name,ok:false};next.push(ent);plan.push({ent:ent,w:w,k:k})});
-  cur.forEach(function(q){if(!want.some(function(w){return w.id===q.id}))rm.push({k:k,q:q})});
+  cur.forEach(function(q){if(q.local)next.push(q);else if(!want.some(function(w){return w.id===q.id}))rm.push({k:k,q:q})});
   if(next.length)meta[k]=next;else delete meta[k]});
  var expP=!plan.length?Promise.resolve(null):c.maps?mpExport(c.docId,order||[]).catch(function(e){if(st)st.mapsErr=String(e&&e.message||e).slice(0,90);return null}):(st&&(st.mapsErr='turn on "Allow map pictures" in Sync > Settings'),Promise.resolve(null));
  return expP.then(function(m){var ch=Promise.resolve();if(m&&redo){try{localStorage.setItem("cos-mapfix174","1")}catch(e){}}
@@ -3322,27 +3322,33 @@ function mpFit(){var st=document.getElementById("mpst");if(!st)return;var W=st.c
 function mpApply(){var im=document.getElementById("mpimg");if(im)im.style.transform="translate("+MV.x+"px,"+MV.y+"px) scale("+MV.s+")"}
 function mpZoom(f,cx,cy){var st=document.getElementById("mpst");if(!st)return;if(cx===undefined){cx=st.clientWidth/2;cy=st.clientHeight/2}
  var ns=Math.max(0.05,Math.min(12,MV.s*f)),r=ns/MV.s;MV.x=cx-(cx-MV.x)*r;MV.y=cy-(cy-MV.y)*r;MV.s=ns;mpApply()}
-function mpShow(i){MV.tried=0;MV.err="";
+function mpShow(i){MV.tried=0;MV.err="";MV.rm=0;
  var L=mpList(MV.loc),m=L[i];if(!m)return;MV.i=i;
  if(MV.url&&MV.url.indexOf("blob:")===0){try{URL.revokeObjectURL(MV.url)}catch(e){}}MV.url="";mpDraw();
- var nosave=function(){MV.err=gcfg().maps?"This map has not been saved on this device yet. Press Sync now while online.":"Maps need one extra Google permission. Open Sync > Settings, tick \"Allow map pictures\", then press Sync now.";return""};
+ var nosave=function(){MV.err="This map is not saved on this device. Use Add picture to put it back.";return""};
  var load=m.ok?mpTx("readonly",function(s){return s.get(gnk(MV.loc)+"|"+m.id)}).then(function(b){return b?URL.createObjectURL(b):nosave()}).catch(nosave):Promise.resolve(nosave());
  load.then(function(u){if(MV.i!==i||!MV.open)return;MV.url=u;mpDraw()})}
 function mpOpen(name,i){MV.open=true;MV.loc=name;mpShow(i||0)}
+function mpPick(loc){var f=MP.fd;if(!f){f=MP.fd=document.createElement("input");f.type="file";f.accept="image/*";f.multiple=true;f.style.display="none";document.body.appendChild(f);
+ f.addEventListener("change",function(){var fl=[].slice.call(f.files||[]),ln=MP.tgt;f.value="";if(!fl.length||!ln)return;var k=gnk(ln),ch=Promise.resolve(),added=0;
+  fl.forEach(function(file,n){ch=ch.then(function(){return mpShrink(file).then(function(b){var id="L"+Date.now().toString(36)+n;return mpTx("readwrite",function(st){return st.put(b,k+"|"+id)}).then(function(){var M=mpMeta();M[k]=(M[k]||[]);M[k].push({id:id,name:String(file.name||"Map").replace(/\.[^.]*$/,"")||"Map",ok:true,local:true});added++})}).catch(function(){})})});
+  ch.then(function(){mpSave();if(added){if(MV.open&&MV.loc===ln)mpShow(mpList(ln).length-1);else if(ui.nz===ln||true){mpOpen(ln,mpList(ln).length-added)}if(ui.nz)nzDraw();render()}})})}
+ MP.tgt=loc;f.click()}
+function mpRemove(){var L=mpList(MV.loc),m=L[MV.i];if(!m)return;if(!MV.rm){MV.rm=1;mpDraw();return}MV.rm=0;var k=gnk(MV.loc);mpTx("readwrite",function(st){return st.delete(k+"|"+m.id)}).catch(function(){}).then(function(){var M=mpMeta();M[k]=(M[k]||[]).filter(function(q){return q.id!==m.id});if(!M[k].length)delete M[k];mpSave();if(ui.nz)nzDraw();render();if(mpList(MV.loc).length)mpShow(Math.max(0,MV.i-1));else mpClose()})}
 function mpClose(){MV.open=false;if(MV.url&&MV.url.indexOf("blob:")===0){try{URL.revokeObjectURL(MV.url)}catch(e){}}MV.url="";mpDraw()}
 function mpDraw(){
  var el=document.getElementById("mapov");if(!el)return;
  if(!MV.open){el.hidden=true;el.innerHTML="";return}
  var L=mpList(MV.loc),h='<div class="mpbar"><b>'+esc(MV.loc)+'</b>';
  L.forEach(function(m,i){h+='<button data-mp="tab" data-i="'+i+'" class="'+(i===MV.i?"pri":"")+'">'+esc(m.name)+'</button>'});
- h+='<span style="flex:1"></span><button data-mp="out" aria-label="Zoom out">&minus;</button><button data-mp="in" aria-label="Zoom in">+</button><button data-mp="fit">Fit</button><button class="pri" data-mp="close">Close</button></div>';
+ h+='<span style="flex:1"></span><button data-mp="add">Add picture</button>'+(L.length?'<button data-mp="rm" aria-label="Remove this map from this device">'+(MV.rm?"Tap again to remove":"Remove")+'</button>':'')+'<button data-mp="out" aria-label="Zoom out">&minus;</button><button data-mp="in" aria-label="Zoom in">+</button><button data-mp="fit">Fit</button><button class="pri" data-mp="close">Close</button></div>';
  h+='<div class="mpst" id="mpst">'+(MV.url?'<img id="mpimg" alt="'+esc((L[MV.i]||{}).name||"Map")+'" src="'+MV.url+'" draggable="false">':'<div class="mpmsg">'+(MV.err?esc(MV.err):'Loading map...')+'</div>')+'</div>';
  el.hidden=false;el.innerHTML=h;
  var im=document.getElementById("mpimg");
- if(im){var go=function(){MV.iw=im.naturalWidth||1;MV.ih=im.naturalHeight||1;mpFit()};im.onload=go;if(im.complete&&im.naturalWidth)go();im.onerror=function(){var st=document.getElementById("mpst");if(st)st.innerHTML='<div class="mpmsg">This map could not be shown. Press Sync now to download it again.</div>'}}}
+ if(im){var go=function(){MV.iw=im.naturalWidth||1;MV.ih=im.naturalHeight||1;mpFit()};im.onload=go;if(im.complete&&im.naturalWidth)go();im.onerror=function(){var st=document.getElementById("mpst");if(st)st.innerHTML='<div class="mpmsg">This map could not be shown. Use Add picture to put it back.</div>'}}}
 (function(){var ov=document.getElementById("mapov");if(!ov)return;
  ov.addEventListener("click",function(e){var b=e.target.closest("[data-mp]");if(!b)return;var a=b.dataset.mp;
-  if(a==="close")mpClose();else if(a==="tab")mpShow(parseInt(b.dataset.i,10));else if(a==="in")mpZoom(1.4);else if(a==="out")mpZoom(1/1.4);else if(a==="fit")mpFit()});
+  if(a==="close")mpClose();else if(a==="tab")mpShow(parseInt(b.dataset.i,10));else if(a==="in")mpZoom(1.4);else if(a==="out")mpZoom(1/1.4);else if(a==="fit")mpFit();else if(a==="add")mpPick(MV.loc);else if(a==="rm")mpRemove()});
  ov.addEventListener("pointerdown",function(e){if(!e.target.closest("#mpst"))return;MV.ptr[e.pointerId]={x:e.clientX,y:e.clientY};try{e.target.setPointerCapture(e.pointerId)}catch(x){}
   var ks=Object.keys(MV.ptr);if(ks.length===2){var a=MV.ptr[ks[0]],b=MV.ptr[ks[1]];MV.d0=Math.hypot(a.x-b.x,a.y-b.y)}});
  ov.addEventListener("pointermove",function(e){var p=MV.ptr[e.pointerId];if(!p)return;var ks=Object.keys(MV.ptr),st=document.getElementById("mpst"),r=st?st.getBoundingClientRect():{left:0,top:0};
@@ -3363,7 +3369,7 @@ function nzDraw(){
  var l=S.locations.find(function(x){return x.name===ui.nz});if(!l){ui.nz=null;el.hidden=true;return}
  var qs=S.quests.filter(function(q){return q.location===l.name}),ns=S.npcs.filter(function(n){return n.location===l.name}),act=qs.filter(function(q){return q.status==="Active"}).length,met=ns.filter(function(n){return n.met}).length;
  el.hidden=false;var nt=nzThemeGet();if(nt)el.setAttribute("data-nt",nt);else el.removeAttribute("data-nt");var ntEff=nt||(getComputedStyle(document.documentElement).getPropertyValue("--bg").trim()==="#16121a"?"dark":"light");
- el.innerHTML='<div class="nzh"><h2>'+esc(l.name)+'</h2><label class="chk"><input type="checkbox" class="yn" data-loc="'+esc(l.name)+'" data-f="visited"'+(l.status!=="Not visited"?" checked":"")+'><span>Visited</span></label><label class="chk"><input type="checkbox" class="yn" data-nzedit="1"'+(ui.ned&&ui.ned[l.name]?" checked":"")+'><span>Edit mode</span></label>'+(mpList(l.name).length?'<button data-nz="maps">Maps ('+mpList(l.name).length+')</button>':'')+'<button data-nz="theme" aria-label="Switch this notes page between light and dark">'+(ntEff==="dark"?"Light mode":"Dark mode")+'</button><button class="pri" data-nz="close">Close</button></div>'+
+ el.innerHTML='<div class="nzh"><h2>'+esc(l.name)+'</h2><label class="chk"><input type="checkbox" class="yn" data-loc="'+esc(l.name)+'" data-f="visited"'+(l.status!=="Not visited"?" checked":"")+'><span>Visited</span></label><label class="chk"><input type="checkbox" class="yn" data-nzedit="1"'+(ui.ned&&ui.ned[l.name]?" checked":"")+'><span>Edit mode</span></label>'+'<button data-nz="maps">'+(mpList(l.name).length?'Maps ('+mpList(l.name).length+')':'Add map')+'</button>'+'<button data-nz="theme" aria-label="Switch this notes page between light and dark">'+(ntEff==="dark"?"Light mode":"Dark mode")+'</button><button class="pri" data-nz="close">Close</button></div>'+
  '<div class="nzg"><div class="nzw">'+noteBox(l.name,"nzt","z")+'</div>'+
  '<aside class="nzp">'+(function(){var hs=notesHeads(l.notes);return hs.length?'<h3>Sections</h3><div class="nzj">'+hs.map(function(h){return'<button data-nzj="'+h.i+'">'+esc(h.t)+'</button>'}).join("")+'</div>':""})()+'<h3'+(notesHeads(l.notes).length?' style="margin-top:16px"':'')+'>Quests <span class="mute">('+act+' active)</span></h3>'+(qs.length?qs.map(function(q){return'<div class="nzr'+(q.status==="Active"?" act":"")+'"><select data-k="quests" data-id="'+q.id+'" data-f="status" aria-label="Status of '+esc(q.name)+'">'+opts(QST,q.status)+'</select><span>'+esc(q.name)+'</span></div>'}).join(""):'<div class="mute">No quests here.</div>')+
  '<h3 style="margin-top:16px">NPCs <span class="mute">('+met+' of '+ns.length+' met)</span></h3>'+(ns.length?ns.map(function(n){return'<div class="nzr nzn'+(n.met?" act":"")+'"><label class="npm"><input type="checkbox" class="yn" data-k="npcs" data-id="'+n.id+'" data-f="met"'+(n.met?" checked":"")+' aria-label="Met: '+esc(n.name)+'"><span>'+esc(n.name)+'</span></label><button data-np="'+n.id+'" aria-label="Open notes for '+esc(n.name)+'">Notes</button></div>'}).join(""):'<div class="mute">No NPCs here.</div>')+'<div class="mnbox" data-mnl="'+esc(l.name)+'" data-mnc="z">'+mnInner(l,"z")+'</div></aside></div>'}
@@ -3375,7 +3381,7 @@ document.addEventListener("pointerup",function(e){
  var n=Date.now();
  if(n-nzLast.t<420&&Math.abs(e.clientX-nzLast.x)<32&&Math.abs(e.clientY-nzLast.y)<32){nzLast.t=0;nzOpen(nm)}else nzLast={t:n,x:e.clientX,y:e.clientY}});
 (function(){var ov=document.getElementById("nzov");if(!ov)return;
- ov.addEventListener("click",function(e){var b=e.target.closest("[data-nz]");if(!b)return;if(b.dataset.nz==="close")nzClose();else if(b.dataset.nz==="edit"||b.dataset.nz==="done"){ui.ned=ui.ned||{};ui.ned[b.dataset.n]=b.dataset.nz==="edit";nzDraw();if(b.dataset.nz==="edit"){var tn=document.querySelector("#nzov textarea");if(tn){tn.focus()}}}else if(b.dataset.nz==="maps"&&ui.nz)mpOpen(ui.nz,0)});
+ ov.addEventListener("click",function(e){var b=e.target.closest("[data-nz]");if(!b)return;if(b.dataset.nz==="close")nzClose();else if(b.dataset.nz==="edit"||b.dataset.nz==="done"){ui.ned=ui.ned||{};ui.ned[b.dataset.n]=b.dataset.nz==="edit";nzDraw();if(b.dataset.nz==="edit"){var tn=document.querySelector("#nzov textarea");if(tn){tn.focus()}}}else if(b.dataset.nz==="maps"&&ui.nz){if(mpList(ui.nz).length)mpOpen(ui.nz,0);else mpPick(ui.nz)}});
  ov.addEventListener("change",function(e){var el=e.target;if(el.dataset.nzedit&&ui.nz){ui.ned=ui.ned||{};ui.ned[ui.nz]=!!el.checked;nzDraw();var rt=document.querySelector("#nzov .rte");if(rt)rt.focus();return}if(el.dataset.k==="npcs"||el.dataset.k==="quests"||el.dataset.f==="visited")setTimeout(nzDraw,0)});
  document.addEventListener("keydown",function(e){if(e.key==="Escape"&&ui.nz&&!ui.np&&!MV.open)nzClose()})})();
 /*NP-START*/
@@ -4347,7 +4353,7 @@ var GC={tok:"",exp:0,busy:false,open:false,log:[],err:"",conf:null,dconf:[],head
 function gscope(){return"https://www.googleapis.com/auth/documents https://www.googleapis.com/auth/drive.appdata"+((gcfg().maps||gcfg().aud)?" https://www.googleapis.com/auth/drive.readonly":"")}
 var GDF="strahd-organiser-data.json";
 function gread(){var o={};try{o=JSON.parse(localStorage.getItem("cos-google")||"{}")}catch(e){}return o}
-function gcfg(){var d={clientId:"711383262349-and3kljmq8avn7ngv2t1rs28o6a6eo3v.apps.googleusercontent.com",docId:"1s2ZmlPZM7-ENzQ0iaIkditeJJyxotcMtf7ovUvNQ7sc",lastRev:0,lastAt:"",fileId:"",dev:"",ignored:[]},o=gread(),k;for(k in o)d[k]=o[k];return d}
+function gcfg(){var d={clientId:"711383262349-and3kljmq8avn7ngv2t1rs28o6a6eo3v.apps.googleusercontent.com",docId:"1s2ZmlPZM7-ENzQ0iaIkditeJJyxotcMtf7ovUvNQ7sc",lastRev:0,lastAt:"",fileId:"",dev:"",ignored:[],mapsDl:false},o=gread(),k;for(k in o)d[k]=o[k];return d}
 function gset(p){var o=gread(),k;for(k in p)o[k]=p[k];try{localStorage.setItem("cos-google",JSON.stringify(o))}catch(e){}}
 function gdev(){var c=gcfg();if(!c.dev){c.dev=uid()+uid();gset({dev:c.dev})}return c.dev}
 function gdirty(){try{return localStorage.getItem("cos-dirty")==="1"}catch(e){return false}}
@@ -4548,7 +4554,7 @@ function gsDraw(){
  if(GC.conf){var p=GC.conf.p;h+='<div class="card gsw"><h3>Two versions to choose from</h3><p>Google holds a version saved'+(p.savedAt?" "+esc(new Date(p.savedAt).toLocaleString()):"")+' from another device, and this device also has newer changes. Pick which one to keep. The other is saved as a backup on this device.</p><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="pri" data-gs="keeplocal">Keep this device\'s version</button><button data-gs="usegoogle">Use the version from Google</button></div></div>'}
  if(GC.dconf&&GC.dconf.length){h+='<div class="card gsw"><h3>Notes changed in both places</h3><p class="mute">For each location below, choose which version to keep, then press Apply.</p>'+GC.dconf.map(function(x,i){var r=GC.res[x.name]||"";return'<div class="gsc"><b>'+esc(x.name)+'</b><div class="gsc2"><div><div class="mute">In the app</div><pre class="sbx">'+esc(rtPlain(x.app)||"(empty)")+'</pre><button class="'+(r==="app"?"pri":"")+'" data-gs="res" data-n="'+i+'" data-v="app">Keep app version</button></div><div><div class="mute">In the doc</div><pre class="sbx">'+esc(rtPlain(x.doc)||"(empty)")+'</pre><button class="'+(r==="doc"?"pri":"")+'" data-gs="res" data-n="'+i+'" data-v="doc">Keep doc version</button></div></div></div>'}).join("")+'<div><button class="pri" data-gs="apply"'+(GC.busy?" disabled":"")+'>Apply choices</button></div></div>'}
  if(GC.heads&&GC.heads.length){h+='<div class="card gsw"><h3>New headings in the doc</h3><p class="mute">These are not locations in the app yet.</p>'+GC.heads.map(function(x,i){return'<div class="row" style="margin:6px 0"><span style="flex:1">'+esc(x.name)+'</span><button class="pri" data-gs="addhead" data-n="'+i+'">Add as location</button><button data-gs="ignorehead" data-n="'+i+'">Ignore</button></div>'}).join("")+'</div>'}
- h+='<details class="card"><summary>Settings</summary><label class="f">Google client ID<input data-gsf="clientId" value="'+esc(c.clientId)+'"></label><label class="f">Document ID or link<input data-gsf="docId" value="'+esc(c.docId)+'"></label><label class="f">Cloud scanning key (Google Cloud Vision, kept on this device only)<input type="password" data-vkey="1" autocomplete="off" value="'+esc(scKey())+'" placeholder="Leave empty to use the offline reader"></label><label class="chk" style="margin-top:10px"><input type="checkbox" class="yn" data-gsc="maps"'+(c.maps?" checked":"")+'><span>Allow map pictures (asks Google for one extra permission, to read the doc\'s pictures)</span></label><div style="margin-top:8px"><button data-gs="maptest">Test map download</button> <span class="mute">Shows why maps may not be saved.</span></div><div style="margin-top:8px"><button data-gs="update">Get the latest app version</button> <span class="mute">Reloads the app from the internet. Your data is kept.</span></div><div style="margin-top:8px"><button data-gs="signout">Forget sign-in on this device</button></div></details></div>';
+ h+='<details class="card"><summary>Settings</summary><label class="f">Google client ID<input data-gsf="clientId" value="'+esc(c.clientId)+'"></label><label class="f">Document ID or link<input data-gsf="docId" value="'+esc(c.docId)+'"></label><label class="f">Cloud scanning key (Google Cloud Vision, kept on this device only)<input type="password" data-vkey="1" autocomplete="off" value="'+esc(scKey())+'" placeholder="Leave empty to use the offline reader"></label><label class="chk" style="margin-top:10px"><input type="checkbox" class="yn" data-gsc="mapsDl"'+(c.mapsDl?" checked":"")+'><span>Refresh map pictures from the Google Doc when syncing (off: maps stay on this device and Sync never changes them)</span></label><label class="chk" style="margin-top:10px"><input type="checkbox" class="yn" data-gsc="maps"'+(c.maps?" checked":"")+'><span>Allow map pictures (asks Google for one extra permission, to read the doc\'s pictures)</span></label><div style="margin-top:8px"><button data-gs="maptest">Test map download</button> <span class="mute">Shows why maps may not be saved.</span></div><div style="margin-top:8px"><button data-gs="update">Get the latest app version</button> <span class="mute">Reloads the app from the internet. Your data is kept.</span></div><div style="margin-top:8px"><button data-gs="signout">Forget sign-in on this device</button></div></details></div>';
  el.hidden=false;el.innerHTML=h}
 (function(){
  var ov=document.getElementById("gsov");if(!ov)return;
@@ -4569,7 +4575,7 @@ function gsDraw(){
   else if(a==="maptest"){mpDiag().then(function(){gsDraw()},function(e){gLog("Map test failed: "+(e&&e.message));gsDraw()})}
   else if(a==="update"){var fin2=function(){location.reload()};Promise.resolve().then(function(){return navigator.serviceWorker?navigator.serviceWorker.getRegistrations().then(function(rs){return Promise.all(rs.map(function(r){return r.unregister()}))}):0}).then(function(){return window.caches?caches.keys().then(function(ks){return Promise.all(ks.filter(function(k){return/^strahd-organiser/.test(k)}).map(function(k){return caches.delete(k)}))}):0}).then(fin2,fin2)}
   else if(a==="signout"){GC.tok="";GC.exp=0;try{if(window.google&&google.accounts&&google.accounts.oauth2&&GC.tok)google.accounts.oauth2.revoke(GC.tok)}catch(x4){}GC.err="";gLog("Signed out on this device.")}});
- ov.addEventListener("change",function(e){var el=e.target;if(el.dataset.gsc==="auto"){gset({autoStart:!!el.checked});gsDraw();return}if(el.dataset.gsc==="maps"){gset({maps:!!el.checked});GC.tok="";GC.exp=0;gsDraw();return}if(el.dataset.vkey){try{var kv=el.value.trim();if(kv)localStorage.setItem("cos-vision",kv);else localStorage.removeItem("cos-vision")}catch(x5){}return}if(!el.dataset.gsf)return;var v=el.value.trim();
+ ov.addEventListener("change",function(e){var el=e.target;if(el.dataset.gsc==="auto"){gset({autoStart:!!el.checked});gsDraw();return}if(el.dataset.gsc==="maps"){gset({maps:!!el.checked});GC.tok="";GC.exp=0;gsDraw();return}if(el.dataset.gsc==="mapsDl"){gset({mapsDl:!!el.checked});gsDraw();return}if(el.dataset.vkey){try{var kv=el.value.trim();if(kv)localStorage.setItem("cos-vision",kv);else localStorage.removeItem("cos-vision")}catch(x5){}return}if(!el.dataset.gsf)return;var v=el.value.trim();
   if(el.dataset.gsf==="docId"){var m=v.match(/\/d\/([A-Za-z0-9_\-]+)/);if(m)v=m[1]}
   var o={};o[el.dataset.gsf]=v;gset(o);GC.tok="";GC.exp=0;gsDraw()});
  gsDraw()
