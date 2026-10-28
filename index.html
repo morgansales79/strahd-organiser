@@ -727,7 +727,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=273;var APPLABEL="1.658";
+var APPV=274;var APPLABEL="1.659";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return!l.parent&&l.status!=="Not visited"}).length,mnAll=S.locations.filter(function(l){return l.parent}),mnVis=mnAll.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -3554,6 +3554,7 @@ function tvRun(){var T=S.trv,a=tvStart(),b=tvDest(),leg=tvLeg(a,b,T.roads);if(!l
   checks++;var road=!inRest&&Math.random()<leg.rf,thr=road?18:15,d20=1+Math.floor(Math.random()*20);if(d20<thr)continue;
   var hr=((S.hour||0)+t)%24,night=hr>=19||hr<6,e=tvRoll(night);if(!e)continue;
   if(inRest&&tvTrOnly(e))continue;
+  if(e[3]==="*rider"&&!road)continue;
   if(e[0]===19&&night){if(T.wisp)continue;T.wisp=true}
   var ms=tvMons(e),hint=e[4]||"";if(e[1]==="Trinket"){var tr=1+Math.floor(Math.random()*100);hint="A random character finds: "+TVTK[Math.floor((tr-1)/2)]+" (d100 roll "+tr+", Gothic Trinkets)"}found.push(t);if(inRest)restN++;else trvN++;res.enc.push(tvDress({t:t,clock:tvClock(hr),night:night,rest:inRest,road:road,text:tvText(e,ms),hint:hint,mons:ms,table:night?"Night":"Day"},e))}
  res.checks=checks;if(T.poi){var pth=tvPath(a,b,T.roads,res.row);res.pois=pth?tvPassed(res,pth).filter(function(x){return x.off>0.03&&x.off<total-0.03}):[]}T.res=res;ui.tvc=null;save()}

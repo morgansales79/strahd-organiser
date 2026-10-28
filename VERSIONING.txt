@@ -171,3 +171,4 @@ ROLLBACK POINT: 1.610 build 225 (git tag v1.610-stable, copy strahd-organiser-v1
 1.656 build 271 - Lake Zarovich shore waypoints now have proper map pins (L1 south shore, L2 north shore) with labels.
 1.657 build 272 - The app now fetches the newest version whenever it is online, so updates no longer get stuck behind an old cached copy.
 1.658 build 273 - Starting a journey that crosses Lake Zarovich now asks whether to row across or walk round the lake, showing the time for each.
+1.659 build 274 - The skeletal rider and warhorse encounter now only happens when the party are travelling on a road.
