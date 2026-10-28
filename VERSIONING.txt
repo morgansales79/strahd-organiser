@@ -180,3 +180,4 @@ ROLLBACK POINT: 1.610 build 225 (git tag v1.610-stable, copy strahd-organiser-v1
 1.665 build 280 - Notes side bar: opening a section dropdown now also jumps the notes to that heading (closing it does not move anything).
 1.666 build 281 - NPC lists are now alphabetical (met and not yet met, in each location and in the location notes).
 1.667 build 282 - Fix: Rosy Riverbarrel was missing from the NPC list on saves made before she was added. She is now added to existing saves (Vallaki, not met) with her stats and notes.
+1.668 build 283 - New NPC: Vasili von Holtz, Strahd's noble disguise who befriends the party and fights at their side (CR 6 statblock with his cane-sword Geduld, Gracious Word, Charming Courtesy and a mist escape, plus background notes for his Barovian cover story). Added to existing saves under NPCs and Statblocks.
