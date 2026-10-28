@@ -713,7 +713,7 @@ function norm(raw){
  s.sbv=1;
  if(!(b.v>=6)||!(b.nsv>=6)){syncSeed(s);syncExtra(s)}
  if(!(b.nsv>=7))s.locations.forEach(function(l){if(!l.notes&&LOCNOTES[l.name])l.notes=LOCNOTES[l.name]});if(!(b.nsv>=8))s.locations.forEach(function(l){var m=MINMAP[l.name];if(m&&!l.notes)l.notes=m.desc});s.nsv=8;
- var gb={};if(b.gdocBase&&typeof b.gdocBase==="object")Object.keys(b.gdocBase).forEach(function(k){gb[k]=str(b.gdocBase[k])});s.gdocBase=gb;
+ var gb={};if(b.gdocBase&&typeof b.gdocBase==="object")Object.keys(b.gdocBase).forEach(function(k){gb[k]=str(b.gdocBase[k])});s.gdocBase=gb; ["gdocBase2","gdocBackup"].forEach(function(nm){var g2={};if(b[nm]&&typeof b[nm]==="object")Object.keys(b[nm]).forEach(function(k){g2[k]=str(b[nm][k])});s[nm]=g2});
  var st=b.strahd||{};s.strahd={attitude:str(st.attitude)||"Curious",knows:str(st.knows),next:str(st.next)};
  var t=b.tarokka||{};s.tarokka={tome:str(t.tome),symbol:str(t.symbol),sword:str(t.sword),strahdAt:str(t.strahdAt),motivation:str(t.motivation)};
  return s}
@@ -727,7 +727,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=274;var APPLABEL="1.659";
+var APPV=275;var APPLABEL="1.660";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return!l.parent&&l.status!=="Not visited"}).length,mnAll=S.locations.filter(function(l){return l.parent}),mnVis=mnAll.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -4383,10 +4383,10 @@ document.addEventListener("keydown",function(e){if(CQ&&e.key==="Escape"){e.stopP
 /*NZ-END*/
 /*GSYNC-START*/
 var GC={tok:"",exp:0,busy:false,open:false,log:[],err:"",conf:null,dconf:[],heads:[],res:{},gis:null};
-function gscope(){return"https://www.googleapis.com/auth/documents https://www.googleapis.com/auth/drive.appdata"+((gcfg().maps||gcfg().aud)?" https://www.googleapis.com/auth/drive.readonly":"")}
+function gscope(){return"https://www.googleapis.com/auth/documents https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/drive.readonly"}
 var GDF="strahd-organiser-data.json";
 function gread(){var o={};try{o=JSON.parse(localStorage.getItem("cos-google")||"{}")}catch(e){}return o}
-function gcfg(){var d={clientId:"711383262349-and3kljmq8avn7ngv2t1rs28o6a6eo3v.apps.googleusercontent.com",docId:"1s2ZmlPZM7-ENzQ0iaIkditeJJyxotcMtf7ovUvNQ7sc",lastRev:0,lastAt:"",fileId:"",dev:"",ignored:[],mapsDl:false},o=gread(),k;for(k in o)d[k]=o[k];return d}
+function gcfg(){var d={clientId:"711383262349-and3kljmq8avn7ngv2t1rs28o6a6eo3v.apps.googleusercontent.com",docId:"1s2ZmlPZM7-ENzQ0iaIkditeJJyxotcMtf7ovUvNQ7sc",locFolder:"1HZ2HCfAyD2fToS7-OXLdqAGqfCb34SDT",lastRev:0,lastAt:"",fileId:"",dev:"",ignored:[],mapsDl:false},o=gread(),k;for(k in o)d[k]=o[k];return d}
 function gset(p){var o=gread(),k;for(k in p)o[k]=p[k];try{localStorage.setItem("cos-google",JSON.stringify(o))}catch(e){}}
 function gdev(){var c=gcfg();if(!c.dev){c.dev=uid()+uid();gset({dev:c.dev})}return c.dev}
 function gdirty(){try{return localStorage.getItem("cos-dirty")==="1"}catch(e){return false}}
@@ -4466,7 +4466,7 @@ function gParaLine(doc,para,cnt,defSz){var els2=para.elements||[],pre="",bl=para
  if(bl){var lv=bl.nestingLevel||0,nl=doc.lists&&doc.lists[bl.listId]&&doc.lists[bl.listId].listProperties&&doc.lists[bl.listId].listProperties.nestingLevels&&doc.lists[bl.listId].listProperties.nestingLevels[lv],gt=nl&&nl.glyphType&&!/^(GLYPH_TYPE_UNSPECIFIED|NONE)$/.test(nl.glyphType)&&!nl.glyphSymbol;
   pre=new Array(lv+1).join("  ");
   if(gt){var key=bl.listId;cnt[key]=cnt[key]||[];cnt[key].length=lv+1;cnt[key][lv]=(cnt[key][lv]||0)+1;pre+=cnt[key][lv]+". "}else pre+="\u2022 "}
- var rr=[],h3=!bl&&para.paragraphStyle&&para.paragraphStyle.namedStyleType==="HEADING_3";els2.forEach(function(x){var c=x.textRun&&x.textRun.content;if(c)rr.push({t:c.replace(/\u000b/g," "),st:x.textRun.textStyle})});if(rr.length)rr[rr.length-1].t=rr[rr.length-1].t.replace(/\n$/,"");
+ var rr=[],h3=!bl&&para.paragraphStyle&&/^HEADING_[234]$/.test(para.paragraphStyle.namedStyleType||"");els2.forEach(function(x){var c=x.textRun&&x.textRun.content;if(c)rr.push({t:c.replace(/\u000b/g," "),st:x.textRun.textStyle})});if(rr.length)rr[rr.length-1].t=rr[rr.length-1].t.replace(/\n$/,"");
  return{pre:pre,tx:rtEmit(rr.map(function(q){var r=gRunOf(q.t,q.st,defSz);if(h3&&r.t.trim())r.z=RTHEAD;return r})),px:tx.replace(/\n$/,""),bl:!!bl}}
 function gRgb(c){var o=c&&c.color&&c.color.rgbColor;if(!o)return"";var h=function(v){return("0"+Math.round((v||0)*255).toString(16)).slice(-2)};return"#"+h(o.red)+h(o.green)+h(o.blue)}
 function gTableRecs(doc,e,cur,cnt,defSz,order){var rows=e.table.tableRows||[],c0=rows[0]&&rows[0].tableCells&&rows[0].tableCells[0],bs=c0&&c0.tableCellStyle&&c0.tableCellStyle.borderTop,bd=bs&&bs.width&&bs.width.magnitude>0?gRgb(bs.color):"",ls=[TBO+"table"+(bd?" border="+bd:"")+TBC];
@@ -4497,34 +4497,8 @@ function gdocSecs(doc){
    cur.recs.push({k:"t",s:e.startIndex,e:e.endIndex,tx:pl.tx,px:pl.px,pre:pl.pre,bl:pl.bl});cur.bodyEnd=e.endIndex}});
  secs.forEach(function(s){s.paras=s.recs.filter(function(r){return r.k==="t"}).map(function(r){return r.pre+r.tx});s.text=gnorm(s.paras.join("\n"))});
  return{secs:secs,end:end,order:order}}
-function syncDoc(res,retry){
- var c=gcfg();
- return gapi("GET","https://docs.googleapis.com/v1/documents/"+encodeURIComponent(c.docId)).then(function(doc){
-  var D=gdocSecs(doc),by={},base=S.gdocBase||(S.gdocBase={}),pushes=[],apps=[],conf=[],st={pulled:0,pushed:0,added:0,skipped:0},changed=false,mapped={};
-  D.secs.forEach(function(s){var k=gnk(s.name);if(k&&!by[k])by[k]=s});
-  S.locations.forEach(function(L){
-   if(L.parent)return;var k=gnk(L.name),sec=by[k],app=gnorm(L.notes),bs=base[L.name];
-   if(!sec){apps.push({L:L,text:app});return}
-   mapped[k]=1;
-   var dt=sec.text,dc,ac;
-   if(dt===app){if(base[L.name]!==app){base[L.name]=app;changed=true}return}
-   if(bs===undefined){if(dt===""){dc=false;ac=true}else if(app===""){dc=true;ac=false}else{dc=true;ac=true}}
-   else{dc=dt!==gnorm(bs);ac=app!==gnorm(bs)}
-   if(dc&&ac){var r=res&&res[L.name];if(r==="app"){dc=false}else if(r==="doc"){ac=false}else{conf.push({name:L.name,app:app,doc:dt});return}}
-   if(ac&&!dc){if(sec.unsafe){st.skipped++;return}pushes.push({sec:sec,L:L,text:app})}
-   else if(dc&&!ac){L.notes=dt;base[L.name]=dt;st.pulled++;changed=true}});
-  var heads=[];D.secs.forEach(function(s){var k=gnk(s.name);if(k&&!mapped[k]&&!by["!"+k]&&!S.locations.some(function(L){return gnk(L.name)===k})&&c.ignored.indexOf(k)<0){by["!"+k]=1;heads.push({name:s.name,text:s.text})}});
-  var reqs=[];
-  if(apps.length){
-   var pos=D.end-1,txt="",rg=[],ball=[],sty=[],hd=[];
-   apps.forEach(function(a){var n=a.L.name,bd=gBuild(a.text),s="\n"+n+"\n"+bd.text,bs0=pos+2+n.length;rg.push({h:[pos+1,pos+2+n.length],n:[bs0,bs0+bd.text.length+1]});bd.blocks.forEach(function(b){ball.push({k:b.k,s:bs0+b.s,e:bs0+b.e})});hd=hd.concat(gHeadReqs(bs0,bd.heads));sty=sty.concat(gStyleReqs(bs0,bd.text.length,bd.styles));txt+=s;pos+=s.length});
-   reqs.push({insertText:{location:{index:D.end-1},text:txt}});
-   reqs.push({deleteParagraphBullets:{range:{startIndex:D.end,endIndex:D.end+txt.length}}});
-   rg.forEach(function(r){reqs.push({updateParagraphStyle:{range:{startIndex:r.h[0],endIndex:r.h[1]},paragraphStyle:{namedStyleType:"HEADING_1"},fields:"namedStyleType"}});reqs.push({updateParagraphStyle:{range:{startIndex:r.n[0],endIndex:r.n[1]},paragraphStyle:{namedStyleType:"NORMAL_TEXT"},fields:"namedStyleType"}})});
-   hd.forEach(function(q){reqs.push(q)});sty.forEach(function(q){reqs.push(q)});
-   gBullets(0,ball).forEach(function(q){reqs.push(q)})}
-  pushes.sort(function(a,b){return b.sec.bodyStart-a.sec.bodyStart}).forEach(function(p){
-   var s=p.sec,bd=gBuild(p.text),t=bd.text;
+function gPushReqs(sec,text,D){var reqs=[];(function(){
+   var s=sec,bd=gBuild(text),t=bd.text;
    if(s.maps&&s.maps.length){
     var kept=s.recs.filter(function(r){return r.k!=="t"}),rngs=[],rr=null;
     s.recs.forEach(function(r){if(r.k!=="t"){rr=null;return}if(rr&&rr.e===r.s)rr.e=r.e;else{rr={s:r.s,e:r.e};rngs.push(rr)}});
@@ -4546,15 +4520,33 @@ function syncDoc(res,retry){
    else if(t){reqs.push({insertText:{location:{index:s.hEnd-1},text:"\n"+t}});reqs.push({updateParagraphStyle:{range:{startIndex:s.hEnd,endIndex:s.hEnd+t.length+1},paragraphStyle:{namedStyleType:"NORMAL_TEXT"},fields:"namedStyleType"}});
     gHeadReqs(s.hEnd,bd.heads).forEach(function(q){reqs.push(q)});
     gStyleReqs(s.hEnd,t.length,bd.styles).forEach(function(q){reqs.push(q)});
-    gBullets(s.hEnd,bd.blocks).forEach(function(q){reqs.push(q)})}});
-  var go=reqs.length?gapi("POST","https://docs.googleapis.com/v1/documents/"+encodeURIComponent(c.docId)+":batchUpdate",{requests:reqs,writeControl:{requiredRevisionId:doc.revisionId}}):Promise.resolve();
-  return go.then(function(){
-   pushes.forEach(function(p){base[p.L.name]=p.text;changed=true;st.pushed++});
-   apps.forEach(function(a){base[a.L.name]=a.text;changed=true;st.added++});
-   if(changed)save();
-   return mpSyncAll(D.secs,st,D.order).then(function(){return{st:st,conf:conf,heads:heads}})},function(e){
-   if(!retry&&/revision/i.test(String(e.message))){return syncDoc(res,true)}
-   throw e})})}
+    gBullets(s.hEnd,bd.blocks).forEach(function(q){reqs.push(q)})}})();return reqs}
+function gListDocs(){var c=gcfg(),out=[],q="'"+c.locFolder+"' in parents and mimeType='application/vnd.google-apps.document' and trashed=false";
+ function pg(tok){return gapi("GET","https://www.googleapis.com/drive/v3/files?pageSize=200&fields="+encodeURIComponent("nextPageToken,files(id,name)")+"&q="+encodeURIComponent(q)+(tok?"&pageToken="+encodeURIComponent(tok):"")).then(function(r){out=out.concat(r&&r.files||[]);return r&&r.nextPageToken?pg(r.nextPageToken):out})}
+ return pg("")}
+function syncDoc(res){
+ var c=gcfg(),base=S.gdocBase2||(S.gdocBase2={}),bk=S.gdocBackup||(S.gdocBackup={}),st={pulled:0,pushed:0,added:0,skipped:0,nodoc:0,docs:0},conf=[],heads=[],changed=false;
+ return gListDocs().then(function(files){
+  var byk={},seen={},jobs=[],i=0;files.forEach(function(f){var k=gnk(f.name);if(k&&!byk[k])byk[k]=f});
+  S.locations.forEach(function(L){var k=gnk(L.name),f=byk[k];if(!k)return;if(f&&!seen[k]){seen[k]=1;jobs.push({L:L,f:f})}else if(!f&&!L.parent&&!seen["n"+k]){seen["n"+k]=1;st.nodoc++}});
+  files.forEach(function(f){var k=gnk(f.name);if(k&&!seen[k]&&c.ignored.indexOf(k)<0){seen[k]=1;jobs.push({f:f,head:true})}});
+  function one(j,retry){
+   return gapi("GET","https://docs.googleapis.com/v1/documents/"+encodeURIComponent(j.f.id)).then(function(doc){
+    var D=gdocSecs(doc),k=gnk(j.f.name),sec=D.secs.filter(function(x){return gnk(x.name)===k})[0]||D.secs[0];
+    if(!sec)return;
+    if(j.head){heads.push({name:j.f.name,text:sec.text});return}
+    st.docs++;
+    var L=j.L,app=gnorm(L.notes),dt=sec.text,bs=base[L.name],dc,ac;
+    if(dt===app){if(base[L.name]!==app){base[L.name]=app;changed=true}return}
+    if(bs===undefined){if(dt===""){dc=false;ac=true}else{dc=true;ac=false}}
+    else{dc=dt!==gnorm(bs);ac=app!==gnorm(bs)}
+    if(dc&&ac){var r=res&&res[L.name];if(r==="app"){dc=false}else if(r==="doc"){ac=false}else{conf.push({name:L.name,app:app,doc:dt});return}}
+    if(dc&&!ac){if(bs===undefined&&L.notes&&!bk[L.name])bk[L.name]=L.notes;L.notes=dt;base[L.name]=dt;st.pulled++;changed=true;return}
+    if(ac&&!dc){if(sec.unsafe){st.skipped++;return}
+     var reqs=gPushReqs(sec,app,D);if(!reqs.length)return;
+     return gapi("POST","https://docs.googleapis.com/v1/documents/"+encodeURIComponent(j.f.id)+":batchUpdate",{requests:reqs,writeControl:{requiredRevisionId:doc.revisionId}}).then(function(){base[L.name]=app;changed=true;st.pushed++},function(e){if(!retry&&/revision/i.test(String(e.message)))return one(j,true);throw e})}})}
+  function next(){if(i>=jobs.length)return Promise.resolve();var j=jobs[i++];return one(j).then(next)}
+  return next()}).then(function(){if(changed)save();return{st:st,conf:conf,heads:heads}})}
 function gRun(auto,quick){
  if(GC.busy)return;
  GC.busy=true;GC.silent=!!auto;GC.quick=!!quick;GC.log=[];GC.err="";GC.conf=null;GC.autoErr="";gsDraw();
@@ -4564,7 +4556,7 @@ function gRun(auto,quick){
   if(st==="conflict")return"stop";
   return syncDoc(GC.res).then(function(r){
    out=r;GC.dconf=r.conf;GC.heads=r.heads;GC.res={};
-   var s=r.st,bits=[];if(s.pulled)bits.push(s.pulled+" location"+(s.pulled>1?"s":"")+" updated from the doc");if(s.pushed)bits.push(s.pushed+" sent to the doc");if(s.added)bits.push(s.added+" new heading"+(s.added>1?"s":"")+" added to the doc");if(s.skipped)bits.push(s.skipped+" skipped (the doc section has a table or drawing)");if(s.maps)bits.push(s.maps+" map"+(s.maps>1?"s":"")+" saved for offline use");if(s.mapsFail)bits.push(s.mapsFail+" map"+(s.mapsFail>1?"s":"")+" could not be saved ("+(s.mapsErr||"unknown reason")+")");
+   var s=r.st,bits=[];if(s.pulled)bits.push(s.pulled+" location"+(s.pulled>1?"s":"")+" updated from the doc");if(s.pushed)bits.push(s.pushed+" sent to the doc");if(s.added)bits.push(s.added+" new heading"+(s.added>1?"s":"")+" added to the doc");if(s.nodoc)bits.push(s.nodoc+" location"+(s.nodoc>1?"s have":" has")+" no doc in the Locations folder");if(s.skipped)bits.push(s.skipped+" skipped (the doc section has a table or drawing)");if(s.maps)bits.push(s.maps+" map"+(s.maps>1?"s":"")+" saved for offline use");if(s.mapsFail)bits.push(s.mapsFail+" map"+(s.mapsFail>1?"s":"")+" could not be saved ("+(s.mapsErr||"unknown reason")+")");
    gLog(bits.length?"Doc: "+bits.join(", ")+".":"Doc: nothing to change.");
    return gdirty()?syncDevice():"ok"})
  }).then(function(){clearTimeout(tmo);GC.busy=false;GC.silent=false;if((auto||quick)&&(GC.conf||(GC.dconf&&GC.dconf.length)||(GC.heads&&GC.heads.length)))GC.open=true;GC.quick=false;render();gsDraw();if(quick&&!GC.open){var sb3=document.getElementById("syncbtn");if(sb3){sb3.textContent="Synced \u2713";setTimeout(function(){var s4=document.getElementById("syncbtn");if(s4)s4.textContent=gdirty()?"Sync \u2022":"Sync"},2500)}}},function(e){clearTimeout(tmo);GC.busy=false;GC.silent=false;if(auto){GC.autoErr=docHint(e);var sd2=document.getElementById("syncdot");if(sd2)sd2.hidden=false}else{GC.err=docHint(e);if(quick)GC.open=true}GC.quick=false;gsDraw()})}
@@ -4587,7 +4579,7 @@ function gsDraw(){
  if(GC.conf){var p=GC.conf.p;h+='<div class="card gsw"><h3>Two versions to choose from</h3><p>Google holds a version saved'+(p.savedAt?" "+esc(new Date(p.savedAt).toLocaleString()):"")+' from another device, and this device also has newer changes. Pick which one to keep. The other is saved as a backup on this device.</p><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="pri" data-gs="keeplocal">Keep this device\'s version</button><button data-gs="usegoogle">Use the version from Google</button></div></div>'}
  if(GC.dconf&&GC.dconf.length){h+='<div class="card gsw"><h3>Notes changed in both places</h3><p class="mute">For each location below, choose which version to keep, then press Apply.</p>'+GC.dconf.map(function(x,i){var r=GC.res[x.name]||"";return'<div class="gsc"><b>'+esc(x.name)+'</b><div class="gsc2"><div><div class="mute">In the app</div><pre class="sbx">'+esc(rtPlain(x.app)||"(empty)")+'</pre><button class="'+(r==="app"?"pri":"")+'" data-gs="res" data-n="'+i+'" data-v="app">Keep app version</button></div><div><div class="mute">In the doc</div><pre class="sbx">'+esc(rtPlain(x.doc)||"(empty)")+'</pre><button class="'+(r==="doc"?"pri":"")+'" data-gs="res" data-n="'+i+'" data-v="doc">Keep doc version</button></div></div></div>'}).join("")+'<div><button class="pri" data-gs="apply"'+(GC.busy?" disabled":"")+'>Apply choices</button></div></div>'}
  if(GC.heads&&GC.heads.length){h+='<div class="card gsw"><h3>New headings in the doc</h3><p class="mute">These are not locations in the app yet.</p>'+GC.heads.map(function(x,i){return'<div class="row" style="margin:6px 0"><span style="flex:1">'+esc(x.name)+'</span><button class="pri" data-gs="addhead" data-n="'+i+'">Add as location</button><button data-gs="ignorehead" data-n="'+i+'">Ignore</button></div>'}).join("")+'</div>'}
- h+='<details class="card"><summary>Settings</summary><label class="f">Google client ID<input data-gsf="clientId" value="'+esc(c.clientId)+'"></label><label class="f">Document ID or link<input data-gsf="docId" value="'+esc(c.docId)+'"></label><label class="f">Cloud scanning key (Google Cloud Vision, kept on this device only)<input type="password" data-vkey="1" autocomplete="off" value="'+esc(scKey())+'" placeholder="Leave empty to use the offline reader"></label><label class="chk" style="margin-top:10px"><input type="checkbox" class="yn" data-gsc="mapsDl"'+(c.mapsDl?" checked":"")+'><span>Refresh map pictures from the Google Doc when syncing (off: maps stay on this device and Sync never changes them)</span></label><label class="chk" style="margin-top:10px"><input type="checkbox" class="yn" data-gsc="maps"'+(c.maps?" checked":"")+'><span>Allow map pictures (asks Google for one extra permission, to read the doc\'s pictures)</span></label><div style="margin-top:8px"><button data-gs="maptest">Test map download</button> <span class="mute">Shows why maps may not be saved.</span></div><div style="margin-top:8px"><button data-gs="update">Get the latest app version</button> <span class="mute">Reloads the app from the internet. Your data is kept.</span></div><div style="margin-top:8px"><button data-gs="signout">Forget sign-in on this device</button></div></details></div>';
+ h+='<details class="card"><summary>Settings</summary><label class="f">Google client ID<input data-gsf="clientId" value="'+esc(c.clientId)+'"></label><label class="f">Locations folder ID or link (each location syncs with the doc of the same name in this folder)<input data-gsf="locFolder" value="'+esc(c.locFolder)+'"></label><label class="f">Cloud scanning key (Google Cloud Vision, kept on this device only)<input type="password" data-vkey="1" autocomplete="off" value="'+esc(scKey())+'" placeholder="Leave empty to use the offline reader"></label><label class="chk" style="margin-top:10px"><input type="checkbox" class="yn" data-gsc="mapsDl"'+(c.mapsDl?" checked":"")+'><span>Refresh map pictures from the Google Doc when syncing (off: maps stay on this device and Sync never changes them)</span></label><label class="chk" style="margin-top:10px"><input type="checkbox" class="yn" data-gsc="maps"'+(c.maps?" checked":"")+'><span>Allow map pictures (asks Google for one extra permission, to read the doc\'s pictures)</span></label><div style="margin-top:8px"><button data-gs="maptest">Test map download</button> <span class="mute">Shows why maps may not be saved.</span></div><div style="margin-top:8px"><button data-gs="update">Get the latest app version</button> <span class="mute">Reloads the app from the internet. Your data is kept.</span></div><div style="margin-top:8px"><button data-gs="signout">Forget sign-in on this device</button></div></details></div>';
  el.hidden=false;el.innerHTML=h}
 (function(){
  var ov=document.getElementById("gsov");if(!ov)return;
@@ -4603,13 +4595,13 @@ function gsDraw(){
   else if(a==="res"){var x=GC.dconf[n];if(x){GC.res[x.name]=b.dataset.v;gsDraw()}}
   else if(a==="keeplocal"&&GC.conf&&!GC.busy){var cf=GC.conf;GC.busy=true;try{localStorage.setItem("cos-conflict-google",JSON.stringify(cf.p))}catch(x2){}GC.conf=null;drvPush(cf.fileId,cf.rev+1).then(function(){GC.busy=false;gLog("Kept this device's version.");gRun()},function(er){GC.busy=false;GC.err=docHint(er);gsDraw()})}
   else if(a==="usegoogle"&&GC.conf&&!GC.busy){var cg=GC.conf;try{localStorage.setItem("cos-conflict-local",JSON.stringify(S))}catch(x3){}GC.conf=null;drvAdopt(cg.p,cg.rev,cg.fileId);gLog("Loaded Google's version.");gRun()}
-  else if(a==="addhead"){var hd=GC.heads[n];if(hd&&!LOCS.some(function(q){return gnk(q)===gnk(hd.name)})){LOCS.push(hd.name);S.locations.push({name:hd.name,status:"Not visited",notes:hd.text});(S.gdocBase||(S.gdocBase={}))[hd.name]=hd.text;save();GC.heads.splice(n,1);render();gsDraw()}}
+  else if(a==="addhead"){var hd=GC.heads[n];if(hd&&!LOCS.some(function(q){return gnk(q)===gnk(hd.name)})){LOCS.push(hd.name);S.locations.push({name:hd.name,status:"Not visited",notes:hd.text});(S.gdocBase2||(S.gdocBase2={}))[hd.name]=hd.text;save();GC.heads.splice(n,1);render();gsDraw()}}
   else if(a==="ignorehead"){var hi=GC.heads[n];if(hi){var ig=gcfg().ignored.slice();ig.push(gnk(hi.name));gset({ignored:ig});GC.heads.splice(n,1);gsDraw()}}
   else if(a==="maptest"){mpDiag().then(function(){gsDraw()},function(e){gLog("Map test failed: "+(e&&e.message));gsDraw()})}
   else if(a==="update"){var fin2=function(){location.reload()};Promise.resolve().then(function(){return navigator.serviceWorker?navigator.serviceWorker.getRegistrations().then(function(rs){return Promise.all(rs.map(function(r){return r.unregister()}))}):0}).then(function(){return window.caches?caches.keys().then(function(ks){return Promise.all(ks.filter(function(k){return/^strahd-organiser/.test(k)}).map(function(k){return caches.delete(k)}))}):0}).then(fin2,fin2)}
   else if(a==="signout"){GC.tok="";GC.exp=0;try{if(window.google&&google.accounts&&google.accounts.oauth2&&GC.tok)google.accounts.oauth2.revoke(GC.tok)}catch(x4){}GC.err="";gLog("Signed out on this device.")}});
  ov.addEventListener("change",function(e){var el=e.target;if(el.dataset.gsc==="auto"){gset({autoStart:!!el.checked});gsDraw();return}if(el.dataset.gsc==="maps"){gset({maps:!!el.checked});GC.tok="";GC.exp=0;gsDraw();return}if(el.dataset.gsc==="mapsDl"){gset({mapsDl:!!el.checked});gsDraw();return}if(el.dataset.vkey){try{var kv=el.value.trim();if(kv)localStorage.setItem("cos-vision",kv);else localStorage.removeItem("cos-vision")}catch(x5){}return}if(!el.dataset.gsf)return;var v=el.value.trim();
-  if(el.dataset.gsf==="docId"){var m=v.match(/\/d\/([A-Za-z0-9_\-]+)/);if(m)v=m[1]}
+  if(el.dataset.gsf==="docId"){var m=v.match(/\/d\/([A-Za-z0-9_\-]+)/);if(m)v=m[1]}if(el.dataset.gsf==="locFolder"){var m2=v.match(/folders\/([A-Za-z0-9_\-]+)/);if(m2)v=m2[1]}
   var o={};o[el.dataset.gsf]=v;gset(o);GC.tok="";GC.exp=0;gsDraw()});
  gsDraw()
 })();

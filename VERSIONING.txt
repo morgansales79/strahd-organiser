@@ -172,3 +172,4 @@ ROLLBACK POINT: 1.610 build 225 (git tag v1.610-stable, copy strahd-organiser-v1
 1.657 build 272 - The app now fetches the newest version whenever it is online, so updates no longer get stuck behind an old cached copy.
 1.658 build 273 - Starting a journey that crosses Lake Zarovich now asks whether to row across or walk round the lake, showing the time for each.
 1.659 build 274 - The skeletal rider and warhorse encounter now only happens when the party are travelling on a road.
+1.660 build 275 - Location notes now sync with separate Google Docs: each location (including N10 Riverbarrel's General Goods and N11 Rosy's House) syncs with the doc of the same name in the Locations folder. First link takes the doc's text (the old app notes are kept as a backup on the device). Docs with no matching location are offered as new locations. Sync now also asks Google for read access to Drive so it can list the folder.
