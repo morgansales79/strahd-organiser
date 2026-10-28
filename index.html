@@ -729,7 +729,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=278;var APPLABEL="1.663";
+var APPV=279;var APPLABEL="1.664";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return!l.parent&&l.status!=="Not visited"}).length,mnAll=S.locations.filter(function(l){return l.parent}),mnVis=mnAll.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -1205,7 +1205,7 @@ function nzSide(hs,loc){ui.nzo=ui.nzo||{};var btn=function(x,lab,dp){return'<but
  var cur=null,btn2=function(x,lab){return btn(x,lab,0)};
  function flush(){if(!cur)return;if(!cur.kids.length)out.push(btn2(cur.p));else{var key=loc+"|"+cur.p.t;out.push('<details class="nzsd" data-nzk="'+esc(key)+'"'+(ui.nzo[key]?" open":"")+'><summary data-nzg="1">'+esc(cur.p.t)+' <span class="mute">('+cur.kids.length+')</span></summary><div class="nzsk">'+btn2(cur.p,"Go to "+cur.p.t)+cur.kids.map(function(k){return btn2(k)}).join("")+'</div></details>')}cur=null}
  hs.forEach(function(x){var m=x.t.match(/^([A-Za-z]+\d+)\./),c=x.t.match(/^([A-Za-z]+\d+)[a-z]\.?\s/);
-  if(c&&cur&&cur.id===c[1]){cur.kids.push(x);return}
+  if(cur&&!m){cur.kids.push(x);return}
   flush();if(m){cur={p:x,id:m[1],kids:[]}}else out.push(btn2(x))});
  flush();return out.join("")}
 document.addEventListener("click",function(e){var s=e.target.closest&&e.target.closest("[data-nzg]");if(!s)return;e.preventDefault();var d=s.parentNode;d.open=!d.open;ui.nzo=ui.nzo||{};ui.nzo[d.getAttribute("data-nzk")]=d.open});
