@@ -714,7 +714,7 @@ function norm(raw){
  if(!(b.sbv>=1)){s.enemies.forEach(function(e){var nm=String(e.name).toLowerCase();if(nm==="gargoyle")e.statblock=e.statblock.replace("Hit: 6 (1d8 + 2) slashing damage.","Hit: 5 (1d6 + 2) slashing damage.");if(nm==="ghast")e.statblock=e.statblock.replace("other than an elf or undead","other than an undead");e.statblock=sbTidy(e.statblock)})}
  s.sbv=1;
  if(!(b.v>=6)||!(b.nsv>=6)){syncSeed(s);syncExtra(s)}
- if(!(b.nsv>=7))s.locations.forEach(function(l){if(!l.notes&&LOCNOTES[l.name])l.notes=LOCNOTES[l.name]});if(!(b.nsv>=8))s.locations.forEach(function(l){var m=MINMAP[l.name];if(m&&!l.notes)l.notes=m.desc});s.nsv=8;
+ if(!(b.nsv>=7))s.locations.forEach(function(l){if(!l.notes&&LOCNOTES[l.name])l.notes=LOCNOTES[l.name]});if(!(b.nsv>=8))s.locations.forEach(function(l){var m=MINMAP[l.name];if(m&&!l.notes)l.notes=m.desc});if(!(b.nsv>=9)){["Rosy Riverbarrel"].forEach(function(nm){var sd=NPCS.find(function(x){return x[0]===nm});if(sd&&!s.npcs.some(function(x){return x.name.toLowerCase()===nm.toLowerCase()})){s.npcs.push({id:uid(),name:nm,location:sd[1],met:false,notes:sd[2]||"",stats:NPCSTATS[nm]||""});syncExtra(s)}})}s.nsv=9;
  var gb={};if(b.gdocBase&&typeof b.gdocBase==="object")Object.keys(b.gdocBase).forEach(function(k){gb[k]=str(b.gdocBase[k])});s.gdocBase=gb; ["gdocBase2","gdocBackup","gdocBaseN"].forEach(function(nm){var g2={};if(b[nm]&&typeof b[nm]==="object")Object.keys(b[nm]).forEach(function(k){g2[k]=str(b[nm][k])});s[nm]=g2});
  var st=b.strahd||{};s.strahd={attitude:str(st.attitude)||"Curious",knows:str(st.knows),next:str(st.next)};
  var t=b.tarokka||{};s.tarokka={tome:str(t.tome),symbol:str(t.symbol),sword:str(t.sword),strahdAt:str(t.strahdAt),motivation:str(t.motivation)};
@@ -729,7 +729,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=281;var APPLABEL="1.666";
+var APPV=282;var APPLABEL="1.667";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return!l.parent&&l.status!=="Not visited"}).length,mnAll=S.locations.filter(function(l){return l.parent}),mnVis=mnAll.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};

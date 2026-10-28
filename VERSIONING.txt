@@ -179,3 +179,4 @@ ROLLBACK POINT: 1.610 build 225 (git tag v1.610-stable, copy strahd-organiser-v1
 1.664 build 279 - Notes side bar: a numbered heading like N2. Blue Water Inn or N3. Burgomaster's Mansion now folds everything beneath it (its lettered rooms and its lore headings) until the next numbered heading, even when the notes have no heading levels yet.
 1.665 build 280 - Notes side bar: opening a section dropdown now also jumps the notes to that heading (closing it does not move anything).
 1.666 build 281 - NPC lists are now alphabetical (met and not yet met, in each location and in the location notes).
+1.667 build 282 - Fix: Rosy Riverbarrel was missing from the NPC list on saves made before she was added. She is now added to existing saves (Vallaki, not met) with her stats and notes.
