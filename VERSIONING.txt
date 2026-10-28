@@ -170,3 +170,4 @@ ROLLBACK POINT: 1.610 build 225 (git tag v1.610-stable, copy strahd-organiser-v1
 1.655 build 270 - Lake Zarovich travel reworked: new south shore waypoint at the end of Vallaki's north road (direct road route) and a north shore waypoint opposite. Travel between the two sides rows across the lake (1.5 mph rowboat, about 28 minutes) by default, with a 'Row across Lake Zarovich' option to untick and walk round the shore instead. Mad Mage pins are reached from the north shore. Double tapping the lake picks the opposite shore. The earlier row dialog is removed.
 1.656 build 271 - Lake Zarovich shore waypoints now have proper map pins (L1 south shore, L2 north shore) with labels.
 1.657 build 272 - The app now fetches the newest version whenever it is online, so updates no longer get stuck behind an old cached copy.
+1.658 build 273 - Starting a journey that crosses Lake Zarovich now asks whether to row across or walk round the lake, showing the time for each.
