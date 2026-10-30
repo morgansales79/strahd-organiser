@@ -1,7 +1,7 @@
 Display version (APPLABEL in the app) is 1.MM.
 Major update (new feature set): bump the first decimal place (1.10 -> 1.20 -> 1.30).
 Minor update (fixes, small tweaks): bump the second decimal place (1.10 -> 1.11 -> 1.12).
-Current: 1.677 (build 292)
+Current: 1.678 (build 293)
 1.180 (build 102): five new Active Session panes: Travel, Marching order, Combat controls, Rests and time, Party health.
 1.181 (build 103): fade-outs match fade-in speed (.48s); panes, Panes popup and Enemies/NPC sub-tabs fade.
 1.190 (build 104): five spells added from D&D Beyond page (Abi-Dalzim's, Absorb Elements, Aganazzar's, Air Bubble, Alustriel's).
@@ -190,3 +190,4 @@ ROLLBACK POINT: 1.610 build 225 (git tag v1.610-stable, copy strahd-organiser-v1
 1.675 build 290: End of combat window now reopens reliably (dismissing it by tapping outside no longer blocks it) and shows above other pop-ups; the off-hand attack prompt only appears when the attack used a light weapon, a second light weapon is carried, and an enemy is still standing.
 1.676 build 291: Enemy count in the Encounter is chosen from a 1-20 pop-up with a custom number option (up to 99); the butchering pop-up now appears above the End of combat window.
 1.677 build 292: The Add button in the Encounter shows how many enemies it will add (for example "Add 5 enemies").
+1.678 build 293: "Add enemies" opens the 1-20 / custom number pop-up and tapping a number adds that many enemies straight away.
