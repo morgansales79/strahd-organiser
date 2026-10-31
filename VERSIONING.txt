@@ -1,7 +1,7 @@
 Display version (APPLABEL in the app) is 1.MM.
 Major update (new feature set): bump the first decimal place (1.10 -> 1.20 -> 1.30).
 Minor update (fixes, small tweaks): bump the second decimal place (1.10 -> 1.11 -> 1.12).
-Current: 1.680 (build 295)
+Current: 1.681 (build 296)
 1.180 (build 102): five new Active Session panes: Travel, Marching order, Combat controls, Rests and time, Party health.
 1.181 (build 103): fade-outs match fade-in speed (.48s); panes, Panes popup and Enemies/NPC sub-tabs fade.
 1.190 (build 104): five spells added from D&D Beyond page (Abi-Dalzim's, Absorb Elements, Aganazzar's, Air Bubble, Alustriel's).
@@ -193,3 +193,4 @@ ROLLBACK POINT: 1.610 build 225 (git tag v1.610-stable, copy strahd-organiser-v1
 1.678 build 293: "Add enemies" opens the 1-20 / custom number pop-up and tapping a number adds that many enemies straight away.
 1.679 build 294: Long rest window defaults everyone (except characters who are down) to resting, eating and drinking, as far as rations and waterskins last.
 1.680 build 295: Calculator button moved to the dashboard (Calculator card). New Lore button in the navigation opens a pop-out with what all Barovians know plus local lore buttons (Village of Barovia, Vallaki, Krezk, Vistani Camp); selected places are red and the selection follows the party location.
+1.681 build 296: Lore pop-out: only one location can be active at a time (tapping another switches to it; tapping the active one clears it).

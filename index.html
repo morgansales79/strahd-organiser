@@ -743,7 +743,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=295;var APPLABEL="1.680";
+var APPV=296;var APPLABEL="1.681";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return!l.parent&&l.status!=="Not visited"}).length,mnAll=S.locations.filter(function(l){return l.parent}),mnVis=mnAll.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -2205,7 +2205,7 @@ function loreDraw(){var L=ui.lore;if(!L||!L.open)return;var el=document.getEleme
 document.addEventListener("click",function(e){var o=e.target.closest&&e.target.closest('[data-a="loreopen"]');if(o){e.stopPropagation();var k=loreKeyFor(SS&&SS.loc);ui.lore={open:true,sel:k?[k]:[],loc:SS&&SS.loc||"",sc:0};loreDraw();return}
  var b=e.target.closest&&e.target.closest("[data-lore]");if(!b)return;e.stopPropagation();var L=ui.lore;if(!L)return;var bd=document.querySelector("#loreov .lrbody");if(bd)L.sc=bd.scrollTop;
  if(b.dataset.lore==="x"){L.open=false;var el=document.getElementById("loreov");if(el)el.style.display="none";return}
- if(b.dataset.lore==="loc"){var k2=b.dataset.k,i=L.sel.indexOf(k2);if(i>-1)L.sel.splice(i,1);else L.sel.push(k2);loreDraw()}},true);
+ if(b.dataset.lore==="loc"){var k2=b.dataset.k;L.sel=L.sel.indexOf(k2)>-1?[]:[k2];loreDraw()}},true);
 document.addEventListener("click",function(e){var el=document.getElementById("loreov");if(el&&e.target===el&&ui.lore){ui.lore.open=false;el.style.display="none"}});
 document.addEventListener("keydown",function(e){if(e.key==="Escape"&&ui.lore&&ui.lore.open){ui.lore.open=false;var el=document.getElementById("loreov");if(el)el.style.display="none"}});
 var _rLore=render;render=function(){var r=_rLore.apply(this,arguments);try{var L=ui.lore;if(L&&L.open&&(SS&&SS.loc||"")!==L.loc){L.loc=SS&&SS.loc||"";var k=loreKeyFor(L.loc);L.sel=k?[k]:[];L.sc=0;loreDraw()}}catch(e){}return r};
