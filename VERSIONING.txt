@@ -198,3 +198,4 @@ ROLLBACK POINT: 1.610 build 225 (git tag v1.610-stable, copy strahd-organiser-v1
 1.683 build 298: Durst Manor is silent when the party arrives; a contextual Awaken house button in the sidebar (only at Durst Manor) starts the sound, and becomes Quiet the house to switch it off again.
 1.690 build 299: Spell preparation now opens a full-screen picker (text, level from/to, school filters, alphabetical or grouped by level, tap to prepare, hard limit on prepared count).
 1.691 build 300: Add cantrip/spell boxes hidden while Edit sheets is on; Choose spells to prepare stays.
+1.692 build 301: After a long rest, anyone with Mage Armor is asked whether to cast it (uses a spell slot, sets AC 13 + Dex). The long rest ends any active Mage Armor.
