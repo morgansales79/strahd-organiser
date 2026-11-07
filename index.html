@@ -761,7 +761,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=299;var APPLABEL="1.690";
+var APPV=300;var APPLABEL="1.691";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return!l.parent&&l.status!=="Not visited"}).length,mnAll=S.locations.filter(function(l){return l.parent}),mnVis=mnAll.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -1868,7 +1868,7 @@ function pcSpList(m,keys,map,what){var by={};keys.forEach(function(k){var sp=map
  if(!lvs.length)return'<div class="mute">Nothing added yet.</div>';
  return lvs.map(function(l){return'<div class="mute" style="margin-top:6px"><b>'+(l?"Level "+l:"Cantrips")+'</b></div>'+by[l].sort(function(a,b){return a.n.localeCompare(b.n)}).map(function(sp){
   return'<details class="spit"><summary><b>'+esc(sp.n)+'</b><span class="mute">'+(sp.cc?" · concentration":"")+(sp.rt?" · ritual":"")+'</span></summary><div class="mute">'+esc(sp.s||"")+' · '+spInfo(sp)+'</div><div class="spt">'+esc(sp.x||"")+(sp.h?"\n\n"+esc(sp.h):"")+'</div><div class="sprow2">'+(sp.dm?'<button data-a="splcast" data-spk="'+esc(sp.k)+'">Cast on creatures</button>':'')+''+(what==="dom"||what==="kn"&&sp.l>0&&pcAutoSp(m)?'':'<button class="del" data-sx="rm" data-id="'+m.id+'" data-w="'+what+'" data-k="'+esc(sp.k)+'">Remove</button>')+'</div></details>'}).join("")}).join("")}
-function pcSpAdd(m,what,opts,ph){var id=m.id;
+function pcSpAdd(m,what,opts,ph){var id=m.id;if(ui.pedit)return'';
  return'<div class="sprow2"><input list="dl-'+id+'-'+what+'" id="spi-'+id+'-'+what+'" placeholder="'+ph+'" aria-label="'+ph+'" style="flex:1;min-width:140px"><datalist id="dl-'+id+'-'+what+'">'+opts.map(function(sp){return'<option value="'+esc(sp.n)+'">'+(sp.l?"Level "+sp.l:"Cantrip")+'</option>'}).join("")+'</datalist><button class="pri" data-sx="add" data-id="'+id+'" data-w="'+what+'">Add</button></div>'}
 function pcCantMax(m,c){var l=pcSpLv(m,c),k=c.cls;
  if(k==="Eldritch Knight")return l>=10?3:l>=3?2:0;
