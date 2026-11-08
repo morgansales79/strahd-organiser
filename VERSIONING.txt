@@ -202,3 +202,4 @@ ROLLBACK POINT: 1.610 build 225 (git tag v1.610-stable, copy strahd-organiser-v1
 1.693 build 302: Vision and light rules now explain the effect on checks, attack rolls and targeting, with and without darkvision.
 1.694 build 303: Fixed the Equipment and Treasure tab buttons, which the encounter enemy-count popup was intercepting.
 1.700 build 304: Treasure tab can save an hourly purse and treasure backup text file to the device (only when changed), plus Back up now.
+1.701 build 305: Each purse backup file also contains the two previous versions.
