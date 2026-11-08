@@ -763,7 +763,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=306;var APPLABEL="1.710";
+var APPV=307;var APPLABEL="1.711";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return!l.parent&&l.status!=="Not visited"}).length,mnAll=S.locations.filter(function(l){return l.parent}),mnVis=mnAll.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -1294,8 +1294,8 @@ function atkParse(sb){var out=[],ls=String(sb||"").split(/\n/),i,L,m,txt,j,nx;
    if(!parts.length){var fl=sent.match(/(\d+)\s+([a-z]+)\s+damage/i);if(fl)parts.push({n:0,d:0,k:+fl[1],t:fl[2]})}
    out.push({name:m[1].trim()+(ai?" (two-handed)":""),bonus:bonus,parts:parts})})}
  return out}
-function atkRoll(c,idx){var en=wsEnOf(c),at=en?atkParse(en.statblock)[idx]:null;if(!at)return"";
- var r1=d20(),r2=d20(),mode=ui.atkMode,nat=mode==="a"?Math.max(r1,r2):mode==="d"?Math.min(r1,r2):r1,
+function atkRoll(c,idx,mo){var en=wsEnOf(c),at=en?atkParse(en.statblock)[idx]:null;if(!at)return"";
+ var r1=d20(),r2=d20(),mode=mo||ui.atkMode,nat=mode==="a"?Math.max(r1,r2):mode==="d"?Math.min(r1,r2):r1,
   tot=nat+at.bonus,ac=parseInt(ui.atkAc,10),crit=nat===20,fum=nat===1,hit=crit||(!fum&&(isNaN(ac)||tot>=ac)),
   rl=mode==="n"?""+nat:(mode==="a"?"adv ":"dis ")+r1+"/"+r2+" \u2192 "+nat,
   h='<b>'+esc(at.name)+'</b>: d20 '+rl+(at.bonus>=0?" + ":" \u2212 ")+Math.abs(at.bonus)+' = <b>'+tot+'</b>';
@@ -1418,7 +1418,7 @@ function tgDraw(){var T=ui.tg,el=document.getElementById("tgpop");if(!el){el=doc
  h+='<div class="atkbox tgbox"><div class="atkh"><b>'+esc(mc.name)+'</b>: '+esc(tgLabel(at))+'</div>'+(S.turnId===mc.id?'<div class="mute">'+(function(){var en2=wsEnOf(mc),nn=multiN(en2),cc=ui.turnAtk&&ui.turnAtk.id===mc.id?ui.turnAtk.n:0;var ml2=multiLim(en2),by=ui.turnAtk&&ui.turnAtk.id===mc.id?(ui.turnAtk.by||{}):{},ks=Object.keys(ml2.lim);return"This turn: "+Math.min(cc,nn)+" of "+nn+" attack"+(nn>1?"s":"")+" made"+(nn>1?" (Multiattack)":"")+(ks.length?" ("+ks.map(function(k){return k+" "+Math.min(by[k]||0,ml2.lim[k])+"/"+ml2.lim[k]}).join(", ")+")":"")+". The turn moves on when they are all used and you close this."})()+'</div>':'');
  if(!pcs.length)h+='<div class="mute">There are no party members or NPCs in this encounter. Close this and use Add party first, or make a quick roll without a target.</div>';
  else{h+='<div class="mute">'+(aoe?"Tick everyone caught in the area. The damage is rolled once for all of them.":"Choose the target.")+' Damage is taken off automatically.</div><div class="tgsel">'+pcs.map(function(c){var m=tgMemb(c),ac=tgAc(c),isn=c.kind==="mon";return'<label class="chk tgp"><input type="'+(aoe?"checkbox":"radio")+'"'+(aoe?' class="yn"':' name="tgsel"')+' data-tg="sel" data-id="'+c.id+'"'+(T.sel[c.id]?" checked":"")+'><span><b>'+esc(c.name)+'</b>'+(isn?' <span class="pill">NPC</span>':'')+' <span class="mute">'+(at.kind==="atk"?'AC '+(isNaN(ac)?'?':ac):'HP '+esc(c.hp||"?"))+'</span></span></label>'+(m&&tgMaOk(m)&&at.kind==="atk"?(m.ma?'<span class="mute tgma">Mage Armor already in AC</span>':'<label class="chk tgma"><input type="checkbox" class="yn" data-tg="ma" data-id="'+m.id+'"'+(tgMaOn(m)?" checked":"")+'><span>Mage Armor</span></label>'):'')}).join("")+'</div>';
-  if(at.kind==="atk")h+='<label class="f">Roll<select data-tg="mode"><option value="n"'+(ui.atkMode==="n"?" selected":"")+'>Normal</option><option value="a"'+(ui.atkMode==="a"?" selected":"")+'>Advantage</option><option value="d"'+(ui.atkMode==="d"?" selected":"")+'>Disadvantage</option></select></label>';
+  if(at.kind==="atk"){var tm=T.mode||"n";h+='<div class="f" role="radiogroup" aria-label="Roll mode"><span>Roll</span><div style="display:flex;gap:14px;flex-wrap:wrap">'+[["a","Advantage"],["n","Normal"],["d","Disadvantage"]].map(function(o){return'<label class="chk"><input type="radio" name="tgmode" data-tg="mode" value="'+o[0]+'"'+(tm===o[0]?" checked":"")+'><span>'+o[1]+'</span></label>'}).join("")+'</div></div>'}
   else if(!at.parts||at.parts.length)h+='<label class="chk"><input type="checkbox" class="yn" data-tg="half"'+(T.half?" checked":"")+'><span>Half damage on a successful save</span></label>';
   h+=cndHint(mc,at)+cndAtkNote(mc,at);
   h+='<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="pri" data-tg="roll">'+(T.res?"Roll again":"Roll")+'</button><button data-tg="quick">Quick roll, no target</button></div>';
@@ -1428,7 +1428,7 @@ function tgChange(e){var el=e.target,d=el.dataset,T=ui.tg;if(!d||!d.tg||!T)retur
  if(g==="sel"){tgUndoAll();T.res=null;if(el.type==="radio")T.sel={};T.sel[d.id]=!!el.checked;tgDraw()}
  else if(g==="ma"){tgUndoAll();ui.tgMa=ui.tgMa||{};ui.tgMa[d.id]=!!el.checked;T.res=null;tgDraw()}
  else if(g==="pack"){T.pack=!!el.checked}
- else if(g==="mode"){ui.atkMode=el.value;saveUi()}
+ else if(g==="mode"){tgUndoAll();T.res=null;T.mode=el.value;tgDraw()}
  else if(g==="half"){T.half=!!el.checked;var k=tgCur();if(T.res&&k){T.res.rows.forEach(function(r){tgApplyRow(r,k.at)});save();render()}tgDraw()}
  else if(g==="rpass"&&T.res){var r3=T.res.rows[+d.i],k3=tgCur();if(r3&&k3&&el.value!=="x"){r3.rsv=r3.rsv||{nat:0,bon:0,tot:0,typed:true};r3.rsv.hand=true;r3.rsv.passed=el.value==="1";r3.rpend=false;tgApplyRow(r3,k3.at);save();render();tgDraw()}}
  else if(g==="pass"&&T.res){var r=T.res.rows[+d.i],k2=tgCur();if(r&&k2&&el.value!=="x"){r.pend=false;r.hand=true;r.passed=el.value==="1";tgApplyRow(r,k2.at);save();render();tgDraw()}}}
@@ -1439,7 +1439,7 @@ function tgClick(e){var T=ui.tg,el=document.getElementById("tgpop"),b=e.target.c
  else if((g==="pv"||g==="rpv")&&k&&T.res){var ii=+b.dataset.i,rw=T.res.rows[ii],inp=document.getElementById((g==="pv"?"tgin":"tgrin")+ii),vv=parseInt(inp&&inp.value,10);if(!rw)return;if(isNaN(vv)){if(inp)inp.focus();return}
   if(g==="pv"){rw.pend=false;rw.hand=false;rw.typed=true;rw.tot=vv;rw.passed=vv>=k.at.dc}else{rw.rpend=false;rw.rsv={nat:vv,bon:0,tot:vv,typed:true,passed:T.rd&&vv>=T.rd.dc}}
   tgApplyRow(rw,k.at);save();render();tgDraw()}
- else if(g==="quick"&&k){var hh=atkRoll(k.mc,T.i);tgCount(1);el.style.display="none";atkPop(k.mc,hh);if(tgTurnDone()){ui.tg=null;advanceTurn()}else render()}}
+ else if(g==="quick"&&k){var hh=atkRoll(k.mc,T.i,T.mode||"n");tgCount(1);el.style.display="none";atkPop(k.mc,hh);if(tgTurnDone()){ui.tg=null;advanceTurn()}else render()}}
 document.addEventListener("keydown",function(e){if(e.key==="Escape"){var el=document.getElementById("tgpop");if(el&&el.style.display!=="none")tgClose()}});
 
 function advanceTurn(){var oo=encOrder().has;if(!oo.length)return;
@@ -2909,7 +2909,7 @@ function cndAtkMode(mc,tg,at){var ac=mc.conds||[],tc=tg.conds||[],adv=[],dis=[],
  if(has(tc,"Invisible"))dis.push(tg.name+" is Invisible");
  if(!ranged&&(has(tc,"Paralyzed")||has(tc,"Unconscious"))){auto=true;adv.push("hits within 5 ft are critical")}
  if(ui.tg&&ui.tg.pack)adv.push("Pack Tactics");
- if(ui.atkMode==="a")adv.push("advantage set by hand");if(ui.atkMode==="d")dis.push("disadvantage set by hand");
+ var hm=ui.tg?(ui.tg.mode||"n"):ui.atkMode;if(hm==="a")adv.push("advantage set by hand");if(hm==="d")dis.push("disadvantage set by hand");
  var mode=adv.length&&dis.length?"n":adv.length?"a":dis.length?"d":"n",why=[];
  if(adv.length&&dis.length)why.push("advantage and disadvantage cancel: "+adv.concat(dis).join("; "));else if(adv.length)why.push("advantage: "+adv.join("; "));else if(dis.length)why.push("disadvantage: "+dis.join("; "));
  if(auto&&mode!=="n"&&adv.length&&!dis.length)why=["advantage: "+adv.join("; ")];

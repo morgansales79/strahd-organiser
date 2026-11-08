@@ -204,3 +204,4 @@ ROLLBACK POINT: 1.610 build 225 (git tag v1.610-stable, copy strahd-organiser-v1
 1.700 build 304: Treasure tab can save an hourly purse and treasure backup text file to the device (only when changed), plus Back up now.
 1.701 build 305: Each purse backup file also contains the two previous versions.
 1.710 build 306: Location and NPC notes now fill the main area (banner and sidebar stay visible) and reopen where you left them when you return to the tab.
+1.711 build 307: Enemy attack rolls have Advantage / Normal / Disadvantage radio buttons that always start on Normal and combine with condition-based advantage.
