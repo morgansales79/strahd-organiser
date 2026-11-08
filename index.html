@@ -762,7 +762,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=303;var APPLABEL="1.694";
+var APPV=304;var APPLABEL="1.700";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return!l.parent&&l.status!=="Not visited"}).length,mnAll=S.locations.filter(function(l){return l.parent}),mnVis=mnAll.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -6835,7 +6835,7 @@ function puLink(){return PU_SITE+"?c="+encodeURIComponent(S.pu.code)}
 function puShare(){var lk=puLink();return'<div class="card" style="margin-bottom:14px"><h3>Players link</h3><div class="mute">Players open this on their phone (scan the code or send them the link), pick their character, then use “Add to Home Screen”. Only people with this link can see or change the purse.</div><div style="display:flex;flex-direction:column;gap:8px"><div class="pulk">'+esc(lk)+'</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button data-pua="copy">Copy link</button>'+(navigator.share?'<button data-pua="send">Share</button>':'')+'<button data-pua="newcode">Make a new code</button><button data-pua="hide">Close</button></div><div class="mute" id="pumsg"></div><details><summary style="cursor:pointer;padding:6px 0"><b>Show QR code</b> <span class="mute">for players to scan</span></summary><div style="padding:8px 0">'+puQr(lk)+'</div></details></div></div>'}
 function puView(){var c=S.pu&&S.pu.code;setTimeout(puStart,0);
  if(!c)return'<div class="row"><h2>Treasure</h2></div><div class="card"><h3>Party purse</h3><div class="mute">Let your players record gold and treasure on their phones and see it here live. Create a secret party code to begin.</div><div><button class="pri" data-pua="make">Create party code</button></div></div>';
- return'<div class="row"><h2>Treasure</h2><div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><span id="pust" class="mute"></span><button data-pua="refresh">Refresh</button><button data-pua="share">Players link</button></div></div>'+(ui.puShare?puShare():"")+'<div id="pumain"></div>'}
+ return'<div class="row"><h2>Treasure</h2><div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><span id="pust" class="mute"></span><button data-pua="refresh">Refresh</button><button data-pua="share">Players link</button></div></div>'+(ui.puShare?puShare():"")+'<div id="pumain"></div>'+puBkRow()}
 document.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest("[data-pua]");if(!b)return;var a=b.dataset.pua;
  if(a==="make"){S.pu={code:puNewCode()};save();PU_LOADED="";ui.puShare=true;render()}
  else if(a==="share"){ui.puShare=!ui.puShare;render()}else if(a==="hide"){ui.puShare=false;render()}
@@ -6845,6 +6845,28 @@ document.addEventListener("click",function(e){var b=e.target.closest&&e.target.c
  else if(a==="newcode"){if(confirm("Make a new party code?\n\nPlayers will need the new link, and the current purse and treasure list will no longer be shown here. This cannot be undone.")){S.pu={code:puNewCode()};save();PU_LOADED="";render()}}});
 setInterval(function(){var c=S.pu&&S.pu.code;if(!c||document.hidden)return;var fast=puOn();if(Date.now()-PU_TRY>=(fast?4000:20000)){PU_TRY=Date.now();PUA.sync();puRoster()}},2000);
 if(S.pu&&S.pu.code){PUA.load();PU_LOADED=S.pu.code}
+
+/*PUBK-START*/
+function puBkSig(C){return JSON.stringify([C.purse,C.items.map(function(i){return[i.name,i.qty,i.val]})])}
+function puBkText(C){var d=new Date(),pad=function(n){return(n<10?"0":"")+n},L=[],cp=puCp(C.purse),iv=0;C.items.forEach(function(i){iv+=i.val*i.qty});
+ L.push("Curse of Strahd party purse backup","Saved: "+d.toLocaleString("en-GB"),"","PURSE (worth about "+puGp(cp)+" gp)");
+ PUC.forEach(function(c){L.push("  "+PUL[c]+" ("+c+"): "+C.purse[c])});
+ L.push("","TREASURE ITEMS ("+C.items.length+(iv?", worth about "+puGp(iv*100)+" gp":"")+")");
+ if(!C.items.length)L.push("  none");C.items.forEach(function(i){L.push("  "+(i.qty>1?i.qty+" x ":"")+i.name+(i.val?" ("+puVal(i.val)+(i.qty>1?" each":"")+")":"")+(i.note?" - "+i.note:"")+(i.who?" [found by "+i.who+"]":""))});
+ L.push("","RECENT HISTORY");C.hist.slice(0,50).forEach(function(e){L.push("  "+new Date(e.t).toLocaleString("en-GB")+" "+(e.who||"")+": "+puDesc(e,C)+(e.gone?" (undone)":""))});
+ L.push("","RAW DATA (JSON)",JSON.stringify({saved:d.toISOString(),purse:C.purse,items:C.items,log:PUA.full()}));return L.join("\r\n")}
+function puBackup(force){var bk=(S.pu=S.pu||{}).bk=S.pu.bk||{on:false,last:0,sig:""};
+ var run=function(){var C=PUA.calc(),sig=puBkSig(C);if(!force&&sig===bk.sig){bk.last=Date.now();save();return}
+  var d=new Date(),pad=function(n){return(n<10?"0":"")+n},name="strahd-purse-backup-"+d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())+"-"+pad(d.getHours())+pad(d.getMinutes())+".txt";
+  try{var u=URL.createObjectURL(new Blob([puBkText(C)],{type:"text/plain"})),a=document.createElement("a");a.href=u;a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){a.remove();URL.revokeObjectURL(u)},4000);bk.last=Date.now();bk.sig=sig;bk.file=name;bk.err="";}catch(x){bk.err="Could not save the file."}
+  save();var el=document.getElementById("pubkst");if(el)el.textContent=puBkStatus()};
+ return(navigator.onLine&&S.pu.code?PUA.sync().then(run,run):Promise.resolve(run()))}
+function puBkStatus(){var bk=(S.pu&&S.pu.bk)||{};return bk.err||(bk.last?"Last backup check "+new Date(bk.last).toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"})+(bk.file?", file "+bk.file:""):"No backup yet.")}
+function puBkRow(){var bk=(S.pu&&S.pu.bk)||{};return'<div class="card" style="margin-top:8px"><div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><label style="display:flex;gap:8px;align-items:center;width:auto"><input type="checkbox" data-pub="on"'+(bk.on?" checked":"")+' style="width:22px;height:22px"> Save a backup file to this device every hour</label><button data-pub="now">Back up now</button></div><div class="mute" id="pubkst">'+esc(puBkStatus())+'</div><div class="mute">Saves a text file to your Downloads folder when the purse or treasure has changed. It only runs while the app is open, and the browser may ask once to allow multiple downloads.</div></div>'}
+document.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest("[data-pub]");if(!b)return;var a=b.dataset.pub;S.pu=S.pu||{};var bk=S.pu.bk=S.pu.bk||{on:false,last:0,sig:""};
+ if(a==="now")puBackup(true);else if(a==="on"){bk.on=!!b.checked;if(bk.on)bk.last=Date.now()-36e5;save()}});
+setInterval(function(){var bk=S.pu&&S.pu.bk;if(!bk||!bk.on||!S.pu.code)return;if(Date.now()-(bk.last||0)>=36e5)puBackup(false)},60000);
+/*PUBK-END*/
 
 /*PURSE-END*/
 /*LOOT-START*/
