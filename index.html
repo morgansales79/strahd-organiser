@@ -763,7 +763,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=307;var APPLABEL="1.711";
+var APPV=308;var APPLABEL="1.712";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return!l.parent&&l.status!=="Not visited"}).length,mnAll=S.locations.filter(function(l){return l.parent}),mnVis=mnAll.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -2355,7 +2355,7 @@ function eqFind(name){var n=String(name||"").trim().toLowerCase();if(!n)return n
 function eqWeapons(){return eqAll().filter(function(x){return/Weapon|Melee|Ranged/.test(x.c)&&(x.dmg||/^Weapon|Magic Item \(Weapon\)/.test(x.c)||x.custom)||(x.custom&&x.dmg)})}
 function eqIsWeapon(x){return!!x&&(/Simple|Martial|Weapon/.test(x.c)||(!!x.dmg&&!/Ammunition/.test(x.c)&&!/Adventuring|Gear|Pack/.test(x.c)))}
 function eqNorm(e){e=(e&&typeof e==="object")?e:{};var a3=function(v){var o=Array.isArray(v)?v.slice(0,3):[];while(o.length<3)o.push("");return o.map(function(x){return str(x)})};
- var b=Array.isArray(e.b)?e.b.slice(0,3):[];while(b.length<3)b.push(0);return{w:a3(e.w),b:b.map(function(x){return Math.max(0,Math.min(3,parseInt(x,10)||0))}),dual:!!e.dual,armor:str(e.armor),shield:str(e.shield),att:a3(e.att),ab:Math.max(0,Math.min(3,parseInt(e.ab,10)||0)),sb:Math.max(0,Math.min(3,parseInt(e.sb,10)||0)),am:amNorm(e.am)}}
+ var b=Array.isArray(e.b)?e.b.slice(0,3):[];while(b.length<3)b.push(0);return{w:a3(e.w),b:b.map(function(x){return Math.max(0,Math.min(3,parseInt(x,10)||0))}),mg:[0,1,2].map(function(i){return!!(Array.isArray(e.mg)&&e.mg[i])}),dual:!!e.dual,armor:str(e.armor),shield:str(e.shield),att:a3(e.att),ab:Math.max(0,Math.min(3,parseInt(e.ab,10)||0)),sb:Math.max(0,Math.min(3,parseInt(e.sb,10)||0)),am:amNorm(e.am)}}
 function pcEq(m){m.eq=eqNorm(m.eq);return m.eq}
 function eqHint(m,w,bonus,two){var it=eqFind(w);if(!it)return{dice:"",t:"",txt:""};var pr=it.pr||"",ranged=/Ranged/.test(it.c)||(/Ammunition/.test(pr)),fin=/Finesse/.test(pr),sm=pcMod(m,"str"),dx=pcMod(m,"dex"),md=ranged?dx:fin?Math.max(sm,dx):sm,tot=md+(bonus||0);
  var d=it.dmg||"",vm=/Versatile \(([^)]+)\)/.exec(pr);if(two&&vm)d=vm[1];return{dice:d,t:it.dt,txt:d?d+(tot?(tot>0?"+":"")+tot:"")+(it.dt?" "+it.dt:""):""}}
@@ -2379,7 +2379,7 @@ function amLowList(){var o=[];S.party.forEach(function(m){var am=pcEq(m).am;["ar
 document.addEventListener("change",function(e){var el=e.target,d=el&&el.dataset;if(!d||!d.amk)return;var m=S.party.find(function(x){return x.id===d.amid});if(!m)return;pcEq(m).am[d.amk]=am1(el.value);save();render()});
 function pcEqUI(m){var e=pcEq(m),id=m.id,h='<details class="pcx" open><summary><b>Equipment</b> <span class="mute">weapons, armor and attuned items change AC, abilities and attacks</span></summary>';
  var n=e.dual?3:2,i;h+='<div class="sprow2" style="flex-wrap:wrap">';
- for(i=0;i<n;i++)h+='<div style="display:flex;gap:6px;align-items:flex-end;flex:1;min-width:250px">'+eqSlot(m,"w"+i,"Weapon "+(i+1),e.w[i])+eqSel(m,"b"+i,e.b[i])+'</div>';
+ for(i=0;i<n;i++)h+='<div style="display:flex;gap:6px;align-items:flex-end;flex:1;min-width:250px">'+eqSlot(m,"w"+i,"Weapon "+(i+1),e.w[i])+eqSel(m,"b"+i,e.b[i])+'<label class="chk" style="flex:none;min-width:0" title="Counts as a magic weapon in combat (gets past resistance to nonmagical weapons)"><input type="checkbox" class="yn" data-eqm="'+id+'" data-eqf="g'+i+'"'+(e.mg[i]||e.b[i]>0?" checked":"")+(e.b[i]>0?" disabled":"")+'><span>Magical</span></label></div>';
  h+='</div><label class="chk"><input type="checkbox" class="yn" data-eqm="'+id+'" data-eqf="dual"'+(e.dual?" checked":"")+'><span>Dual wielder (third active weapon)</span></label>';
  h+='<div class="sprow2" style="flex-wrap:wrap"><div style="display:flex;gap:6px;align-items:flex-end;flex:1;min-width:250px">'+eqSlot(m,"armor","Armor",e.armor)+eqSel(m,"ab",e.ab)+'</div><div style="display:flex;gap:6px;align-items:flex-end;flex:1;min-width:250px">'+eqSlot(m,"shield","Shield",e.shield)+eqSel(m,"sb",e.sb)+'</div></div>';
  h+='<div class="sprow2" style="flex-wrap:wrap">'+[0,1,2].map(function(k){return eqSlot(m,"att"+k,"Attuned item "+(k+1),e.att[k])}).join("")+'</div>';
@@ -2419,18 +2419,18 @@ var _pcCast1=pcCast;pcCast=function(m){var o=_pcCast1(m),b=0;((m.eq&&m.eq.att)||
 /* searchable picker */
 function eqPkDraw(){var P=ui.eqp;if(!P)return;var m=S.party.find(function(x){return x.id===P.id});if(!m){clHide("eqpk");return}var el=clOv("eqpk"),q=(P.q||"").trim().toLowerCase(),pool=eqPool(P.f).filter(function(x){return!q||(x.n+" "+x.c+" "+(x.pr||"")).toLowerCase().indexOf(q)>-1}).slice(0,80);
  el.innerHTML='<div class="clbox"><div class="atkh"><b>'+({armor:"Choose armor",shield:"Choose a shield"}[P.f]||(/^w/.test(P.f)?"Choose a weapon":"Choose an attuned item"))+'</b></div><input id="eqpq" data-eqpq="1" value="'+esc(P.q||"")+'" placeholder="Search by name" autocomplete="off"><div class="cllist" style="max-height:48vh;overflow:auto">'+pool.map(function(x){return'<button class="clrow'+(/^(w\d|armor|shield)$/.test(P.f)&&eqProfOf(m,x.n)===false?" nprof":"")+'" data-eqpk="'+esc(x.n)+'"><b>'+esc(x.n)+'</b> <span class="mute">'+esc([x.c,x.dmg?x.dmg+" "+x.dt:"",x.ac].filter(Boolean).join(" · "))+'</span></button>'}).join("")+(pool.length?"":'<span class="mute">No matches.</span>')+'</div>'+(q?'<button data-eqpk="'+esc((P.q||"").trim())+'">Use &ldquo;'+esc((P.q||"").trim())+'&rdquo; as typed</button>':'')+'<button data-eqpk="" data-cancel="1">Cancel</button></div>';el.style.display="flex"}
-function eqPkSet(m,f,v){var q=pcEq(m);if(f==="armor")q.armor=v;else if(f==="shield")q.shield=v;else if(/^w\d$/.test(f))q.w[+f[1]]=v;else if(/^att\d$/.test(f))q.att[+f[3]]=v;eqApply(m);save();render()}
+function eqPkSet(m,f,v){var q=pcEq(m);if(f==="armor")q.armor=v;else if(f==="shield")q.shield=v;else if(/^w\d$/.test(f)){q.w[+f[1]]=v;if(!v)q.mg[+f[1]]=false}else if(/^att\d$/.test(f))q.att[+f[3]]=v;eqApply(m);save();render()}
 document.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest("[data-eqp],[data-eqpk]");if(!b)return;
  if(b.dataset.eqp){var f=b.dataset.eqp,m=S.party.find(function(x){return x.id===b.dataset.id});if(!m)return;if(f.indexOf("x:")===0){eqPkSet(m,f.slice(2),"");return}ui.eqp={id:m.id,f:f,q:""};eqPkDraw();var i0=document.getElementById("eqpq");if(i0)i0.focus();return}
  var P=ui.eqp;if(!P)return;var m2=S.party.find(function(x){return x.id===P.id});if(m2&&!b.dataset.cancel)eqPkSet(m2,P.f,b.dataset.eqpk);ui.eqp=null;clHide("eqpk")},true);
 document.addEventListener("input",function(e){var el=e.target;if(el&&el.dataset&&el.dataset.eqpq&&ui.eqp){ui.eqp.q=el.value;var pos=el.selectionStart;eqPkDraw();var i=document.getElementById("eqpq");if(i){i.focus();try{i.setSelectionRange(pos,pos)}catch(x){}}}});
 document.addEventListener("change",function(e){var el=e.target,d=el&&el.dataset;if(!d||!d.eqm)return;var m=S.party.find(function(x){return x.id===d.eqm});if(!m)return;var q=pcEq(m),f=d.eqf,v=el.type==="checkbox"?!!el.checked:el.value;
- if(f==="dual"){q.dual=v;if(!v){q.w[2]="";q.b[2]=0}}else if(f==="ab")q.ab=parseInt(v,10)||0;else if(f==="sb")q.sb=parseInt(v,10)||0;else if(/^b\d$/.test(f))q.b[+f[1]]=parseInt(v,10)||0;
+ if(f==="dual"){q.dual=v;if(!v){q.w[2]="";q.b[2]=0;q.mg[2]=false}}else if(/^g\d$/.test(f))q.mg[+f[1]]=!!v;else if(f==="ab")q.ab=parseInt(v,10)||0;else if(f==="sb")q.sb=parseInt(v,10)||0;else if(/^b\d$/.test(f))q.b[+f[1]]=parseInt(v,10)||0;
  eqApply(m);save();render()});
 /* attack buttons for the encounter */
 function clAtks(c){var out=[],m=tgMemb(c);
  if(c.wsOn){var en=wsEnOf(c);if(en)atkParse(en.statblock).forEach(function(a){if(/two-handed/.test(a.name))return;var p=a.parts[0];out.push({n:a.name,t:p?p.t:"",mg:false,hint:p&&p.d?p.n+"d"+p.d+(p.k?(p.k>0?"+":"")+p.k:"")+(p.t?" "+p.t:""):(p&&p.k?p.k+" "+p.t:"")})});return out}
- if(!m)return out;var e=pcEq(m);for(var i=0;i<(e.dual?3:2);i++){var w=e.w[i];if(!w)continue;var h=eqHint(m,w,e.b[i]),it=eqFind(w);var nm=w+(e.b[i]?" +"+e.b[i]:""),mgc=e.b[i]>0||(it&&it.mg);out.push({n:nm,np:eqProfOf(m,w)===false,t:h.t,mg:mgc,hint:h.txt+(it&&it.pr?" ("+it.pr+")":"")});
+ if(!m)return out;var e=pcEq(m);for(var i=0;i<(e.dual?3:2);i++){var w=e.w[i];if(!w)continue;var h=eqHint(m,w,e.b[i]),it=eqFind(w);var nm=w+(e.b[i]?" +"+e.b[i]:""),mgc=e.b[i]>0||e.mg[i]||(it&&it.mg);out.push({n:nm,np:eqProfOf(m,w)===false,t:h.t,mg:mgc,hint:h.txt+(it&&it.pr?" ("+it.pr+")":"")});
   if(it&&/Versatile \(/.test(it.pr||"")&&!e.shield){var h2=eqHint(m,w,e.b[i],true);out.push({n:nm+" (2H)",np:eqProfOf(m,w)===false,t:h2.t,mg:mgc,hint:h2.txt+" two-handed, needs a free hand"})}}
  return out}
 /* equipment tab */
