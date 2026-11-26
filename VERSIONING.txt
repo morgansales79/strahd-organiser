@@ -206,3 +206,4 @@ ROLLBACK POINT: 1.610 build 225 (git tag v1.610-stable, copy strahd-organiser-v1
 1.710 build 306: Location and NPC notes now fill the main area (banner and sidebar stay visible) and reopen where you left them when you return to the tab.
 1.711 build 307: Enemy attack rolls have Advantage / Normal / Disadvantage radio buttons that always start on Normal and combine with condition-based advantage.
 1.712 build 308: Equipped weapons have a Magical checkbox; combat treats them as magic weapons (past nonmagical resistance). +1 or better weapons are always magical.
+1.713 build 309: Game clock now pauses after 5 minutes without input (was 10). Restore points saved every 15 minutes of active use (time plus each party member's food, drink and rest, and supplies), restorable from the Time log.
