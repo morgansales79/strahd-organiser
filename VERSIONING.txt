@@ -207,3 +207,4 @@ ROLLBACK POINT: 1.610 build 225 (git tag v1.610-stable, copy strahd-organiser-v1
 1.711 build 307: Enemy attack rolls have Advantage / Normal / Disadvantage radio buttons that always start on Normal and combine with condition-based advantage.
 1.712 build 308: Equipped weapons have a Magical checkbox; combat treats them as magic weapons (past nonmagical resistance). +1 or better weapons are always magical.
 1.713 build 309: Game clock now pauses after 5 minutes without input (was 10). Restore points saved every 15 minutes of active use (time plus each party member's food, drink and rest, and supplies), restorable from the Time log.
+1.714 build 310: Voice files. Put audio in Drive (Dungeons & Dragons / The Curse of Strahd / Voice) named by location and paragraph; Update voice files in the Voice panel; play buttons appear on Read aloud, letter, diary and similar paragraphs; ambient sound drops to a third while a clip plays; list of needed files can be downloaded.
