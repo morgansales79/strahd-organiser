@@ -210,3 +210,5 @@ ROLLBACK POINT: 1.610 build 225 (git tag v1.610-stable, copy strahd-organiser-v1
 1.714 build 310: Voice files. Put audio in Drive (Dungeons & Dragons / The Curse of Strahd / Voice) named by location and paragraph; Update voice files in the Voice panel; play buttons appear on Read aloud, letter, diary and similar paragraphs; ambient sound drops to a third while a clip plays; list of needed files can be downloaded.
 1.715 build 311: Session recap. One audio file named Recap in the Voice Drive folder, replaced before each session; Play recap card on the Dashboard.
 1.716 build 312: Voice files now find boxed 'Read out loud' text inside note tables (as in the imported Google Docs), not just labelled paragraphs.
+1.717 build 313: Voice files can sit in one Drive folder per location (named like the location) with short names like 01 - first words.mp3. The old single-folder names still work.
+1.717 build 313: Voice files can sit in one Drive folder per location (named like the location) with short names like 01 - first words.mp3. The old single-folder names still work.
