@@ -763,7 +763,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=311;var APPLABEL="1.715";
+var APPV=312;var APPLABEL="1.716";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return!l.parent&&l.status!=="Not visited"}).length,mnAll=S.locations.filter(function(l){return l.parent}),mnVis=mnAll.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -1270,13 +1270,13 @@ function notesLines(L,hc,vc){var h="";
   else{var ht=hc?rtHead(l):"",vb=vc?voBtn(L,ix,l,vc):"";h+=ht?'<div class="bp nh nh'+rtLv(l)+'" data-h="'+(hc.n++)+'">'+vb+rtHtml(l)+'</div>':'<div class="bp">'+vb+rtHtml(l)+'</div>'}});
  return h}
 function tbLum(h){var r=parseInt(h.substr(1,2),16),g=parseInt(h.substr(3,2),16),b=parseInt(h.substr(5,2),16);return(0.299*r+0.587*g+0.114*b)/255}
-function tbHtml(lines){var bm=(lines[0]||"").match(/border=(#[0-9a-fA-F]{6})/),rows=[],cr=null,cc=null;
+function tbHtml(lines,vc){var bm=(lines[0]||"").match(/border=(#[0-9a-fA-F]{6})/),rows=[],cr=null,cc=null;
  lines.slice(1,lines.length&&lines[lines.length-1]===TBO+"/table"+TBC?-1:undefined).forEach(function(l){
   if(l===TBO+"row"+TBC){cr=[];rows.push(cr);cc=null;return}
   var m=l.match(/^⟦cell(?: bg=(#[0-9a-fA-F]{6}))?⟧$/);if(m){if(!cr){cr=[];rows.push(cr)}cc={bg:m[1]||"",lines:[]};cr.push(cc);return}
   if(cc)cc.lines.push(l)});
- return'<table class="ntb"'+(bm?' style="--tb:'+bm[1]+'"':'')+'><tbody>'+rows.map(function(r){return'<tr>'+r.map(function(c){var st=c.bg?'background:'+c.bg+';color:'+(tbLum(c.bg)>0.55?"#111":"#f4f2f7"):"";return'<td'+(st?' style="'+st+'"':'')+'>'+notesLines(c.lines,null)+'</td>'}).join("")+'</tr>'}).join("")+'</tbody></table>'}
-function notesHtml(t,loc){var hc={n:0},vc=loc?{loc:loc,n:0,sibs:voScan(t).map(function(x){return voNorm(voWords(x.t))})}:null,h="";tbSplit(t).forEach(function(sg){h+=sg.tbl?tbHtml(sg.lines):notesLines(sg.lines,hc,vc)});return h}
+ return'<table class="ntb"'+(bm?' style="--tb:'+bm[1]+'"':'')+'><tbody>'+rows.map(function(r){return'<tr>'+r.map(function(c){var st=c.bg?'background:'+c.bg+';color:'+(tbLum(c.bg)>0.55?"#111":"#f4f2f7"):"";return'<td'+(st?' style="'+st+'"':'')+'>'+notesLines(c.lines,null,vc)+'</td>'}).join("")+'</tr>'}).join("")+'</tbody></table>'}
+function notesHtml(t,loc){var hc={n:0},vc=loc?{loc:loc,n:0,sibs:voScan(t).map(function(x){return voNorm(voWords(x.t))})}:null,h="";tbSplit(t).forEach(function(sg){h+=sg.tbl?tbHtml(sg.lines,vc):notesLines(sg.lines,hc,vc)});return h}
 function nzJump(i){var r=document.querySelector('#nzov [data-h="'+i+'"]');if(r&&r.scrollIntoView)r.scrollIntoView({block:"start",behavior:"smooth"})}
 document.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest("[data-nzj]");if(b)nzJump(b.dataset.nzj)});
 /*TB-END*/
@@ -3135,10 +3135,11 @@ var _clkAdvW=clkAdv;clkAdv=function(h){_clkAdvW.apply(this,arguments);if(h>0)sur
 var VO={pl:null,el:null,url:null,duck:false,busy:"",msg:"",open:false,only:false,have:{},items:[],pc:{}};
 function voV(){var v=S.vo;if(!v||typeof v!=="object")v=S.vo={files:{},h:{},at:0};if(!v.files||typeof v.files!=="object")v.files={};if(!v.h||typeof v.h!=="object")v.h={};return v}
 function audVol(){return au().vol*(VO.duck?0.33:1)}
-var VOTRIG=/^\s*(read aloud|read to (?:the )?(?:players|party|table)|boxed text|letter|diary(?: entry)?|journal(?: entry)?|handout|inscription|epitaph|poem|voice)\b[^:\n]{0,40}:\s*/i;
+var VOTRIG=/^\s*(read(?:\s+out)?\s+(?:aloud|loud)|read to (?:the )?(?:players|party|table)|boxed text|letter|diary(?: entry)?|journal(?: entry)?|handout|inscription|epitaph|poem|voice)\b[^:\n]{0,40}:\s*/i;
 function voLabel(l){var p=rtPlain(l),m=p.match(VOTRIG);return m?{p:p,m:m}:null}
 function voText(L,i,lb){var t=lb.p.slice(lb.m[0].length),j,x;for(j=i+1;j<L.length;j++){x=L[j];if(!x.trim()||NBU.test(x)||voLabel(x)||rtHead(x))break;t+=" "+rtPlain(x).trim()}return t.replace(/\s+/g," ").trim()}
-function voScan(notes){var out=[],n=0;tbSplit(notes).forEach(function(sg){if(sg.tbl)return;var L=sg.lines,i,lb;for(i=0;i<L.length;i++){if(NBU.test(L[i]))continue;lb=voLabel(L[i]);if(!lb)continue;n++;out.push({k:n,t:voText(L,i,lb)})}});return out}
+function voCells(lines){var cells=[],cc=null;lines.slice(1,lines.length&&lines[lines.length-1]===TBO+"/table"+TBC?-1:undefined).forEach(function(l){if(l===TBO+"row"+TBC){cc=null;return}if(/^\u27e6cell(?: bg=(#[0-9a-fA-F]{6}))?\u27e7$/.test(l)){cc=[];cells.push(cc);return}if(cc)cc.push(l)});return cells}
+function voScan(notes){var out=[],st={n:0};function sc(L){var i,lb;for(i=0;i<L.length;i++){if(NBU.test(L[i]))continue;lb=voLabel(L[i]);if(!lb)continue;st.n++;out.push({k:st.n,t:voText(L,i,lb)})}}tbSplit(notes).forEach(function(sg){if(sg.tbl)voCells(sg.lines).forEach(sc);else sc(sg.lines)});return out}
 function voNorm(s){return String(s||"").toLowerCase().replace(/[^a-z0-9]+/g,"")}
 function voWords(t){return String(t||"").split(/\s+/).filter(Boolean).slice(0,6).join(" ")}
 function voHash(t){var s=String(t||"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim(),h=5381,i;for(i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return String(h>>>0)}
