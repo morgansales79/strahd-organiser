@@ -212,3 +212,4 @@ ROLLBACK POINT: 1.610 build 225 (git tag v1.610-stable, copy strahd-organiser-v1
 1.716 build 312: Voice files now find boxed 'Read out loud' text inside note tables (as in the imported Google Docs), not just labelled paragraphs.
 1.717 build 313: Voice files can sit in one Drive folder per location (named like the location) with short names like 01 - first words.mp3. The old single-folder names still work.
 1.717 build 313: Voice files can sit in one Drive folder per location (named like the location) with short names like 01 - first words.mp3. The old single-folder names still work.
+1.718 build 314: Voice files keep stable numbers per box. A new box inserted between 1 and 2 asks for file 1.1 (then 1.2 and so on), so existing files keep their names.
