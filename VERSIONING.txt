@@ -214,3 +214,4 @@ ROLLBACK POINT: 1.610 build 225 (git tag v1.610-stable, copy strahd-organiser-v1
 1.717 build 313: Voice files can sit in one Drive folder per location (named like the location) with short names like 01 - first words.mp3. The old single-folder names still work.
 1.718 build 314: Voice files keep stable numbers per box. A new box inserted between 1 and 2 asks for file 1.1 (then 1.2 and so on), so existing files keep their names.
 1.720 build 316: Put the app back to the 1.718 behaviour (handouts numbered with the other read-aloud boxes). The 1.719 handout naming change was withdrawn.
+1.721 build 317: Sync no longer hangs forever. After 2 minutes it stops with a message saying which step Google did not answer on (for example which document).

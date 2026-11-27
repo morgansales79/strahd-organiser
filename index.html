@@ -763,7 +763,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=316;var APPLABEL="1.720";
+var APPV=317;var APPLABEL="1.721";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return!l.parent&&l.status!=="Not visited"}).length,mnAll=S.locations.filter(function(l){return l.parent}),mnVis=mnAll.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -4874,6 +4874,7 @@ function gNpcSec(sec){var rc=sec.recs.filter(function(r){return r.k==="t"}),i=0;
 function syncDoc(res){
  var c=gcfg(),base=S.gdocBase2||(S.gdocBase2={}),baseN=S.gdocBaseN||(S.gdocBaseN={}),bk=S.gdocBackup||(S.gdocBackup={}),st={pulled:0,pushed:0,added:0,skipped:0,nodoc:0,docs:0,npcs:0},conf=[],heads=[],changed=false;
  function one(j,retry){
+  GC.stage="reading the "+(j.n?"NPC ":"")+"document \u201c"+(j.f&&j.f.name||"?")+"\u201d";
   return gapi("GET","https://docs.googleapis.com/v1/documents/"+encodeURIComponent(j.f.id)).then(function(doc){
    var D=gdocSecs(doc),k=gnk(j.f.name),sec=D.secs.filter(function(x){return gnk(x.name)===k})[0]||D.secs[0];
    if(!sec)return;
@@ -4888,7 +4889,7 @@ function syncDoc(res){
    if(dc&&!ac){if(bs===undefined&&L.notes&&!bk[key])bk[key]=L.notes;L.notes=dt;bs0[L.name]=dt;st.pulled++;changed=true;return}
    if(ac&&!dc){if(sec.unsafe){st.skipped++;return}
     var reqs=gPushReqs(sec,app,D);if(!reqs.length)return;
-    return gapi("POST","https://docs.googleapis.com/v1/documents/"+encodeURIComponent(j.f.id)+":batchUpdate",{requests:reqs,writeControl:{requiredRevisionId:doc.revisionId}}).then(function(){bs0[L.name]=app;changed=true;st.pushed++},function(e){if(!retry&&/revision/i.test(String(e.message)))return one(j,true);throw e})}})}
+    GC.stage="sending changes to \u201c"+j.f.name+"\u201d";return gapi("POST","https://docs.googleapis.com/v1/documents/"+encodeURIComponent(j.f.id)+":batchUpdate",{requests:reqs,writeControl:{requiredRevisionId:doc.revisionId}}).then(function(){bs0[L.name]=app;changed=true;st.pushed++},function(e){if(!retry&&/revision/i.test(String(e.message)))return one(j,true);throw e})}})}
  return Promise.all([gListDocs(c.locFolder),c.npcFolder?gListDocs(c.npcFolder).catch(function(){return[]}):Promise.resolve([])]).then(function(fl){
   var files=fl[0],nfiles=fl[1],byk={},nbyk={},seen={},jobs=[],i=0;
   files.forEach(function(f){var k=gnk(f.name);if(k&&!byk[k])byk[k]=f});nfiles.forEach(function(f){var k=gnk(f.name);if(k&&!nbyk[k])nbyk[k]=f});
@@ -4900,11 +4901,12 @@ function syncDoc(res){
 function gRun(auto,quick){
  if(GC.busy)return;
  GC.busy=true;GC.silent=!!auto;GC.quick=!!quick;GC.log=[];GC.err="";GC.conf=null;GC.autoErr="";gsDraw();
- var tmo=null,sbx=document.getElementById("syncbtn");if(auto||quick){if(sbx)sbx.textContent="Syncing...";if(auto)tmo=setTimeout(function(){if(GC.busy){GC.busy=false;GC.silent=false;GC.autoErr="Google did not answer in time.";gsDraw()}},20000)}
+ var tmo=null,sbx=document.getElementById("syncbtn");if(auto||quick){if(sbx)sbx.textContent="Syncing...";}
+ GC.stage="signing in to Google";tmo=setTimeout(function(){if(GC.busy){GC.busy=false;GC.silent=false;var tm0="Google did not answer in time"+(GC.stage?" while "+GC.stage:"")+". Check your connection and tap Sync again.";if(auto)GC.autoErr=tm0;else{GC.err=tm0;if(quick)GC.open=true}var sb9=document.getElementById("syncbtn");if(sb9)sb9.textContent=gdirty()?"Sync \u2022":"Sync";gsDraw()}},auto?20000:120000);
  var out=null;
- gToken().then(syncDevice).then(function(st){
+ gToken().then(function(){GC.stage="syncing your data with Drive";return syncDevice.apply(null,arguments)}).then(function(st){
   if(st==="conflict")return"stop";
-  return syncDoc(GC.res).then(function(r){
+  GC.stage="reading the location documents";return syncDoc(GC.res).then(function(r){
    out=r;GC.dconf=r.conf;GC.heads=r.heads;GC.res={};
    var s=r.st,bits=[];if(s.pulled)bits.push(s.pulled+" location"+(s.pulled>1?"s":"")+" updated from the doc");if(s.pushed)bits.push(s.pushed+" sent to the doc");if(s.added)bits.push(s.added+" new heading"+(s.added>1?"s":"")+" added to the doc");if(s.npcs)bits.push(s.npcs+" NPC doc"+(s.npcs>1?"s":"")+" checked");if(s.nodoc)bits.push(s.nodoc+" location"+(s.nodoc>1?"s have":" has")+" no doc in the Locations folder");if(s.skipped)bits.push(s.skipped+" skipped (the doc section has a table or drawing)");if(s.maps)bits.push(s.maps+" map"+(s.maps>1?"s":"")+" saved for offline use");if(s.mapsFail)bits.push(s.mapsFail+" map"+(s.mapsFail>1?"s":"")+" could not be saved ("+(s.mapsErr||"unknown reason")+")");
    gLog(bits.length?"Doc: "+bits.join(", ")+".":"Doc: nothing to change.");
