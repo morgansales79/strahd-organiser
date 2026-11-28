@@ -774,7 +774,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=325;var APPLABEL="1.729";
+var APPV=326;var APPLABEL="1.730";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return!l.parent&&l.status!=="Not visited"}).length,mnAll=S.locations.filter(function(l){return l.parent}),mnVis=mnAll.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -2020,6 +2020,7 @@ function clTot(c){var h=parseInt(c.hp,10)||0;return c.wsOn?h+(parseInt(c.wsHp,10
 function clAdd(e){S.clog=Array.isArray(S.clog)?S.clog:[];var s0=e.srcId?clCmb(e.srcId):null,t0=e.tgtId?clCmb(e.tgtId):null;
  e.id=uid();e.r=S.round||1;e.src=s0?s0.name:(e.src||"");e.srcPc=s0?s0.kind==="pc":false;e.tgt=t0?t0.name:(e.tgt||"");e.tgtPc=t0?t0.kind==="pc":false;
  e.amt=Math.max(0,Math.round(e.amt||0));e.what=e.what||"";S.clog.push(e);if(S.clog.length>600)S.clog.shift();return e.id}
+var _clAddSb=clAdd;clAdd=function(e){var id=_clAddSb.apply(this,arguments);try{if(SBX.on&&!SBX.busy&&e&&(e.k==="dmg"||e.k==="miss"||e.k==="heal")){var w=e.what?" ("+e.what+")":"";sbLog((e.src||"Someone")+(e.k==="dmg"?" hit "+e.tgt+" for "+e.amt+w+(e.dead?" – DOWN":""):e.k==="miss"?" missed "+e.tgt+w:" healed "+e.tgt+" for "+e.amt+w))}}catch(x){}return id};
 function clDel(id){S.clog=(S.clog||[]).filter(function(e){return e.id!==id})}
 var _dmgTo0=dmgTo;dmgTo=function(tg,d){d=Math.max(0,d|0);if(!d)return;var h0=clTot(tg);_dmgTo0(tg,d);var h1=clTot(tg);
  clAdd({k:"dmg",srcId:ui.cl?ui.cl.src:"",tgtId:tg.id,amt:d,what:ui.cl?ui.cl.what:"Group damage",h0:h0,h1:h1,dead:h1<=0})};
@@ -2810,12 +2811,12 @@ function cndFindFail(tail){var s=String(tail).split(/\.\s/)[0],o=cndFind(s);if(!
 function cndText(mc,at){
  if(at.sp&&at.spk){var sp=spFind(at.spk);return sp?String(sp.x||""):""}
  var en=wsEnOf(mc),ls=String(en&&en.statblock||"").split(/\n/),nm=String(at.name).replace(/\s*\(.*$/,"").toLowerCase(),i,j;
- for(i=0;i<ls.length;i++){var h=ls[i].match(/^\s*([A-Z][^.:]{1,45}?)\.\s/);if(h&&h[1].trim().toLowerCase()===nm){var t=ls[i];for(j=i+1;j<ls.length;j++){var nx=ls[j];if(!nx.trim()||/^[A-Z][A-Z ]+$/.test(nx.trim())||/^\s*[A-Z][^.:]{1,45}\.\s/.test(nx))break;t+=" "+nx.trim()}return t}}
+ for(i=0;i<ls.length;i++){var h=ls[i].match(/^\s*([A-Z][^.:]{1,45}?)\.\s/);if(h&&h[1].replace(/\s*\(.*$/,"").trim().toLowerCase()===nm){var t=ls[i];for(j=i+1;j<ls.length;j++){var nx=ls[j];if(!nx.trim()||/^[A-Z][A-Z ]+$/.test(nx.trim())||/^\s*[A-Z][^.:]{1,45}\.\s/.test(nx))break;t+=" "+nx.trim()}return t}}
  return""}
 function cndRiderTxt(t,dc0,ab0){t=String(t||"");var m=t.match(/DC\s*(\d+)\s+(Strength|Dexterity|Constitution|Intelligence|Wisdom|Charisma|STR|DEX|CON|INT|WIS|CHA)\s+(?:saving throw|save)\b/i),dc=dc0||(m?+m[1]:0),ab=ab0||(m?m[2].slice(0,3).toLowerCase():"");
  var sm=m?{i:m.index+m[0].length}:null;if(!sm){var q=t.match(/saving throw/i);if(q)sm={i:q.index+q[0].length}}if(!sm||!dc||!ab)return null;var tail=t.slice(sm.i),conds=cndFindFail(tail);if(!conds.length)return null;
  var end=/\b(?:saving throw|save)[^.]*\bend of each of (?:its|their|the target's|each target's) turns|\bend of each of (?:its|their|the target's|each target's) turns[^.]*\b(?:saving throw|save)\b|repeats? the (?:saving throw|save)|can make another [a-z]+ (?:saving throw|save)/i.test(tail);
- var d=tail.match(/\bfor (\d+) (minute|hour|round)s?\b/i),dur=d?d[1]+" "+d[2]+(d[1]==="1"?"":"s"):/until the end of (?:the target's|its) next turn/i.test(tail)?"until end of next turn":/for the duration/i.test(tail)?"duration":"";
+ var d=tail.match(/\bfor (\d+) (minute|hour|round)s?\b/i),dur=d?d[1]+" "+d[2]+(d[1]==="1"?"":"s"):/until the end of (?:the target's|its|the [a-z' -]+?'s) next turn/i.test(tail)?"until end of next turn":/for the duration/i.test(tail)?"duration":"";
  return{dc:dc,ab:ab,conds:conds,end:end,dur:dur}}
 function cndRider(mc,at){var sp=at.spk?spFind(at.spk):null;if(sp&&CL_FX[sp.n])return cndSpellRider(sp,at.kind==="sv"?at.dc:0,at.ab||(sp.dc?sp.dc[0]:""));return cndRiderTxt(cndText(mc,at),at.kind==="sv"?at.dc:0,at.ab||(sp&&sp.dc?sp.dc[0]:""))}
 function cndImmune(c,n){var m=tgMemb(c),low=n.toLowerCase();
