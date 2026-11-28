@@ -767,7 +767,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=321;var APPLABEL="1.725";
+var APPV=322;var APPLABEL="1.726";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return!l.parent&&l.status!=="Not visited"}).length,mnAll=S.locations.filter(function(l){return l.parent}),mnVis=mnAll.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -2920,7 +2920,10 @@ function cndAtkMode(mc,tg,at){var ac=mc.conds||[],tc=tg.conds||[],adv=[],dis=[],
  if(auto&&mode!=="n"&&adv.length&&!dis.length)why=["advantage: "+adv.join("; ")];
  return{mode:mode,why:why.join(""),auto:auto}}
 var _cnDrawLg=cnDraw;
-cnDraw=function(){var q=ui.cn||[],it=q[0];if(!it||it.t!=="csregen")return _cnDrawLg();
+cnDraw=function(){var q=ui.cn||[],it=q[0];if(it&&it.t==="rchg"){var rc0=clCmb(it.cid);if(!rc0){q.shift();cnDraw();return}var el0=cnOv(),h0="";
+ it.rows.forEach(function(x,i){h0+='<div class="cnrow" style="margin:8px 0"><b>'+esc(x.name)+'</b>: rolled <b>'+x.roll+'</b> (needs '+x.rch+(x.rch<6?'-6':'')+') <b class="'+(x.ok?"ok":"bad")+'">'+(x.ok?"RECHARGED":"NOT recharged")+'</b> <button data-cd="rco" data-i="'+i+'">Overrule: mark '+(x.ok?"not recharged":"recharged")+'</button></div>'});
+ el0.innerHTML='<div class="clbox cnbox"><div class="atkh"><b>'+esc(rc0.name)+': Recharge</b></div><div class="cnbody">'+h0+'</div><div class="cllist"><button class="pri" data-cd="rcok">OK</button></div></div>';el0.style.display="flex";return}
+ if(!it||it.t!=="csregen")return _cnDrawLg();
  var c=clCmb(it.cid);if(!c){q.shift();cnDraw();return}var rg=regOf((wsEnOf(c)||{}).statblock);if(!rg){q.shift();cnDraw();return}
  var el=cnOv();el.innerHTML='<div class="clbox cnbox"><div class="atkh"><b>'+esc(c.name)+': Regeneration</b></div><div class="cnbody">'+esc(rg.text)+(it.warn?'<div class="bad" style="margin-top:6px"><b>'+esc(it.warn)+'</b></div>':'')+'<div class="mute" style="margin-top:6px">Currently '+esc(c.hp)+' / '+esc(c.max)+' HP.</div></div><div class="cllist"><button class="'+(it.warn?"":"pri")+'" data-cd="rgy">Regain '+rg.n+' hit points</button><button class="'+(it.warn?"pri":"")+'" data-cd="rgn">It does not work this turn</button></div></div>';el.style.display="flex"};
 document.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest("[data-lm],[data-cd]");if(!b||b.tagName==="INPUT"||b.tagName==="SELECT")return;
@@ -2932,13 +2935,15 @@ document.addEventListener("click",function(e){var b=e.target.closest&&e.target.c
   c.use=c.use||{};c.use._leg=Math.min(lg.n,(c.use._leg||0)+e2.cost);save();var a=actList(en),ix=legIdx(a,e2);render();
   if(ix>=0){var src=a[ix],cl={};Object.keys(src).forEach(function(q){cl[q]=src[q]});cl.noCount=true;cl.name=e2.name;tgOpen(c.id,ix,cl)}
   else cnPush({t:"note",title:c.name+": "+e2.name+(e2.cost>1?" (costs "+e2.cost+")":""),msg:esc(e2.text)+'<div class="mute" style="margin-top:6px">'+(lg.n-Math.min(lg.n,c.use._leg))+' legendary action'+(lg.n-Math.min(lg.n,c.use._leg)===1?"":"s")+' left.</div>'})}
+ else if(cd==="rco"&&it&&it.t==="rchg"){var x=it.rows[+b.dataset.i],rc=clCmb(it.cid);if(!x||!rc)return;x.ok=!x.ok;rc.use=rc.use||{};if(x.ok)delete rc.use[x.key];else rc.use[x.key]=1;save();render();cnDraw()}
+ else if(cd==="rcok"&&it&&it.t==="rchg"){cnShift();render()}
  else if(cd==="rgy"||cd==="rgn"){var it0=it&&it.t==="csregen"?it:null;if(!it0)return;var rc=clCmb(it0.cid),rg=rc&&regOf((wsEnOf(rc)||{}).statblock);cnShift();if(cd==="rgy"&&rc&&rg){clHeal(rc,rg.n,{src:rc.id,what:"Regeneration"});clTurnToast("<b>"+esc(rc.name)+"</b> regenerates "+rg.n+" hit points.")}save();render()}
  else if(cd==="lr"&&it&&it.t==="csapp"){var i2=+b.dataset.i,r=it.rows[i2],t=r&&clCmb(r.id);if(!r||!t||lrLeft(t)<1)return;t.use=t.use||{};t.use._lr=(t.use._lr||0)+1;(r.added||[]).forEach(function(cid){cndRemove(t,cid)});r.added=[];r.ok=true;r.out="used Legendary Resistance, saved";save();render();cnDraw()}});
 var _advLg=advanceTurn;
 advanceTurn=function(){_advLg.apply(this,arguments);var cc=clCmb(S.turnId);if(!cc||cc.kind!=="mon")return;var en=wsEnOf(cc);if(!en)return;var msgs=[],ch=false;cc.use=cc.use||{};
  if(cc.use._leg){delete cc.use._leg;ch=true}
- limOf(en.statblock).forEach(function(L){if(L.rch&&cc.use[L.key]>0){var r=d6x();ch=true;if(r>=L.rch){delete cc.use[L.key];msgs.push("<b>"+esc(L.name)+"</b> recharged (rolled "+r+").")}else msgs.push("<b>"+esc(L.name)+"</b> did not recharge (rolled "+r+", needs "+L.rch+(L.rch<6?"-6":"")+").")}});
- if(msgs.length)clTurnToast("<b>"+esc(cc.name)+"</b>: "+msgs.join(" "));
+  var rows=[];limOf(en.statblock).forEach(function(L){if(L.rch&&cc.use[L.key]>0){var r=d6x();ch=true;var ok=r>=L.rch;if(ok)delete cc.use[L.key];rows.push({key:L.key,name:L.name,rch:L.rch,roll:r,ok:ok})}});
+ if(rows.length){if(SBX.on&&SBX.autoEn)clTurnToast("<b>"+esc(cc.name)+"</b>: "+rows.map(function(x){return"<b>"+esc(x.name)+"</b> "+(x.ok?"recharged":"did not recharge")+" (rolled "+x.roll+")"}).join(", ")+".");else cnPush({t:"rchg",cid:cc.id,rows:rows})}
  var rg=regOf(en.statblock);if(rg&&parseInt(cc.hp,10)>0&&!(ui.cn||[]).some(function(x){return x.t==="csregen"&&x.cid===cc.id}))cnPush({t:"csregen",cid:cc.id,warn:regWarn(cc,rg)});
  if(ch){save();render()}};
 function d6x(){return 1+Math.floor(Math.random()*6)}
