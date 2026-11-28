@@ -774,7 +774,7 @@ function abcBy(l,f){return l.slice().sort(function(a,b){return String(f(a)).loca
 function opts(list,sel){return list.map(function(o){return'<option'+(o===sel?" selected":"")+'>'+esc(o)+'</option>'}).join("")}
 function fld(label,k,id,f,val,type){return'<label class="f">'+label+'<input '+(type?'type="'+type+'" ':'')+'data-k="'+k+'" data-id="'+id+'" data-f="'+f+'" value="'+esc(val)+'"></label>'}
 function delBtn(k,id,what){var armed=ui.del&&ui.del.k===k&&ui.del.id===id;return'<button class="del" data-a="del" data-k="'+k+'" data-id="'+id+'" aria-label="'+(armed?"Confirm delete of ":"Delete ")+esc(what||"item")+'">'+(armed?"Confirm delete":"Delete")+'</button>'}
-var APPV=324;var APPLABEL="1.728";
+var APPV=325;var APPLABEL="1.729";
 function dash(){
  var met=S.npcs.filter(function(n){return n.met}).length,done=S.quests.filter(function(q){return q.status==="Done"}).length,act=S.quests.filter(function(q){return q.status==="Active"}).length,vis=S.locations.filter(function(l){return!l.parent&&l.status!=="Not visited"}).length,mnAll=S.locations.filter(function(l){return l.parent}),mnVis=mnAll.filter(function(l){return l.status!=="Not visited"}).length;
  var box=function(n,l){return'<div class="card"><div class="stat">'+n+'</div><div class="mute">'+l+'</div></div>'};
@@ -1415,10 +1415,11 @@ function tgRoll(){var T=ui.tg,k=tgCur();if(!T||!k)return;var at=k.at,rows=[],sha
   else{var b=tgSvBon(c,at.ab),sv0=svRoll(c,at.ab,!!at.magic),n=sv0.n,bn1=cndBane(c),t=n+b-bn1;row.bane=bn1;row.nat=n;row.bon=b;row.tot=t;row.svwhy=sv0.txt;row.passed=!sv0.auto&&t>=at.dc;if(sv0.auto){row.autof=1}row.parts=shared}
   rows.push(row)});
  T.res={rows:rows};rows.forEach(function(r){tgApplyRow(r,at)});if(at.kind=="sv")exhPop(rows.map(function(r){return{m:tgMemb(r.c),kind:"save"}}));save();tgCount(at.sp?multiN(wsEnOf(k.mc)):at.kind==="atk"?rows.length:(rows.length?1:0))}
+var TG_GRP=false;
 function tgRowHtml(row,at,i){var c=row.c,h='<div class="tgrow"><b>'+esc(c.name)+'</b> ',d=tgDmg(row,at);
  if(at.kind==="atk"&&at.auto){h+='<b class="ok">Hits automatically</b>'}
  else if(at.kind==="atk"){h+='<span class="mute">d20 '+row.r+(row.why?' ['+esc(row.why)+']':'')+(at.bonus>=0?" + ":" − ")+Math.abs(at.bonus)+(row.bane?" \u2212 "+row.bane+" (Bane)":"")+' = '+row.tot+(isNaN(row.ac)?'':' vs AC '+row.ac)+'</span> '+(row.crit?'<b class="ok">CRITICAL HIT</b>':row.fum?'<b class="bad">Natural 1, miss</b>':row.hit?'<b class="ok">Hit</b>':'<b class="bad">Miss</b>')}
- else{var abU=at.ab.toUpperCase();if(row.pend)h+='<span class="mute">'+abU+' save vs DC '+at.dc+'. Ask the player for the total:</span>'+exhTag(tgMemb(c),"save")+baneTag(c)+svTag(c,at.ab,!!at.magic)+' <input id="tgin'+i+'" inputmode="numeric" style="width:70px" placeholder="total" aria-label="Save total"> <button data-tg="pv" data-i="'+i+'">Apply</button> ';
+ else{var abU=at.ab.toUpperCase();if(row.pend)h+='<span class="mute">'+abU+' save vs DC '+at.dc+'. Ask the player for the total:</span>'+exhTag(tgMemb(c),"save")+baneTag(c)+svTag(c,at.ab,!!at.magic)+(TG_GRP?' <span class="mute">(enter the total in the box above)</span>':' <input id="tgin'+i+'" inputmode="numeric" style="width:70px" placeholder="total" aria-label="Save total"> <button data-tg="pv" data-i="'+i+'">Apply</button> ');
   else h+=svRowTxt(row,at,abU);
   h+='<select data-tg="pass" data-i="'+i+'" aria-label="Save result">'+(row.pend?'<option value="x" selected>Awaiting result</option>':'')+'<option value="0"'+(!row.pend&&!row.passed?" selected":"")+'>Failed save</option><option value="1"'+(!row.pend&&row.passed?" selected":"")+'>Saved'+(ui.tg.half?" (half damage)":" (no damage)")+'</option></select>'}
  h+=tgRiderHtml(row,at,i);
@@ -1434,7 +1435,8 @@ function tgDraw(){var T=ui.tg,el=document.getElementById("tgpop");if(!el){el=doc
   else if(!at.parts||at.parts.length)h+='<label class="chk"><input type="checkbox" class="yn" data-tg="half"'+(T.half?" checked":"")+'><span>Half damage on a successful save</span></label>';
   h+=cndHint(mc,at)+cndAtkNote(mc,at);
   h+='<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="pri" data-tg="roll">'+(T.res?"Roll again":"Roll")+'</button><button data-tg="quick">Quick roll, no target</button></div>';
-  if(T.res&&T.res.rows.filter(function(r){return r.pend||r.rpend}).length>1)h+='<div class="tgrow"><span class="mute">Enter every player\'s total below, then apply them all at once.</span> <button class="pri" data-tg="pall">Apply all entered totals</button></div>';
+  var pq=T.res?T.res.rows.map(function(r,ix){return r.pend?ix:-1}).filter(function(x){return x>=0}):[];TG_GRP=pq.length>1;
+  if(TG_GRP)h+='<div class="tgrow"><div class="mute" style="margin-bottom:6px">'+esc(at.ab.toUpperCase())+' save vs DC '+at.dc+'. Type each player\'s total, press Enter to move to the next.</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 14px">'+pq.map(function(ix){var c=T.res.rows[ix].c;return'<label style="display:flex;align-items:center;gap:6px;min-width:0"><span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"><b>'+esc(c.name)+'</b></span><input data-tgg="1" id="tgin'+ix+'" inputmode="numeric" style="width:64px" placeholder="total" aria-label="'+esc(c.name)+' save total"></label>'}).join("")+'</div><div style="margin-top:10px"><button class="pri" data-tg="pall">Apply all</button></div></div>';
   if(T.res)h+=T.res.rows.length?T.res.rows.map(function(r,i){return tgRowHtml(r,at,i)}).join(""):'<div class="mute">Nobody is selected.</div>'}
  h+='<button data-tg="close">Close</button></div>';el.innerHTML=h;el.style.display="flex"}
 function tgChange(e){var el=e.target,d=el.dataset,T=ui.tg;if(!d||!d.tg||!T)return;var g=d.tg;
@@ -1454,7 +1456,9 @@ function tgClick(e){var T=ui.tg,el=document.getElementById("tgpop"),b=e.target.c
   if(g==="pv"){rw.pend=false;rw.hand=false;rw.typed=true;rw.tot=vv;rw.passed=vv>=k.at.dc}else{rw.rpend=false;rw.rsv={nat:vv,bon:0,tot:vv,typed:true,passed:T.rd&&vv>=T.rd.dc}}
   tgApplyRow(rw,k.at);save();render();tgDraw()}
  else if(g==="quick"&&k){var hh=atkRoll(k.mc,T.i,T.mode||"n");tgCount(1);el.style.display="none";atkPop(k.mc,hh);if(tgTurnDone()){ui.tg=null;advanceTurn()}else render()}}
-document.addEventListener("keydown",function(e){if(e.key==="Escape"){var el=document.getElementById("tgpop");if(el&&el.style.display!=="none")tgClose()}});
+document.addEventListener("keydown",function(e){if(e.key==="Enter"&&e.target&&e.target.id&&/^cdin\d+$/.test(e.target.id)&&document.querySelector('[data-cd="raa"]')){e.preventDefault();var cs=Array.prototype.slice.call(document.querySelectorAll('input[id^="cdin"]')),cx=cs.indexOf(e.target);if(cx>-1&&cx<cs.length-1)cs[cx+1].focus();else document.querySelector('[data-cd="raa"]').click();return}
+ if(e.key==="Enter"&&e.target&&e.target.getAttribute&&e.target.getAttribute("data-tgg")){e.preventDefault();var ins=Array.prototype.slice.call(document.querySelectorAll('#tgpop [data-tgg]')),ix=ins.indexOf(e.target);if(ix>-1&&ix<ins.length-1)ins[ix+1].focus();else{var bt=document.querySelector('#tgpop [data-tg="pall"]');if(bt)bt.click()}return}
+ if(e.key==="Escape"){var el=document.getElementById("tgpop");if(el&&el.style.display!=="none")tgClose()}});
 
 function advanceTurn(){var oo=encOrder().has;if(!oo.length)return;
  var ci=oo.findIndex(function(c){return c.id===S.turnId}),tries=0,cc,wrapOk=ci>-1;
